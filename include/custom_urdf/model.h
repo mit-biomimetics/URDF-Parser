@@ -1,0 +1,287 @@
+/*********************************************************************
+* Software License Agreement (BSD License)
+* 
+*  Copyright (c) 2008, Willow Garage, Inc.
+*  All rights reserved.
+* 
+*  Redistribution and use in source and binary forms, with or without
+*  modification, are permitted provided that the following conditions
+*  are met:
+* 
+*   * Redistributions of source code must retain the above copyright
+*     notice, this list of conditions and the following disclaimer.
+*   * Redistributions in binary form must reproduce the above
+*     copyright notice, this list of conditions and the following
+*     disclaimer in the documentation and/or other materials provided
+*     with the distribution.
+*   * Neither the name of the Willow Garage nor the names of its
+*     contributors may be used to endorse or promote products derived
+*     from this software without specific prior written permission.
+* 
+*  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+*  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+*  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+*  FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+*  COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+*  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+*  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+*  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+*  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+*  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+*  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+*  POSSIBILITY OF SUCH DAMAGE.
+*********************************************************************/
+
+/* Author: Wim Meeussen */
+
+#ifndef DYNACORE_URDF_INTERFACE_MODEL_H
+#define DYNACORE_URDF_INTERFACE_MODEL_H
+
+#include <string>
+#include <map>
+// #include "link.h"
+// #include "constraint_joint.h"
+#include "cluster.h"
+#include "exception.h"
+#include <memory>
+
+namespace dynacore{ 
+namespace urdf {
+
+class ModelInterface
+{
+public:
+  std::shared_ptr<const Link> getRoot(void) const{return this->root_link_;};
+  std::shared_ptr<const Link> getLink(const std::string& name) const
+  {
+    std::shared_ptr<const Link> ptr;
+    if (this->links_.find(name) == this->links_.end())
+      ptr.reset();
+    else
+      ptr = this->links_.find(name)->second;
+    return ptr;
+  };
+  
+  std::shared_ptr<const Joint> getJoint(const std::string& name) const
+  {
+    std::shared_ptr<const Joint> ptr;
+    if (this->joints_.find(name) == this->joints_.end())
+      ptr.reset();
+    else
+      ptr = this->joints_.find(name)->second;
+    return ptr;
+  };
+
+  std::shared_ptr<const ConstraintJoint> getConstraint(const std::string& name) const
+  {
+    std::shared_ptr<const ConstraintJoint> ptr;
+    if (this->constraint_joints_.find(name) == this->constraint_joints_.end())
+      ptr.reset();
+    else
+      ptr = this->constraint_joints_.find(name)->second;
+    return ptr;
+  };
+  
+  
+  const std::string& getName() const {return name_;};
+  void getLinks(std::vector<std::shared_ptr<Link> >& links) const
+  {
+    for (std::map<std::string,std::shared_ptr<Link> >::const_iterator link = this->links_.begin();link != this->links_.end(); link++)
+    {
+      links.push_back(link->second);
+    }
+  };
+  
+  void clear()
+  {
+    name_.clear();
+    this->links_.clear();
+    this->joints_.clear();
+    this->materials_.clear();
+    this->root_link_.reset();
+  };
+  
+  /// non-const getLink()
+  void getLink(const std::string& name,std::shared_ptr<Link> &link) const
+  {
+    std::shared_ptr<Link> ptr;
+    if (this->links_.find(name) == this->links_.end())
+      ptr.reset();
+    else
+      ptr = this->links_.find(name)->second;
+    link = ptr;
+  };
+  
+  /// non-const getMaterial()
+  std::shared_ptr<Material> getMaterial(const std::string& name) const
+  {
+    std::shared_ptr<Material> ptr;
+    if (this->materials_.find(name) == this->materials_.end())
+      ptr.reset();
+    else
+      ptr = this->materials_.find(name)->second;
+    return ptr;
+  };
+  
+  void initTree(std::map<std::string, std::string> &parent_link_tree)
+  {
+    // loop through all joints, for every link, assign children links and children joints
+    for (std::map<std::string,std::shared_ptr<Joint> >::iterator joint = this->joints_.begin();joint != this->joints_.end(); joint++)
+    {
+      std::string parent_link_name = joint->second->parent_link_name;
+      std::string child_link_name = joint->second->child_link_name;
+      
+      if (parent_link_name.empty() || child_link_name.empty())
+      {
+        throw ParseError("Joint [" + joint->second->name + "] is missing a parent and/or child link specification.");
+      }
+      else
+      {
+        // find child and parent links
+        std::shared_ptr<Link> child_link, parent_link;
+        this->getLink(child_link_name, child_link);
+        if (!child_link)
+        {
+          throw ParseError("child link [" + child_link_name + "] of joint [" + joint->first + "] not found");
+        }
+        this->getLink(parent_link_name, parent_link);
+        if (!parent_link)
+        {
+          throw ParseError("parent link [" + parent_link_name + "] of joint [" + joint->first + "] not found.  This is not valid according to the URDF spec. Every link you refer to from a joint needs to be explicitly defined in the robot description. To fix this problem you can either remove this joint [" + joint->first + "] from your urdf file, or add \"<link name=\"" + parent_link_name + "\" />\" to your urdf file.");
+        }
+        
+        //set parent link for child link
+        child_link->setParent(parent_link);
+
+        //set parent joint for child link        
+        child_link->parent_joint = joint->second;
+        
+        //set child joint for parent link
+        parent_link->child_joints.push_back(joint->second);
+
+        //set child link for parent link
+        parent_link->child_links.push_back(child_link);
+
+        // fill in child/parent string map
+        parent_link_tree[child_link->name] = parent_link_name;
+      }
+    }
+
+    // Now with the constraints we have to finish building the graph by adding bi-directional edges between all the links that are constrained together, including the ones on the path to the nearest common ancestor.
+
+    // Now here is where we have to add bi-directional edges for every constraint
+    // So I think the links just need to keep track of the constraints that they are a part of?
+
+    // So for every constraint, we find the NCA. And then we find the supporting trees
+
+    for (std::map<std::string, std::shared_ptr<ConstraintJoint>>::iterator constraint = this->constraint_joints_.begin(); constraint != this->constraint_joints_.end(); constraint++)
+    {
+      std::string parent_link_name = constraint->second->parent_link_name;
+      std::string child_link_name = constraint->second->child_link_name;
+
+      if (parent_link_name.empty() || child_link_name.empty())
+      {
+        throw ParseError("ConstraintJoint [" + constraint->second->name + "] is missing a parent and/or child link specification.");
+      }
+
+    }
+
+    // And then from there we implement an SCC algorithm to optimally cluster the bodies?
+
+  }
+
+  // TODO(@MatthewChignoli): Should this be a static function?
+  std::shared_ptr<const Link> nearestCommonAncestor(const std::shared_ptr<const Link> &link1,
+                                                    const std::shared_ptr<const Link> &link2) const
+  {
+    std::shared_ptr<const Link> link1_ptr = link1;
+    std::shared_ptr<const Link> link2_ptr = link2;
+
+    // if either link is NULL, return NULL
+    if (!link1_ptr || !link2_ptr)
+      return std::shared_ptr<const Link>();
+
+    // if both links are the same, return the link
+    if (link1_ptr == link2_ptr)
+      return link1_ptr;
+
+    // if either link is the root, return the root
+    if (link1_ptr == this->root_link_ || link2_ptr == this->root_link_)
+      return this->root_link_;
+
+    // if either link is the child of the other, return the parent
+    if (link1_ptr->getParent() == link2_ptr)
+      return link2_ptr;
+    if (link2_ptr->getParent() == link1_ptr)
+      return link1_ptr;
+
+    // Build the supporting tree for each link, find the nearest common ancestor
+    std::vector<std::shared_ptr<const Link>> link1_supports = link1_ptr->getSupportingChain();
+    std::vector<std::shared_ptr<const Link>> link2_supports = link2_ptr->getSupportingChain();
+
+    std::shared_ptr<const Link> ancestor;
+    std::vector<std::shared_ptr<const Link>>::reverse_iterator link1_it = link1_supports.rbegin();
+    std::vector<std::shared_ptr<const Link>>::reverse_iterator link2_it = link2_supports.rbegin();
+    while (link1_it != link1_supports.rend() &&
+           link2_it != link2_supports.rend() &&
+           *link1_it == *link2_it)
+    {
+      ancestor = *link1_it;
+      link1_it++;
+      link2_it++;
+    }
+    return ancestor;
+  }
+
+  void initRoot(const std::map<std::string, std::string> &parent_link_tree)
+  { 
+    this->root_link_.reset();
+    
+    // find the links that have no parent in the tree
+    for (std::map<std::string, std::shared_ptr<Link> >::const_iterator l=this->links_.begin(); l!=this->links_.end(); l++)  
+    {
+      std::map<std::string, std::string >::const_iterator parent = parent_link_tree.find(l->first);
+      if (parent == parent_link_tree.end())
+      {
+        // store root link
+        if (!this->root_link_)
+        {
+          getLink(l->first, this->root_link_);
+        }
+        // we already found a root link
+        else
+        {
+          throw ParseError("Two root links found: [" + this->root_link_->name + "] and [" + l->first + "]");
+        }
+      }
+    }
+    if (!this->root_link_)
+    {
+      throw ParseError("No root link found. The robot xml is not a valid tree.");
+    }
+  }
+
+  /// \brief complete list of Links
+  std::map<std::string, std::shared_ptr<Link>> links_;
+  /// \brief complete list of Joints
+  std::map<std::string, std::shared_ptr<Joint>> joints_;
+  /// \brief complete list of Constraint Joints
+  std::map<std::string, std::shared_ptr<ConstraintJoint>> constraint_joints_;
+  /// \brief complete list of Clusters
+  std::map<std::string, std::shared_ptr<Cluster>> clusters_;
+  /// \brief complete list of Materials
+  std::map<std::string, std::shared_ptr<Material>> materials_;
+
+  /// \brief The name of the robot model
+  std::string name_;
+
+  /// \brief The root is always a link (the parent of the tree describing the robot)
+  std::shared_ptr<Link> root_link_;
+
+
+
+};
+
+}
+}
+#endif
