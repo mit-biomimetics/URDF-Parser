@@ -162,18 +162,21 @@ public:
         //set child link for parent link
         parent_link->child_links.push_back(child_link);
 
+        //child links are neighbors of parent link (TODO(@MatthewChignoli): is neighbor a good name? is there a more graph theory name I can use?)
+        parent_link->neighbors.push_back(child_link); 
+
         // fill in child/parent string map
         parent_link_tree[child_link->name] = parent_link_name;
       }
     }
 
+    // TODO(@MatthewChignoli): Clean this part up later
     // Now with the constraints we have to finish building the graph by adding bi-directional edges between all the links that are constrained together, including the ones on the path to the nearest common ancestor.
-
+    //
     // Now here is where we have to add bi-directional edges for every constraint
     // So I think the links just need to keep track of the constraints that they are a part of?
-
+    //
     // So for every constraint, we find the NCA. And then we find the supporting trees
-
     for (std::map<std::string, std::shared_ptr<ConstraintJoint>>::iterator constraint = this->constraint_joints_.begin(); constraint != this->constraint_joints_.end(); constraint++)
     {
       std::string parent_link_name = constraint->second->parent_link_name;
@@ -183,11 +186,35 @@ public:
       {
         throw ParseError("ConstraintJoint [" + constraint->second->name + "] is missing a parent and/or child link specification.");
       }
+      else
+      {
+        // TODO(@MatthewChignoli): Improve the error message
+        // find child and parent links
+        std::shared_ptr<Link> child_link, parent_link;
+        this->getLink(child_link_name, child_link);
+        if (!child_link)
+        {
+          throw ParseError("child link [" + child_link_name + "] of joint [" + constraint->first + "] not found");
+        }
+        this->getLink(parent_link_name, parent_link);
+        if (!parent_link)
+        {
+          throw ParseError("parent link [" + parent_link_name + "] of joint [" + constraint->first + "] not found.  This is not valid according to the URDF spec. Every link you refer to from a joint needs to be explicitly defined in the robot description. To fix this problem you can either remove this joint [" + constraint->first + "] from your urdf file, or add \"<link name=\"" + parent_link_name + "\" />\" to your urdf file.");
+        }
+
+        // get supporting trees starting from the parent and child links
+        std::vector<std::shared_ptr<const Link>> parent_supporting_chain = parent_link->getSupportingChain();
+        std::vector<std::shared_ptr<const Link>> child_supporting_chain = child_link->getSupportingChain();
+
+        // Now is the part where we draw edges between links that are constrained together, but we need to be careful not to be redundant
+      }
+
+
+
 
     }
 
     // And then from there we implement an SCC algorithm to optimally cluster the bodies?
-
   }
 
   // TODO(@MatthewChignoli): Should this be a static function?

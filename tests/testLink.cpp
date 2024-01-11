@@ -1,8 +1,8 @@
 #include "gtest/gtest.h"
-
 #include "custom_urdf/urdf_parser.h"
 
-// TODO(@MatthewChignoli): Maybe move these link tests to their own unit test file?
+// TODO(@MatthewChignoli): Test for other URDFs as well
+
 GTEST_TEST(Link, supportingChain)
 {
     std::shared_ptr<dynacore::urdf::ModelInterface> model;
@@ -59,7 +59,6 @@ GTEST_TEST(Link, supportingChainStartingFrom)
         supporting_chain.push_back(link1);
         EXPECT_EQ(link2->getSupportingChainStartingFrom(base), supporting_chain);
     }
-
 }
 
 GTEST_TEST(Link, nearestCommonAncestor)
@@ -77,7 +76,7 @@ GTEST_TEST(Link, nearestCommonAncestor)
     EXPECT_EQ(model->nearestCommonAncestor(base, link1), base);
     EXPECT_EQ(model->nearestCommonAncestor(base, link2), base);
     EXPECT_EQ(model->nearestCommonAncestor(base, link3), base);
-    
+
     EXPECT_EQ(model->nearestCommonAncestor(link1, base), base);
     EXPECT_EQ(model->nearestCommonAncestor(link1, link1), link1);
     EXPECT_EQ(model->nearestCommonAncestor(link1, link2), link1);
@@ -92,5 +91,40 @@ GTEST_TEST(Link, nearestCommonAncestor)
     EXPECT_EQ(model->nearestCommonAncestor(link3, link1), base);
     EXPECT_EQ(model->nearestCommonAncestor(link3, link2), base);
     EXPECT_EQ(model->nearestCommonAncestor(link3, link3), link3);
+}
 
+GTEST_TEST(Link, neighbors)
+{
+    std::shared_ptr<dynacore::urdf::ModelInterface> model;
+    model = dynacore::urdf::parseURDFFile("/home/matt/repos/URDF-Parser/four_bar.urdf", false);
+
+    using LinkPtr = std::shared_ptr<dynacore::urdf::Link>;
+    LinkPtr base, link1, link2, link3;
+    model->getLink("base_link", base);
+    model->getLink("link1", link1);
+    model->getLink("link2", link2);
+    model->getLink("link3", link3);
+
+    {
+        std::vector<LinkPtr> neighbors;
+        neighbors.push_back(link1);
+        neighbors.push_back(link3);
+        EXPECT_EQ(base->neighbors, neighbors);
+    }
+
+    {
+        std::vector<LinkPtr> neighbors;
+        neighbors.push_back(link2);
+        EXPECT_EQ(link1->neighbors, neighbors);
+    }
+
+    {
+        std::vector<LinkPtr> neighbors;
+        EXPECT_EQ(link2->neighbors, neighbors);
+    }
+
+    {
+        std::vector<LinkPtr> neighbors;
+        EXPECT_EQ(link3->neighbors, neighbors);
+    }
 }
