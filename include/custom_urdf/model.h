@@ -107,7 +107,6 @@ public:
     }
   }
 
-  // TODO(@MatthewChignoli): Verify that this works (more complicated tests than four bar)
   // Note: the src link is NEVER included in the subtree but the dst link typically is
   void getSubtreeBetweenLinks(const std::string &src_name,
                               const std::string &dst_name,
@@ -128,10 +127,9 @@ public:
       throw ParseError("Link [" + dst_name + "] not found");
     }
 
-    // If the links are the same, return the link
+    // If the links are the same, return an empty subtree
     if (src_link == dst_link)
     {
-      // subtree.push_back(src_link);
       return;
     }
 
