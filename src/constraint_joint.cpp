@@ -99,6 +99,8 @@ namespace dynacore
                 constraint.type = ConstraintJoint::CONTINUOUS;
             else if (type_str == "prismatic")
                 constraint.type = ConstraintJoint::PRISMATIC;
+            else if (type_str == "rolling")
+                constraint.type = ConstraintJoint::ROLLING;
             else if (type_str == "fixed")
                 constraint.type = ConstraintJoint::FIXED;
             else

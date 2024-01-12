@@ -25,15 +25,18 @@ namespace dynacore
                 CONTINUOUS,
                 PRISMATIC,
                 PLANAR,
+                ROLLING,
                 FIXED
             } type;
 
+            // TODO(@MatthewChignoli): Does ROLLING need more info than we currently have?
             /// \brief     type_       meaning of axis_
             /// ------------------------------------------------------
             ///            UNKNOWN     unknown type
             ///            REVOLUTE    rotation axis
             ///            PRISMATIC   translation axis
             ///            PLANAR      plane normal axis
+            ///            ROLLING     rolling axis
             ///            FIXED       N/A
             Vector3 axis;
 

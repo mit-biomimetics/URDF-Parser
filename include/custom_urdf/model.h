@@ -406,6 +406,8 @@ public:
         // vector<string> scc;
         std::vector<std::shared_ptr<Link>> scc;
         dfs_second_pass(reverse_link_graph, link_name, visited, scc);
+        // TODO(@MatthewChignoli): How to give the cluster a name?
+        // TODO(@MatthewChignoli): How to give the cluster the constraints?
         clusters_.emplace_back(new Cluster());
         clusters_.back()->links = scc;
       }

@@ -11,9 +11,9 @@ GTEST_TEST(UrdfParser, parseUrdfFiles)
     // model = dynacore::urdf::parseURDFFile("/home/matt/repos/URDF-Parser/four_bar.urdf", true);
 
     std::vector<std::shared_ptr<ModelInterface>> models;
-    // models.push_back(parseURDFFile("/home/matt/repos/URDF-Parser/mini_cheetah.urdf", false));
+    models.push_back(parseURDFFile("/home/matt/repos/URDF-Parser/mini_cheetah.urdf", false));
     // models.push_back(parseURDFFile("/home/matt/repos/URDF-Parser/four_bar.urdf", false));
-    models.push_back(parseURDFFile("/home/matt/repos/URDF-Parser/six_bar.urdf", false));
+    // models.push_back(parseURDFFile("/home/matt/repos/URDF-Parser/six_bar.urdf", false));
 
     for (const std::shared_ptr<ModelInterface> model : models)
     {
@@ -24,17 +24,17 @@ GTEST_TEST(UrdfParser, parseUrdfFiles)
         // Print the names of the links
         std::vector<std::shared_ptr<dynacore::urdf::Link>> links;
         model->getLinks(links);
-        std::cout << "Links:" << std::endl;
+        std::cout << "\nLinks:" << std::endl;
         for (int i = 0; i < links.size(); i++)
         {
             std::cout << "  " << links[i]->name << std::endl;
         }
 
         // Print the name of the root link
-        std::cout << "Root link: " << model->getRoot()->name << std::endl;
+        std::cout << "\nRoot link: " << model->getRoot()->name << std::endl;
 
         // Print the names of the joints
-        std::cout << "Joints:" << std::endl;
+        std::cout << "\nJoints:" << std::endl;
         for (int i = 0; i < links.size(); i++)
         {
             if (links[i]->parent_joint)
@@ -42,7 +42,7 @@ GTEST_TEST(UrdfParser, parseUrdfFiles)
         }
 
         // Print the types of joints
-        std::cout << "Joint types:" << std::endl;
+        std::cout << "\nJoint types:" << std::endl;
         for (int i = 0; i < links.size(); i++)
         {
             if (links[i]->parent_joint)
@@ -76,7 +76,7 @@ GTEST_TEST(UrdfParser, parseUrdfFiles)
 
         // Print the clusters and the names of the links they contain
         std::vector<std::shared_ptr<dynacore::urdf::Cluster>> clusters= model->getClusters();
-        std::cout << "Clusters:" << std::endl;
+        std::cout << "\nClusters:" << std::endl;
         for (int i = 0; i < clusters.size(); i++)
         {
             std::cout << "Cluster #" << i << std::endl;
