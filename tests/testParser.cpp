@@ -12,7 +12,8 @@ GTEST_TEST(UrdfParser, parseUrdfFiles)
 
     std::vector<std::shared_ptr<ModelInterface>> models;
     // models.push_back(parseURDFFile("/home/matt/repos/URDF-Parser/mini_cheetah.urdf", false));
-    models.push_back(parseURDFFile("/home/matt/repos/URDF-Parser/four_bar.urdf", false));
+    // models.push_back(parseURDFFile("/home/matt/repos/URDF-Parser/four_bar.urdf", false));
+    models.push_back(parseURDFFile("/home/matt/repos/URDF-Parser/six_bar.urdf", false));
 
     for (const std::shared_ptr<ModelInterface> model : models)
     {
@@ -73,9 +74,19 @@ GTEST_TEST(UrdfParser, parseUrdfFiles)
             // std::cout << "  " << links[i]->parent_joint->type << std::endl;
         }
 
-        // What we eventually want is to print the clusters.
-        // And then later we need to figure out how to turn constraints into phi, K, and k.
+        // Print the clusters and the names of the links they contain
+        std::vector<std::shared_ptr<dynacore::urdf::Cluster>> clusters= model->getClusters();
+        std::cout << "Clusters:" << std::endl;
+        for (int i = 0; i < clusters.size(); i++)
+        {
+            std::cout << "Cluster #" << i << std::endl;
+            std::shared_ptr<dynacore::urdf::Cluster> cluster = clusters[i];
+            for (int j = 0; j < cluster->links.size(); j++)
+            {
+                std::cout << "    " << cluster->links[j]->name << std::endl;
+            }
+        }
 
-        // Let's start with adding the rotors to the URDF
+        // TODO(@MatthewChignoli): add a formal check on the clusters
     }
 }

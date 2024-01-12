@@ -39,6 +39,7 @@
 
 #include <string>
 #include <map>
+#include <stack>
 // #include "link.h"
 // #include "constraint_joint.h"
 #include "cluster.h"
@@ -82,7 +83,12 @@ public:
     return ptr;
   };
   
-  
+
+  // TODO(@MatthewChignoli): Cleaner accessor
+  const std::vector<std::shared_ptr<Cluster>> &getClusters() const
+  {
+    return clusters_;
+  }
   
   const std::string& getName() const {return name_;};
   void getLinks(std::vector<std::shared_ptr<Link> >& links) const
@@ -93,6 +99,7 @@ public:
     }
   };
 
+  // TODO(@MatthewChignoli): Proximal links are at the back of the chain, should we reverse this? Probably yes...
   void getSupportingChain(const std::string &link_name,
                           std::vector<std::shared_ptr<Link>> &supporting_chain) const
   {
@@ -276,6 +283,7 @@ public:
     }
 
     // And then from there we implement an SCC algorithm to optimally cluster the bodies?
+    stronglyConnectedComponents();
   }
 
   // TODO(@MatthewChignoli): Should this be a static function?
@@ -322,6 +330,88 @@ public:
     return ancestor;
   }
 
+  // TODO(@MatthewChignoli): Maybe move these SCC functions to a separate file?
+  void dfs_first_pass(const std::string &link_name,
+                      std::map<std::string, bool> &visited,
+                      std::stack<std::string> &finishing_order)
+  {
+    visited[link_name] = true;
+    for (const std::shared_ptr<Link> neighbor : links_.at(link_name)->neighbors)
+    {
+      const std::string &neighbor_name = neighbor->name;
+      if (!visited[neighbor_name])
+      {
+        dfs_first_pass(neighbor_name, visited, finishing_order);
+      }
+    }
+    finishing_order.push(link_name);
+  }
+
+  void dfs_second_pass(const std::map<std::string, std::vector<std::shared_ptr<Link>>>  &reverse_graph,
+                       const std::string &link_name, std::map<std::string, bool> &visited,
+                       std::vector<std::shared_ptr<Link>> &scc)
+  {
+    visited[link_name] = true;
+    scc.push_back(links_.at(link_name));
+    for (const std::shared_ptr<Link> neighbor : reverse_graph.at(link_name))
+    {
+      const std::string &neighbor_name = neighbor->name;
+      if (!visited[neighbor_name])
+      {
+        dfs_second_pass(reverse_graph, neighbor_name, visited, scc);
+      }
+    }
+  }
+
+  // TODO(@MatthewChignoli): Better name?
+  void stronglyConnectedComponents()
+  {
+    std::map<std::string, bool> visited;
+    std::stack<std::string> finishing_order;
+
+    // Build the reverse graph
+    std::map<std::string, std::vector<std::shared_ptr<Link>>> reverse_link_graph;
+    for (auto &link : this->links_)
+    {
+      reverse_link_graph[link.first] = std::vector<std::shared_ptr<Link>>();
+    }
+    for (auto &link : this->links_)
+    {
+      for (auto &neighbor : link.second->neighbors)
+      {
+        reverse_link_graph[neighbor->name].push_back(link.second);
+      }
+    }
+
+    // First Pass: Calculate finishing times
+    for (auto &link : this->links_)
+    {
+      const std::string &link_name = link.first;
+      if (!visited[link_name])
+      {
+        dfs_first_pass(link_name, visited, finishing_order);
+      }
+    }
+
+    visited.clear();
+
+    // Second Pass: Find SCCs
+    while (!finishing_order.empty())
+    {
+      const std::string &link_name = finishing_order.top();
+      finishing_order.pop();
+
+      if (!visited[link_name])
+      {
+        // vector<string> scc;
+        std::vector<std::shared_ptr<Link>> scc;
+        dfs_second_pass(reverse_link_graph, link_name, visited, scc);
+        clusters_.emplace_back(new Cluster());
+        clusters_.back()->links = scc;
+      }
+    }
+  }
+
   void initRoot(const std::map<std::string, std::string> &parent_link_tree)
   { 
     this->root_link_.reset();
@@ -357,7 +447,9 @@ public:
   /// \brief complete list of Constraint Joints
   std::map<std::string, std::shared_ptr<ConstraintJoint>> constraint_joints_;
   /// \brief complete list of Clusters
-  std::map<std::string, std::shared_ptr<Cluster>> clusters_;
+  // TODO(@MatthewChignoli): Should this be a map?
+  // std::map<std::string, std::shared_ptr<Cluster>> clusters_;
+  std::vector<std::shared_ptr<Cluster>> clusters_;
   /// \brief complete list of Materials
   std::map<std::string, std::shared_ptr<Material>> materials_;
 
