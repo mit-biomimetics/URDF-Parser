@@ -241,27 +241,12 @@ public:
 
   std::shared_ptr<Link> getParent() const { return parent_link_.lock(); }
 
-  std::vector<std::shared_ptr<const Link>> getSupportingChain() const
-  {
-    std::vector<std::shared_ptr<const Link>> supporting_chain;
-    std::shared_ptr<const Link> link_ptr = getParent();
-
-    while (link_ptr)
-    {
-      supporting_chain.push_back(link_ptr);
-      link_ptr = link_ptr->getParent();
-    }
-    return supporting_chain;
-    // TODO(@MatthewChignoli): An option
-    // return std::reverse(supporting_chain.begin(), supporting_chain.end());
-  }
-
   // TODO(@MatthewChignoli): Should we supply the name instead of the pointer?
-  std::vector<std::shared_ptr<const Link>>
-  getSupportingChainStartingFrom(std::shared_ptr<const Link> start_link) const
+  std::vector<std::shared_ptr<Link>>
+  getSupportingChainStartingFrom(std::shared_ptr<Link> start_link) const
   {
-    std::vector<std::shared_ptr<const Link>> supporting_chain;
-    std::shared_ptr<const Link> link_ptr = getParent();
+    std::vector<std::shared_ptr<Link>> supporting_chain;
+    std::shared_ptr<Link> link_ptr = getParent();
     while (link_ptr)
     {
       if (link_ptr == start_link)

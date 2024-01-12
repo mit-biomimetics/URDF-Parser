@@ -83,6 +83,7 @@ public:
   };
   
   
+  
   const std::string& getName() const {return name_;};
   void getLinks(std::vector<std::shared_ptr<Link> >& links) const
   {
@@ -91,7 +92,74 @@ public:
       links.push_back(link->second);
     }
   };
-  
+
+  void getSupportingChain(const std::string &link_name,
+                          std::vector<std::shared_ptr<Link>> &supporting_chain) const
+  {
+    supporting_chain.clear();
+
+    std::shared_ptr<Link> link;
+    this->getLink(link_name, link);
+    while (link)
+    {
+      supporting_chain.push_back(link);
+      link = link->getParent();
+    }
+  }
+
+  // TODO(@MatthewChignoli): Verify that this works (more complicated tests than four bar)
+  // Note: the src link is NEVER included in the subtree but the dst link typically is
+  void getSubtreeBetweenLinks(const std::string &src_name,
+                              const std::string &dst_name,
+                              std::vector<std::shared_ptr<Link>> &subtree) const
+  {
+    subtree.clear();
+
+    std::shared_ptr<Link> src_link, dst_link;
+    this->getLink(src_name, src_link);
+    this->getLink(dst_name, dst_link);
+
+    if (!src_link)
+    {
+      throw ParseError("Link [" + src_name + "] not found");
+    }
+    if (!dst_link)
+    {
+      throw ParseError("Link [" + dst_name + "] not found");
+    }
+
+    // If the links are the same, return the link
+    if (src_link == dst_link)
+    {
+      // subtree.push_back(src_link);
+      return;
+    }
+
+    // Get the supporting chain for the src and dst links
+    std::vector<std::shared_ptr<Link>> dst_supporting_chain;
+    getSupportingChain(dst_link->name, dst_supporting_chain);
+
+    // Loop through the destination supporting chain until we hit the source link
+    std::vector<std::shared_ptr<Link>>::reverse_iterator dst_it = dst_supporting_chain.rbegin();
+    while (dst_it != dst_supporting_chain.rend() && *dst_it != src_link)
+    {
+      dst_it++;
+    }
+
+    // Throw error if we didn't find the source link
+    if (dst_it == dst_supporting_chain.rend())
+    {
+      throw ParseError("Link [" + src_name + "] does not support link [" + dst_name + "]");
+    }
+
+    // Add links to subtree until reaching the destination link
+    dst_it++; // Increment so that the source link is not included in the subtree
+    for (; dst_it != dst_supporting_chain.rend(); dst_it++)
+    {
+      subtree.push_back(*dst_it);
+    }
+  }
+
   void clear()
   {
     name_.clear();
@@ -170,21 +238,15 @@ public:
       }
     }
 
-    // TODO(@MatthewChignoli): Clean this part up later
-    // Now with the constraints we have to finish building the graph by adding bi-directional edges between all the links that are constrained together, including the ones on the path to the nearest common ancestor.
-    //
-    // Now here is where we have to add bi-directional edges for every constraint
-    // So I think the links just need to keep track of the constraints that they are a part of?
-    //
-    // So for every constraint, we find the NCA. And then we find the supporting trees
-    for (std::map<std::string, std::shared_ptr<ConstraintJoint>>::iterator constraint = this->constraint_joints_.begin(); constraint != this->constraint_joints_.end(); constraint++)
+    // TODO(@MatthewChignoli): Clean this part up later. There are too many messy comments and the implementation is really inefficient
+    for (auto &constraint : this->constraint_joints_)
     {
-      std::string parent_link_name = constraint->second->parent_link_name;
-      std::string child_link_name = constraint->second->child_link_name;
+      std::string parent_link_name = constraint.second->parent_link_name;
+      std::string child_link_name = constraint.second->child_link_name;
 
       if (parent_link_name.empty() || child_link_name.empty())
       {
-        throw ParseError("ConstraintJoint [" + constraint->second->name + "] is missing a parent and/or child link specification.");
+        throw ParseError("ConstraintJoint [" + constraint.second->name + "] is missing a parent and/or child link specification.");
       }
       else
       {
@@ -194,39 +256,40 @@ public:
         this->getLink(child_link_name, child_link);
         if (!child_link)
         {
-          throw ParseError("child link [" + child_link_name + "] of joint [" + constraint->first + "] not found");
+          throw ParseError("child link [" + child_link_name + "] of joint [" + constraint.first + "] not found");
         }
         this->getLink(parent_link_name, parent_link);
         if (!parent_link)
         {
-          throw ParseError("parent link [" + parent_link_name + "] of joint [" + constraint->first + "] not found.  This is not valid according to the URDF spec. Every link you refer to from a joint needs to be explicitly defined in the robot description. To fix this problem you can either remove this joint [" + constraint->first + "] from your urdf file, or add \"<link name=\"" + parent_link_name + "\" />\" to your urdf file.");
+          throw ParseError("parent link [" + parent_link_name + "] of joint [" + constraint.first + "] not found.  This is not valid according to the URDF spec. Every link you refer to from a joint needs to be explicitly defined in the robot description. To fix this problem you can either remove this joint [" + constraint.first + "] from your urdf file, or add \"<link name=\"" + parent_link_name + "\" />\" to your urdf file.");
         }
 
-        // get supporting trees starting from the parent and child links
-        std::vector<std::shared_ptr<const Link>> parent_supporting_chain = parent_link->getSupportingChain();
-        std::vector<std::shared_ptr<const Link>> child_supporting_chain = child_link->getSupportingChain();
+        // Get supporting trees starting from nearest common ancestor and ending with the
+        // parent and child links
+        std::shared_ptr<Link> nca_link = nearestCommonAncestor(parent_link, child_link);
+        std::vector<std::shared_ptr<Link>> nca_to_parent_subtree, nca_to_child_subtree;
+        getSubtreeBetweenLinks(nca_link->name, parent_link->name, nca_to_parent_subtree);
+        getSubtreeBetweenLinks(nca_link->name, child_link->name, nca_to_child_subtree);
 
-        // Now is the part where we draw edges between links that are constrained together, but we need to be careful not to be redundant
+        // Create cycle for the loop constraint
+        parent_link->neighbors.push_back(nca_to_child_subtree.front());
+        child_link->neighbors.push_back(nca_to_parent_subtree.front());
       }
-
-
-
-
     }
 
     // And then from there we implement an SCC algorithm to optimally cluster the bodies?
   }
 
   // TODO(@MatthewChignoli): Should this be a static function?
-  std::shared_ptr<const Link> nearestCommonAncestor(const std::shared_ptr<const Link> &link1,
-                                                    const std::shared_ptr<const Link> &link2) const
+  std::shared_ptr<Link> nearestCommonAncestor(const std::shared_ptr<Link> &link1,
+                                              const std::shared_ptr<Link> &link2) const
   {
-    std::shared_ptr<const Link> link1_ptr = link1;
-    std::shared_ptr<const Link> link2_ptr = link2;
+    std::shared_ptr<Link> link1_ptr = link1;
+    std::shared_ptr<Link> link2_ptr = link2;
 
     // if either link is NULL, return NULL
     if (!link1_ptr || !link2_ptr)
-      return std::shared_ptr<const Link>();
+      return std::shared_ptr<Link>();
 
     // if both links are the same, return the link
     if (link1_ptr == link2_ptr)
@@ -243,12 +306,13 @@ public:
       return link1_ptr;
 
     // Build the supporting tree for each link, find the nearest common ancestor
-    std::vector<std::shared_ptr<const Link>> link1_supports = link1_ptr->getSupportingChain();
-    std::vector<std::shared_ptr<const Link>> link2_supports = link2_ptr->getSupportingChain();
+    std::vector<std::shared_ptr<Link>> link1_supports, link2_supports;
+    getSupportingChain(link1_ptr->name, link1_supports);
+    getSupportingChain(link2_ptr->name, link2_supports);
 
-    std::shared_ptr<const Link> ancestor;
-    std::vector<std::shared_ptr<const Link>>::reverse_iterator link1_it = link1_supports.rbegin();
-    std::vector<std::shared_ptr<const Link>>::reverse_iterator link2_it = link2_supports.rbegin();
+    std::shared_ptr<Link> ancestor;
+    std::vector<std::shared_ptr<Link>>::reverse_iterator link1_it = link1_supports.rbegin();
+    std::vector<std::shared_ptr<Link>>::reverse_iterator link2_it = link2_supports.rbegin();
     while (link1_it != link1_supports.rend() &&
            link2_it != link2_supports.rend() &&
            *link1_it == *link2_it)
