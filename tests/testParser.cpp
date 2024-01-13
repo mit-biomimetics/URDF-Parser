@@ -75,15 +75,14 @@ GTEST_TEST(UrdfParser, parseUrdfFiles)
         }
 
         // Print the clusters and the names of the links they contain
-        std::vector<std::shared_ptr<dynacore::urdf::Cluster>> clusters= model->getClusters();
+        const std::map<std::string, std::shared_ptr<dynacore::urdf::Cluster>> clusters = model->getClusters();
         std::cout << "\nClusters:" << std::endl;
-        for (int i = 0; i < clusters.size(); i++)
+        for (std::map<std::string, std::shared_ptr<dynacore::urdf::Cluster>>::const_iterator cluster = clusters.begin(); cluster != clusters.end(); cluster++)
         {
-            std::cout << "Cluster #" << i << std::endl;
-            std::shared_ptr<dynacore::urdf::Cluster> cluster = clusters[i];
-            for (int j = 0; j < cluster->links.size(); j++)
+            std::cout << "  " << cluster->first << std::endl;
+            for (std::shared_ptr<Link> link : cluster->second->links)
             {
-                std::cout << "    " << cluster->links[j]->name << std::endl;
+                std::cout << "    " << link->name << std::endl;
             }
         }
 

@@ -40,6 +40,7 @@
 #include <string>
 #include <map>
 #include <stack>
+#include <algorithm>
 // #include "link.h"
 // #include "constraint_joint.h"
 #include "cluster.h"
@@ -85,7 +86,7 @@ public:
   
 
   // TODO(@MatthewChignoli): Cleaner accessor
-  const std::vector<std::shared_ptr<Cluster>> &getClusters() const { return clusters_; }
+  const std::map<std::string, std::shared_ptr<Cluster>> &getClusters() const { return clusters_; }
 
   const std::string& getName() const {return name_;};
   void getLinks(std::vector<std::shared_ptr<Link> >& links) const
@@ -278,8 +279,53 @@ public:
       }
     }
 
+    // TODO(@MatthewChignoli): How can the clusters have names? I think the names need to be automatic, because the clusters are not defined in the URDF, so then the names cannot be. And we cannot just name the cluster after the constraint joint because there can be multiple constraint joints in a cluster. Maybe we can just append the name? 
     // And then from there we implement an SCC algorithm to optimally cluster the bodies?
     extractStronglyConnectedComponents();
+
+    // TODO(@MatthewChignoli): Now we need to have a similar thing as above where we set parent clusters (and child clusters)
+
+    // Start with the root link. That constitues the first cluster
+    // Then loop through all of of the children of the root. Whatever cluster they are in should be a child cluster of the root cluster. Make sure not to repeat clusters
+    // And then move on to the next cluster and do the same thing
+    // TODO(@MatthewChignoli): Should the clusters be named? Seems like maybe
+
+    // TODO(@MatthewChignoli): Maybe we don't need separate loops for root and non-root clusters?
+    // for (const std::shared_ptr<Link> &child : this->root_link_->child_links)
+    // {
+    //   std::shared_ptr<Cluster> child_cluster = getClusterContaining(child->name);
+
+    //   // If child cluster is the root cluster, throw an error
+    //   if (child_cluster == clusters_.front())
+    //   {
+    //     throw ParseError("Root cluster cannot be a child cluster");
+    //   }
+
+    //   // If child cluster is not already a child of the root cluster, add it
+    //   if (std::find(clusters_.front()->child_clusters.begin(),
+    //                 clusters_.front()->child_clusters.end(),
+    //                 child_cluster) == clusters_.front()->child_clusters.end())
+    //   {
+    //     clusters_.front()->child_clusters.push_back(child_cluster);
+    //   }
+
+    // }
+
+  }
+
+  std::shared_ptr<Cluster> getClusterContaining(const std::string &link_name)
+  {
+    for (std::map<std::string, std::shared_ptr<Cluster>>::iterator cluster = this->clusters_.begin(); cluster != this->clusters_.end(); cluster++)
+    {
+      for (const std::shared_ptr<Link> &link : cluster->second->links)
+      {
+        if (link->name == link_name)
+        {
+          return cluster->second;
+        }
+      }
+    }
+    throw ParseError("Link [" + link_name + "] not found in any cluster");
   }
 
   // TODO(@MatthewChignoli): Should this be a static function?
@@ -399,13 +445,10 @@ public:
 
       if (!visited[link_name])
       {
-        // vector<string> scc;
         std::vector<std::shared_ptr<Link>> scc;
         dfs_second_pass(reverse_link_graph, link_name, visited, scc);
-        // TODO(@MatthewChignoli): How to give the cluster a name?
-        // TODO(@MatthewChignoli): How to give the cluster the constraints?
-        clusters_.emplace_back(new Cluster());
-        clusters_.back()->links = scc;
+        clusters_.insert(make_pair(link_name, new Cluster()));
+        clusters_.at(link_name)->links = scc;
       }
     }
   }
@@ -446,8 +489,7 @@ public:
   std::map<std::string, std::shared_ptr<ConstraintJoint>> constraint_joints_;
   /// \brief complete list of Clusters
   // TODO(@MatthewChignoli): Should this be a map?
-  // std::map<std::string, std::shared_ptr<Cluster>> clusters_;
-  std::vector<std::shared_ptr<Cluster>> clusters_;
+  std::map<std::string, std::shared_ptr<Cluster>> clusters_;
   /// \brief complete list of Materials
   std::map<std::string, std::shared_ptr<Material>> materials_;
 
