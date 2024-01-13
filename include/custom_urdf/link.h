@@ -241,28 +241,6 @@ public:
 
   std::shared_ptr<Link> getParent() const { return parent_link_.lock(); }
 
-  // TODO(@MatthewChignoli): Should we supply the name instead of the pointer?
-  std::vector<std::shared_ptr<Link>>
-  getSupportingChainStartingFrom(std::shared_ptr<Link> start_link) const
-  {
-    std::vector<std::shared_ptr<Link>> supporting_chain;
-    std::shared_ptr<Link> link_ptr = getParent();
-    while (link_ptr)
-    {
-      if (link_ptr == start_link)
-      {
-        return supporting_chain;
-        // TODO(@MatthewChignoli): An option
-        // return std::reverse(supporting_chain.begin(), supporting_chain.end());
-      }
-
-      supporting_chain.push_back(link_ptr);
-      link_ptr = link_ptr->getParent();
-    }
-
-    throw std::runtime_error("Link::getSupportingChainStartingFrom: start_link is not in the supporting chain");
-  }
-
   void setParent(const std::shared_ptr<Link> &parent) { parent_link_ = parent; }
 
   void clear()
