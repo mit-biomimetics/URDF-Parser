@@ -42,6 +42,7 @@
 #include <map>
 #include <memory>
 #include "joint.h"
+#include "constraint_joint.h"
 #include "color.h"
 
 namespace dynacore{
@@ -239,6 +240,8 @@ public:
   std::vector<std::shared_ptr<Joint> > child_joints;
   std::vector<std::shared_ptr<Link> > child_links;
   std::vector<std::shared_ptr<Link>> neighbors;
+
+  std::vector<std::shared_ptr<ConstraintJoint>> constraint_joints;
 
   std::shared_ptr<Link> getParent() const { return parent_link_.lock(); }
 

@@ -266,6 +266,9 @@ public:
           throw ParseError("parent link [" + parent_link_name + "] of constraint [" + constraint.first + "] not found.  This is not valid according to the URDF spec. Every link you refer to from a constraint needs to be explicitly defined in the robot description. To fix this problem you can either remove this constraint [" + constraint.first + "] from your urdf file, or add \"<link name=\"" + parent_link_name + "\" />\" to your urdf file.");
         }
 
+        // Add the constraint joint to the parent link
+        parent_link->constraint_joints.push_back(constraint.second);
+
         // Get supporting trees starting from nearest common ancestor and ending with the
         // parent and child links
         std::shared_ptr<Link> nca_link = nearestCommonAncestor(parent_link, child_link);
