@@ -85,11 +85,8 @@ public:
   
 
   // TODO(@MatthewChignoli): Cleaner accessor
-  const std::vector<std::shared_ptr<Cluster>> &getClusters() const
-  {
-    return clusters_;
-  }
-  
+  const std::vector<std::shared_ptr<Cluster>> &getClusters() const { return clusters_; }
+
   const std::string& getName() const {return name_;};
   void getLinks(std::vector<std::shared_ptr<Link> >& links) const
   {
@@ -235,7 +232,7 @@ public:
         //set child link for parent link
         parent_link->child_links.push_back(child_link);
 
-        //child links are neighbors of parent link (TODO(@MatthewChignoli): is neighbor a good name? is there a more graph theory name I can use?)
+        //child links are neighbors of parent link
         parent_link->neighbors.push_back(child_link); 
 
         // fill in child/parent string map
@@ -255,18 +252,17 @@ public:
       }
       else
       {
-        // TODO(@MatthewChignoli): Improve the error message
         // find child and parent links
         std::shared_ptr<Link> child_link, parent_link;
         this->getLink(child_link_name, child_link);
         if (!child_link)
         {
-          throw ParseError("child link [" + child_link_name + "] of joint [" + constraint.first + "] not found");
+          throw ParseError("child link [" + child_link_name + "] of constraint [" + constraint.first + "] not found");
         }
         this->getLink(parent_link_name, parent_link);
         if (!parent_link)
         {
-          throw ParseError("parent link [" + parent_link_name + "] of joint [" + constraint.first + "] not found.  This is not valid according to the URDF spec. Every link you refer to from a joint needs to be explicitly defined in the robot description. To fix this problem you can either remove this joint [" + constraint.first + "] from your urdf file, or add \"<link name=\"" + parent_link_name + "\" />\" to your urdf file.");
+          throw ParseError("parent link [" + parent_link_name + "] of constraint [" + constraint.first + "] not found.  This is not valid according to the URDF spec. Every link you refer to from a constraint needs to be explicitly defined in the robot description. To fix this problem you can either remove this constraint [" + constraint.first + "] from your urdf file, or add \"<link name=\"" + parent_link_name + "\" />\" to your urdf file.");
         }
 
         // Get supporting trees starting from nearest common ancestor and ending with the
@@ -283,7 +279,7 @@ public:
     }
 
     // And then from there we implement an SCC algorithm to optimally cluster the bodies?
-    stronglyConnectedComponents();
+    extractStronglyConnectedComponents();
   }
 
   // TODO(@MatthewChignoli): Should this be a static function?
@@ -364,7 +360,7 @@ public:
   }
 
   // TODO(@MatthewChignoli): Better name?
-  void stronglyConnectedComponents()
+  void extractStronglyConnectedComponents()
   {
     std::map<std::string, bool> visited;
     std::stack<std::string> finishing_order;
