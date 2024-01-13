@@ -283,33 +283,7 @@ public:
     // And then from there we implement an SCC algorithm to optimally cluster the bodies?
     extractStronglyConnectedComponents();
 
-    // TODO(@MatthewChignoli): Now we need to have a similar thing as above where we set parent clusters (and child clusters)
-
-    // Start with the root link. That constitues the first cluster
-    // Then loop through all of of the children of the root. Whatever cluster they are in should be a child cluster of the root cluster. Make sure not to repeat clusters
-    // And then move on to the next cluster and do the same thing
-    // TODO(@MatthewChignoli): Should the clusters be named? Seems like maybe
-
-    // TODO(@MatthewChignoli): Maybe we don't need separate loops for root and non-root clusters?
-    // for (const std::shared_ptr<Link> &child : this->root_link_->child_links)
-    // {
-    //   std::shared_ptr<Cluster> child_cluster = getClusterContaining(child->name);
-
-    //   // If child cluster is the root cluster, throw an error
-    //   if (child_cluster == clusters_.front())
-    //   {
-    //     throw ParseError("Root cluster cannot be a child cluster");
-    //   }
-
-    //   // If child cluster is not already a child of the root cluster, add it
-    //   if (std::find(clusters_.front()->child_clusters.begin(),
-    //                 clusters_.front()->child_clusters.end(),
-    //                 child_cluster) == clusters_.front()->child_clusters.end())
-    //   {
-    //     clusters_.front()->child_clusters.push_back(child_cluster);
-    //   }
-
-    // }
+    // TODO(@MatthewChignoli): Now we need to have a similar thing as above where we set child clusters. Make sure not to repeat clusters
 
   }
 
