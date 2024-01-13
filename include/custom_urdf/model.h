@@ -448,6 +448,7 @@ public:
         dfs_second_pass(reverse_link_graph, link_name, visited, scc);
         std::cout << "Creating Cluster: " << link_name << std::endl;
         clusters_.insert(make_pair(link_name, new Cluster()));
+        clusters_.at(link_name)->name = link_name;
         clusters_.at(link_name)->links = scc;
       }
     }

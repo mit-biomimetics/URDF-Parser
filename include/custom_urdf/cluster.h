@@ -12,6 +12,8 @@ namespace dynacore
         class Cluster
         {
         public:
+            std::string name;
+
             std::vector<std::shared_ptr<Link>> links;
             std::vector<std::shared_ptr<ConstraintJoint>> constraint_joints;
             std::vector<std::shared_ptr<Cluster>> child_clusters;
