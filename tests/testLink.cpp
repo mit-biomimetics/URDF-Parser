@@ -4,6 +4,9 @@
 // TODO(@MatthewChignoli): Test for other URDFs as well
 // TODO(@MatthewChignoli): Is there a way to template the test on the URDF file? Like so that we can test for multiple robots without having to copy and paste the same test code?
 
+// TODO(@MatthewChignoli): The tests themselves are good, but the amount of duplicate code and the poor organization of the tests is not good. Need to refactor.
+
+
 class FourBar_LinkTests : public ::testing::Test
 {
 protected:

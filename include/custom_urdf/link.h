@@ -198,6 +198,7 @@ public:
   std::string group_name;
 };
 
+// TODO(@MatthewChignoli): Should there be some abstraction between link and cluster?
 class Link
 {
 public:

@@ -283,8 +283,33 @@ public:
     // And then from there we implement an SCC algorithm to optimally cluster the bodies?
     extractStronglyConnectedComponents();
 
-    // TODO(@MatthewChignoli): Now we need to have a similar thing as above where we set child clusters. Make sure not to repeat clusters
+    // loop through all links, for every link, find the cluster that contains it and the clusters that contain its child links. Then assign parent and child clusters
+    for (std::map<std::string, std::shared_ptr<Link>>::iterator link = this->links_.begin();
+         link != this->links_.end(); link++)
+    {
+      std::shared_ptr<Cluster> parent_cluster = getClusterContaining(link->first);
 
+      for (const std::shared_ptr<Link> &child_link : link->second->child_links)
+      {
+        std::shared_ptr<Cluster> child_cluster = getClusterContaining(child_link->name);
+
+        // Check if child cluster is the same as parent cluster
+        if (child_cluster == parent_cluster)
+        {
+          continue;
+        }
+
+        // Check if child cluster is already a child of the parent cluster
+        if (std::find(parent_cluster->child_clusters.begin(), parent_cluster->child_clusters.end(),
+                      child_cluster) != parent_cluster->child_clusters.end())
+        {
+          continue;
+        }
+
+        parent_cluster->child_clusters.push_back(child_cluster);
+        child_cluster->setParent(parent_cluster);
+      }
+    }
   }
 
   std::shared_ptr<Cluster> getClusterContaining(const std::string &link_name)
@@ -421,6 +446,7 @@ public:
       {
         std::vector<std::shared_ptr<Link>> scc;
         dfs_second_pass(reverse_link_graph, link_name, visited, scc);
+        std::cout << "Creating Cluster: " << link_name << std::endl;
         clusters_.insert(make_pair(link_name, new Cluster()));
         clusters_.at(link_name)->links = scc;
       }
