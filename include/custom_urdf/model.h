@@ -267,7 +267,7 @@ public:
         }
 
         // Add the constraint joint to the parent link
-        parent_link->constraint_joints.push_back(constraint.second);
+        parent_link->constraint_joint_names.push_back(constraint.first);
 
         // Get supporting trees starting from nearest common ancestor and ending with the
         // parent and child links
@@ -275,6 +275,11 @@ public:
         std::vector<std::shared_ptr<Link>> nca_to_parent_subtree, nca_to_child_subtree;
         getSubtreeBetweenLinks(nca_link->name, parent_link->name, nca_to_parent_subtree);
         getSubtreeBetweenLinks(nca_link->name, child_link->name, nca_to_child_subtree);
+
+        constraint.second->nca_to_parent_subtree = nca_to_parent_subtree;
+        constraint.second->nca_to_child_subtree = nca_to_child_subtree;
+
+        // TODO(@MatthewChignoli): Maybe these subtrees between links (aka paths of nodes to the constraint point) should be member variables for the constraint joint class
 
         // Create cycle for the loop constraint
         parent_link->neighbors.push_back(nca_to_child_subtree.front());
@@ -291,6 +296,12 @@ public:
          link != this->links_.end(); link++)
     {
       std::shared_ptr<Cluster> parent_cluster = getClusterContaining(link->first);
+
+      for (const std::string& constraint_name : link->second->constraint_joint_names)
+      {
+        std::shared_ptr<const ConstraintJoint> constraint = getConstraint(constraint_name);
+        parent_cluster->constraint_joints.push_back(constraint);
+      }
 
       for (const std::shared_ptr<Link> &child_link : link->second->child_links)
       {
