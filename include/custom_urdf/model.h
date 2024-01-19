@@ -454,7 +454,7 @@ public:
     // Second Pass: Find SCCs
     while (!finishing_order.empty())
     {
-      const std::string &link_name = finishing_order.top();
+      const std::string link_name = finishing_order.top();
       finishing_order.pop();
 
       if (!visited[link_name])
