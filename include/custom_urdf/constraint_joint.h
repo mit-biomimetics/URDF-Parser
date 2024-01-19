@@ -59,6 +59,7 @@ namespace dynacore
 
             // TODO(@MatthewChignoli): Better naming? Should this even be here?
             // I think this will create a circular dependency with the Link class?
+            std::shared_ptr<Link> nearest_common_ancestor;
             std::vector<std::shared_ptr<Link>> nca_to_parent_subtree, nca_to_child_subtree;
 
             void clear()

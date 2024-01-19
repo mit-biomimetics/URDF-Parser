@@ -276,6 +276,7 @@ public:
         getSubtreeBetweenLinks(nca_link->name, parent_link->name, nca_to_parent_subtree);
         getSubtreeBetweenLinks(nca_link->name, child_link->name, nca_to_child_subtree);
 
+        constraint.second->nearest_common_ancestor = nca_link;
         constraint.second->nca_to_parent_subtree = nca_to_parent_subtree;
         constraint.second->nca_to_child_subtree = nca_to_child_subtree;
 
