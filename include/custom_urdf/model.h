@@ -275,12 +275,8 @@ public:
         std::vector<std::shared_ptr<Link>> nca_to_parent_subtree, nca_to_child_subtree;
         getSubtreeBetweenLinks(nca_link->name, parent_link->name, nca_to_parent_subtree);
         getSubtreeBetweenLinks(nca_link->name, child_link->name, nca_to_child_subtree);
-
-        constraint.second->nearest_common_ancestor = nca_link;
         constraint.second->nca_to_parent_subtree = nca_to_parent_subtree;
         constraint.second->nca_to_child_subtree = nca_to_child_subtree;
-
-        // TODO(@MatthewChignoli): Maybe these subtrees between links (aka paths of nodes to the constraint point) should be member variables for the constraint joint class
 
         // Create cycle for the loop constraint
         parent_link->neighbors.push_back(nca_to_child_subtree.front());
@@ -461,7 +457,7 @@ public:
       {
         std::vector<std::shared_ptr<Link>> scc;
         dfs_second_pass(reverse_link_graph, link_name, visited, scc);
-        std::cout << "Creating Cluster: " << link_name << std::endl;
+        // TODO(@MatthewChignoli): How to name/identify clusters?
         clusters_.insert(make_pair(link_name, new Cluster()));
         clusters_.at(link_name)->name = link_name;
         clusters_.at(link_name)->links = scc;

@@ -4,8 +4,6 @@
 #ifndef DYNACORE_URDF_INTERFACE_CONSTRANT_JOINT_H
 #define DYNACORE_URDF_INTERFACE_CONSTRANT_JOINT_H
 
-// #include "joint.h"
-// #include "pose.h"
 #include "link.h"
 
 namespace dynacore
@@ -42,7 +40,6 @@ namespace dynacore
             Vector3 axis;
 
             // TODO(@MatthewChignoli): Instead of parent and child, what can we call them? Because there is not directionality...
-
             // TODO(@MatthewChignoli): Should we just save the names of the links? We can save the links themselves?
 
             /// child Link element
@@ -57,9 +54,7 @@ namespace dynacore
             /// transform from Parent Link frame to Joint frame
             Pose parent_to_joint_origin_transform;
 
-            // TODO(@MatthewChignoli): Better naming? Should this even be here?
-            // I think this will create a circular dependency with the Link class?
-            std::shared_ptr<Link> nearest_common_ancestor;
+            // TODO(@MatthewChignoli): Add explanation comments
             std::vector<std::shared_ptr<Link>> nca_to_parent_subtree, nca_to_child_subtree;
 
             void clear()
