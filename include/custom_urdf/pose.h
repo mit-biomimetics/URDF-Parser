@@ -98,6 +98,12 @@ public:
   {
     return Vector3(this->x+vec.x,this->y+vec.y,this->z+vec.z);
   };
+
+  double norm() const
+  {
+    return sqrt(this->x*this->x+this->y*this->y+this->z*this->z);
+  };
+  
 };
 
 class Rotation
