@@ -182,7 +182,18 @@ public:
       ptr = this->links_.find(name)->second;
     link = ptr;
   };
-  
+
+  // non-const getConstraint()
+  void getConstraint(const std::string &name, std::shared_ptr<ConstraintJoint> &constraint) const
+  {
+    std::shared_ptr<ConstraintJoint> ptr;
+    if (this->constraint_joints_.find(name) == this->constraint_joints_.end())
+      ptr.reset();
+    else
+      ptr = this->constraint_joints_.find(name)->second;
+    constraint = ptr;
+  };
+
   /// non-const getMaterial()
   std::shared_ptr<Material> getMaterial(const std::string& name) const
   {
@@ -296,7 +307,8 @@ public:
 
       for (const std::string& constraint_name : link->second->constraint_joint_names)
       {
-        std::shared_ptr<const ConstraintJoint> constraint = getConstraint(constraint_name);
+        std::shared_ptr<ConstraintJoint> constraint;
+        getConstraint(constraint_name, constraint);
         parent_cluster->constraint_joints.push_back(constraint);
       }
 

@@ -16,8 +16,7 @@ namespace dynacore
 
             std::vector<std::shared_ptr<Link>> links;
             std::vector<std::shared_ptr<Cluster>> child_clusters;
-            // TODO(@MatthewChignoli): Kind of weird this is const. Should all of these be const?
-            std::vector<std::shared_ptr<const ConstraintJoint>> constraint_joints;
+            std::vector<std::shared_ptr<ConstraintJoint>> constraint_joints;
 
             std::shared_ptr<Cluster> getParent() const { return parent_cluster_.lock(); }
             void setParent(const std::shared_ptr<Cluster> &parent) { parent_cluster_ = parent; }
