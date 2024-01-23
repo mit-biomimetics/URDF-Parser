@@ -224,6 +224,8 @@ public:
   ///            FIXED       N/A
   Vector3 axis;
 
+  bool independent;
+
   /// child Link element
   ///   child link frame is the same as the Joint frame
   std::string child_link_name;

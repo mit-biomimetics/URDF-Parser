@@ -36,21 +36,21 @@
         </inertial>
     </link>
 
-    <joint name="thigh_to_driver" type="continuous">
+    <joint name="thigh_to_driver" type="continuous" independent="true">
         <parent link="thigh"/>
         <child link="shank_driver"/>
         <origin xyz="0.011 0.0 0.0"/>
         <axis xyz="0 0 1"/>
     </joint>
 
-    <joint name="thigh_to_support" type="continuous">
+    <joint name="thigh_to_support" type="continuous" independent="false">
         <parent link="thigh"/>
         <child link="shank_support"/>
         <origin xyz="0.042 0.0 0.0"/>
         <axis xyz="0 0 1"/>
     </joint>
 
-    <joint name="driver_to_foot" type="continuous">
+    <joint name="driver_to_foot" type="continuous" independent="false">
         <parent link="shank_driver"/>
         <child link="foot"/>
         <origin xyz="0.096 0.0 0.0"/>

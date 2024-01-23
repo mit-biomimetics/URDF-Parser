@@ -490,6 +490,16 @@ bool parseJoint(Joint &joint, TiXmlElement* config)
   }
   joint.name = name;
 
+  // Get whether the joint is included in the independent coordinates
+  const char *independent = config->Attribute("independent");
+  joint.independent = true;
+  if (independent)
+  {
+    std::string independent_str = independent;
+    if (independent_str != "true")
+      joint.independent = false;
+  }
+
   // Get transform from Parent Link to Joint Frame
   TiXmlElement *origin_xml = config->FirstChildElement("origin");
   if (!origin_xml)
