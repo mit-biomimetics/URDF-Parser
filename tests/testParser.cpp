@@ -11,6 +11,7 @@ GTEST_TEST(UrdfParser, parseUrdfFiles)
     models.push_back(parseURDFFile("/home/matt/repos/URDF-Parser/mini_cheetah_leg.urdf", false));
     models.push_back(parseURDFFile("/home/matt/repos/URDF-Parser/four_bar.urdf", false));
     models.push_back(parseURDFFile("/home/matt/repos/URDF-Parser/six_bar.urdf", false));
+    models.push_back(parseURDFFile("/home/matt/repos/URDF-Parser/planar_leg_linkage.urdf", false));
 
     for (const std::shared_ptr<ModelInterface> model : models)
     {

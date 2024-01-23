@@ -57,7 +57,7 @@
         <axis xyz="0 0 1"/>
     </joint>
 
-    <constraint_joint name="linkage" type="continuous">
+    <constraint_joint name="linkage" type="position">
         <parent link="foot"/>
         <child link="shank_support"/>
         <parent_origin xyz="0.031 0.0 0.0"/>

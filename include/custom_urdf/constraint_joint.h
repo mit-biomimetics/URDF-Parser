@@ -39,6 +39,14 @@ namespace dynacore
             // TODO(@MatthewChignoli): Add explanation comments
             std::vector<std::shared_ptr<Link>> nca_to_parent_subtree, nca_to_child_subtree;
 
+            std::vector<std::shared_ptr<Link>> allLinks() const
+            {
+                std::vector<std::shared_ptr<Link>> links;
+                links.insert(links.end(), nca_to_parent_subtree.begin(), nca_to_parent_subtree.end());
+                links.insert(links.end(), nca_to_child_subtree.begin(), nca_to_child_subtree.end());
+                return links;
+            }
+
             void clear()
             {
                 this->child_link_name.clear();
