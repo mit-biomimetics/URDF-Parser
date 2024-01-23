@@ -91,45 +91,35 @@ namespace dynacore
             }
 
             std::string type_str = type_char;
-            if (type_str == "planar")
-                constraint.type = ConstraintJoint::PLANAR;
-            else if (type_str == "revolute")
-                constraint.type = ConstraintJoint::REVOLUTE;
-            else if (type_str == "continuous")
-                constraint.type = ConstraintJoint::CONTINUOUS;
-            else if (type_str == "prismatic")
-                constraint.type = ConstraintJoint::PRISMATIC;
-            else if (type_str == "rolling")
-                constraint.type = ConstraintJoint::ROLLING;
-            else if (type_str == "fixed")
-                constraint.type = ConstraintJoint::FIXED;
+            if (type_str == "position")
+                constraint.type = ConstraintJoint::POSITION;
+            else if (type_str == "rotation")
+                constraint.type = ConstraintJoint::ROTATION;
             else
             {
                 return false;
             }
 
+            // TODO(@MatthewChignoli): This will get deleted
             // Get Joint Axis
-            if (constraint.type != ConstraintJoint::FIXED)
+            // axis
+            TiXmlElement *axis_xml = config->FirstChildElement("axis");
+            if (!axis_xml)
             {
-                // axis
-                TiXmlElement *axis_xml = config->FirstChildElement("axis");
-                if (!axis_xml)
+                constraint.axis = Vector3(1.0, 0.0, 0.0);
+            }
+            else
+            {
+                if (axis_xml->Attribute("xyz"))
                 {
-                    constraint.axis = Vector3(1.0, 0.0, 0.0);
-                }
-                else
-                {
-                    if (axis_xml->Attribute("xyz"))
+                    try
                     {
-                        try
-                        {
-                            constraint.axis.init(axis_xml->Attribute("xyz"));
-                        }
-                        catch (ParseError &e)
-                        {
-                            constraint.axis.clear();
-                            return false;
-                        }
+                        constraint.axis.init(axis_xml->Attribute("xyz"));
+                    }
+                    catch (ParseError &e)
+                    {
+                        constraint.axis.clear();
+                        return false;
                     }
                 }
             }

@@ -20,12 +20,8 @@ namespace dynacore
             enum
             {
                 UNKNOWN,
-                REVOLUTE,
-                CONTINUOUS,
-                PRISMATIC,
-                PLANAR,
-                ROLLING,
-                FIXED
+                POSITION,
+                ROTATION
             } type;
 
             // TODO(@MatthewChignoli): Does ROLLING need more info than we currently have?

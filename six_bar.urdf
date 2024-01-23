@@ -87,7 +87,7 @@
         <axis xyz="0 0 1"/>
     </joint>
 
-    <constraint_joint name="constraint1" type="continuous">
+    <constraint_joint name="constraint1" type="position">
         <parent link="link3"/>
         <child link="link5"/>
         <parent_origin xyz="0.3 0.0 0.0"/>
