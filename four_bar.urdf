@@ -36,21 +36,21 @@
         </inertial>
     </link>
 
-    <joint name="joint1" type="continuous">
+    <joint name="joint1" type="continuous" independent="true">
         <parent link="base_link"/>
         <child link="link1"/>
         <origin xyz="0.0 0.0 0.0"/>
         <axis xyz="0 0 1"/>
     </joint>
 
-    <joint name="joint2" type="continuous">
+    <joint name="joint2" type="continuous" independent="false">
         <parent link="link1"/>
         <child link="link2"/>
         <origin xyz="0.1 0.0 0.0"/>
         <axis xyz="0 0 1"/>
     </joint>
 
-    <joint name="joint3" type="continuous">
+    <joint name="joint3" type="continuous" independent="fasle">
         <parent link="base_link"/>
         <child link="link3"/>
         <origin xyz="0.0 0.0 0.0"/>
@@ -62,7 +62,6 @@
         <child link="link2"/>
         <parent_origin xyz="0.3 0.0 0.0"/>
         <child_origin xyz="0.2 0.0 0.0"/>
-        <axis xyz="0 0 1"/>
     </constraint_joint>
 
 </robot>

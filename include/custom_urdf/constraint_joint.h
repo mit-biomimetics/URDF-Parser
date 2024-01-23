@@ -23,6 +23,7 @@ namespace dynacore
 
             // TODO(@MatthewChignoli): Instead of parent and child, what can we call them? Because there is not directionality...
             // TODO(@MatthewChignoli): Should we just save the names of the links? We can save the links themselves?
+            // TODO(@MatthewChignoli): for sure we should not be using the term origin. Offset is probably better.
 
             /// child Link element
             ///   child link frame is the same as the Joint frame
