@@ -1,0 +1,52 @@
+<?xml version="1.0" ?>
+
+<!-- TODO(@MatthewChignoli): Use xacro to clean up the code -->
+<!-- TODO(@MatthewChignoli): Not sure I love this name for the file/robot -->
+
+<robot name="revolute_rotor_chain" xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <link name="base_link"/>
+
+    <link name="link1"/>
+    <link name="rotor1"/>
+
+    <link name="link2"/>
+    <link name="rotor2"/>
+
+    <link name="link3"/>
+    <link name="rotor3"/>
+
+    <joint name="joint1" type="continuous">
+        <parent link="base_link"/>
+        <child link="link1"/>
+        <axis xyz="0 0 1"/>
+    </joint>
+    <joint name="joint1r" type="continuous">
+        <parent link="base_link"/>
+        <child link="rotor1"/>
+        <axis xyz="0 0 1"/>
+    </joint>
+
+    <joint name="joint2" type="continuous">
+        <parent link="link1"/>
+        <child link="link2"/>
+        <axis xyz="0 0 1"/>
+    </joint>
+    <joint name="joint2r" type="continuous">
+        <parent link="link1"/>
+        <child link="rotor2"/>
+        <axis xyz="0 0 1"/>
+    </joint>
+
+    <joint name="joint3" type="continuous">
+        <parent link="link2"/>
+        <child link="link3"/>
+        <axis xyz="0 0 1"/>
+    </joint>
+    <joint name="joint3r" type="continuous">
+        <parent link="link2"/>
+        <child link="rotor3"/>
+        <axis xyz="0 0 1"/>
+    </joint>
+
+</robot>

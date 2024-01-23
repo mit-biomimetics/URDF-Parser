@@ -6,15 +6,18 @@ using namespace dynacore::urdf;
 
 GTEST_TEST(UrdfParser, parseUrdfFiles)
 {
-    std::vector<std::shared_ptr<ModelInterface>> models;
-    models.push_back(parseURDFFile("/home/matt/repos/URDF-Parser/mini_cheetah.urdf", false));
-    models.push_back(parseURDFFile("/home/matt/repos/URDF-Parser/mini_cheetah_leg.urdf", false));
-    models.push_back(parseURDFFile("/home/matt/repos/URDF-Parser/four_bar.urdf", false));
-    models.push_back(parseURDFFile("/home/matt/repos/URDF-Parser/six_bar.urdf", false));
-    models.push_back(parseURDFFile("/home/matt/repos/URDF-Parser/planar_leg_linkage.urdf", false));
+    std::vector<std::string> model_names;
+    model_names.push_back("mini_cheetah");
+    model_names.push_back("mini_cheetah_leg");
+    model_names.push_back("four_bar");
+    model_names.push_back("six_bar");
+    model_names.push_back("planar_leg_linkage");
+    model_names.push_back("revolute_rotor_chain");
 
-    for (const std::shared_ptr<ModelInterface> model : models)
+    for (const std::string &model_name : model_names)
     {
+        std::shared_ptr<ModelInterface> model = parseURDFFile("/home/matt/repos/URDF-Parser/" +
+                                                              model_name + ".urdf");
         ASSERT_TRUE(model != nullptr);
         std::cout << "Model name: " << model->getName() << " parsed successfully." << std::endl;
     }
@@ -89,5 +92,4 @@ GTEST_TEST(UrdfParser, parseUrdfFiles)
     //         }
     //     }
     // }
-
 }
