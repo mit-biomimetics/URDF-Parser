@@ -1,6 +1,3 @@
-
-// TODO(@MatthewChignoli): How much should this share with the joint class?
-
 #ifndef DYNACORE_URDF_INTERFACE_CONSTRANT_JOINT_H
 #define DYNACORE_URDF_INTERFACE_CONSTRANT_JOINT_H
 
@@ -24,17 +21,6 @@ namespace dynacore
                 ROTATION
             } type;
 
-            // TODO(@MatthewChignoli): Does ROLLING need more info than we currently have?
-            /// \brief     type_       meaning of axis_
-            /// ------------------------------------------------------
-            ///            UNKNOWN     unknown type
-            ///            REVOLUTE    rotation axis
-            ///            PRISMATIC   translation axis
-            ///            PLANAR      plane normal axis
-            ///            ROLLING     rolling axis
-            ///            FIXED       N/A
-            Vector3 axis;
-
             // TODO(@MatthewChignoli): Instead of parent and child, what can we call them? Because there is not directionality...
             // TODO(@MatthewChignoli): Should we just save the names of the links? We can save the links themselves?
 
@@ -55,7 +41,6 @@ namespace dynacore
 
             void clear()
             {
-                this->axis.clear();
                 this->child_link_name.clear();
                 this->child_to_joint_origin_transform.clear();
                 this->parent_link_name.clear();

@@ -100,30 +100,6 @@ namespace dynacore
                 return false;
             }
 
-            // TODO(@MatthewChignoli): This will get deleted
-            // Get Joint Axis
-            // axis
-            TiXmlElement *axis_xml = config->FirstChildElement("axis");
-            if (!axis_xml)
-            {
-                constraint.axis = Vector3(1.0, 0.0, 0.0);
-            }
-            else
-            {
-                if (axis_xml->Attribute("xyz"))
-                {
-                    try
-                    {
-                        constraint.axis.init(axis_xml->Attribute("xyz"));
-                    }
-                    catch (ParseError &e)
-                    {
-                        constraint.axis.clear();
-                        return false;
-                    }
-                }
-            }
-
             return true;
         }
 
