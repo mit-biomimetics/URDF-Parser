@@ -96,7 +96,6 @@ namespace urdf
 
     const std::map<std::string, std::shared_ptr<Cluster>> &getClusters() const { return clusters_; }
 
-    // TODO(@MatthewChignoli): Proximal links are at the back of the chain, should we reverse this? Probably yes...
     void getSupportingChain(const std::string &link_name,
                             std::vector<std::shared_ptr<Link>> &supporting_chain) const
     {
@@ -109,6 +108,9 @@ namespace urdf
         supporting_chain.push_back(link);
         link = link->getParent();
       }
+
+      // Reverse the order of the supporting chain so that the proximal links are at the front
+      std::reverse(supporting_chain.begin(), supporting_chain.end());
     }
 
     // Note: the src link is NEVER included in the subtree but the dst link typically is
@@ -142,21 +144,21 @@ namespace urdf
       getSupportingChain(dst_link->name, dst_supporting_chain);
 
       // Loop through the destination supporting chain until we hit the source link
-      std::vector<std::shared_ptr<Link>>::reverse_iterator dst_it = dst_supporting_chain.rbegin();
-      while (dst_it != dst_supporting_chain.rend() && *dst_it != src_link)
+      std::vector<std::shared_ptr<Link>>::iterator dst_it = dst_supporting_chain.begin();
+      while (dst_it != dst_supporting_chain.end() && *dst_it != src_link)
       {
         dst_it++;
       }
 
       // Throw error if we didn't find the source link
-      if (dst_it == dst_supporting_chain.rend())
+      if (dst_it == dst_supporting_chain.end())
       {
         throw ParseError("Link [" + src_name + "] does not support link [" + dst_name + "]");
       }
 
       // Add links to subtree until reaching the destination link
       dst_it++; // Increment so that the source link is not included in the subtree
-      for (; dst_it != dst_supporting_chain.rend(); dst_it++)
+      for (; dst_it != dst_supporting_chain.end(); dst_it++)
       {
         subtree.push_back(*dst_it);
       }
@@ -380,10 +382,10 @@ namespace urdf
       getSupportingChain(link2_ptr->name, link2_supports);
 
       std::shared_ptr<Link> ancestor;
-      std::vector<std::shared_ptr<Link>>::reverse_iterator link1_it = link1_supports.rbegin();
-      std::vector<std::shared_ptr<Link>>::reverse_iterator link2_it = link2_supports.rbegin();
-      while (link1_it != link1_supports.rend() &&
-             link2_it != link2_supports.rend() &&
+      std::vector<std::shared_ptr<Link>>::iterator link1_it = link1_supports.begin();
+      std::vector<std::shared_ptr<Link>>::iterator link2_it = link2_supports.begin();
+      while (link1_it != link1_supports.end() &&
+             link2_it != link2_supports.end() &&
              *link1_it == *link2_it)
       {
         ancestor = *link1_it;

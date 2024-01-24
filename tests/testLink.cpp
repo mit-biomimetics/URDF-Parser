@@ -21,13 +21,13 @@ protected:
 
         // Support chains
         base_supporting_chain_.push_back(base_);
-        link1_supporting_chain_.push_back(link1_);
         link1_supporting_chain_.push_back(base_);
-        link2_supporting_chain_.push_back(link2_);
-        link2_supporting_chain_.push_back(link1_);
+        link1_supporting_chain_.push_back(link1_);
         link2_supporting_chain_.push_back(base_);
-        link3_supporting_chain_.push_back(link3_);
+        link2_supporting_chain_.push_back(link1_);
+        link2_supporting_chain_.push_back(link2_);
         link3_supporting_chain_.push_back(base_);
+        link3_supporting_chain_.push_back(link3_);
 
         // Subtrees between links
         base_to_link1_subtree_.push_back(link1_);
@@ -168,20 +168,20 @@ protected:
 
         // Support chains
         base_supporting_chain_.push_back(base_);
-        link1_supporting_chain_.push_back(link1_);
         link1_supporting_chain_.push_back(base_);
-        link2_supporting_chain_.push_back(link2_);
-        link2_supporting_chain_.push_back(link1_);
+        link1_supporting_chain_.push_back(link1_);
         link2_supporting_chain_.push_back(base_);
-        link3_supporting_chain_.push_back(link3_);
-        link3_supporting_chain_.push_back(link2_);
-        link3_supporting_chain_.push_back(link1_);
+        link2_supporting_chain_.push_back(link1_);
+        link2_supporting_chain_.push_back(link2_);
         link3_supporting_chain_.push_back(base_);
-        link4_supporting_chain_.push_back(link4_);
+        link3_supporting_chain_.push_back(link1_);
+        link3_supporting_chain_.push_back(link2_);
+        link3_supporting_chain_.push_back(link3_);
         link4_supporting_chain_.push_back(base_);
-        link5_supporting_chain_.push_back(link5_);
-        link5_supporting_chain_.push_back(link4_);
+        link4_supporting_chain_.push_back(link4_);
         link5_supporting_chain_.push_back(base_);
+        link5_supporting_chain_.push_back(link4_);
+        link5_supporting_chain_.push_back(link5_);
 
         // Neighbors
         base_neighbors_.push_back(link1_);
