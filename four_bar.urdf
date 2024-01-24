@@ -58,10 +58,10 @@
     </joint>
 
     <constraint_joint name="constraint1" type="position">
-        <parent link="link3"/>
-        <child link="link2"/>
-        <parent_origin xyz="0.3 0.0 0.0"/>
-        <child_origin xyz="0.2 0.0 0.0"/>
+        <predecessor link="link3"/>
+        <successor link="link2"/>
+        <predecessor_origin xyz="0.3 0.0 0.0"/>
+        <successor_origin xyz="0.2 0.0 0.0"/>
     </constraint_joint>
 
 </robot>

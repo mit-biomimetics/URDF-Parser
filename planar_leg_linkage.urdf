@@ -67,10 +67,10 @@
     </joint>
 
     <constraint_joint name="linkage" type="position">
-        <parent link="foot"/>
-        <child link="shank_support"/>
-        <parent_origin xyz="0.031 0.0 0.0"/>
-        <child_origin xyz="0.096 0.0 0.0"/>
+        <predecessor link="foot"/>
+        <successor link="shank_support"/>
+        <predecessor_origin xyz="0.031 0.0 0.0"/>
+        <successor_origin xyz="0.096 0.0 0.0"/>
     </constraint_joint>
 
 </robot>

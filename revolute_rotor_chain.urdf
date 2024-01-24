@@ -90,24 +90,24 @@
     </joint>
 
     <constraint_joint name="transmission1" type="rotation">
-        <parent link="link-0"/>
-        <child link="rotor-0"/>
-        <parent_origin xyz="6.0 0.0 0.0"/>
-        <child_origin xyz="1.0 0.0 0.0"/>
+        <predecessor link="link-0"/>
+        <successor link="rotor-0"/>
+        <predecessor_origin xyz="6.0 0.0 0.0"/>
+        <successor_origin xyz="1.0 0.0 0.0"/>
     </constraint_joint>
 
     <constraint_joint name="transmission2" type="rotation">
-        <parent link="link-1"/>
-        <child link="rotor-1"/>
-        <parent_origin xyz="6.0 0.0 0.0"/>
-        <child_origin xyz="1.0 0.0 0.0"/>
+        <predecessor link="link-1"/>
+        <successor link="rotor-1"/>
+        <predecessor_origin xyz="6.0 0.0 0.0"/>
+        <successor_origin xyz="1.0 0.0 0.0"/>
     </constraint_joint>
 
     <constraint_joint name="transmission3" type="rotation">
-        <parent link="link-2"/>
-        <child link="rotor-2"/>
-        <parent_origin xyz="6.0 0.0 0.0"/>
-        <child_origin xyz="1.0 0.0 0.0"/>
+        <predecessor link="link-2"/>
+        <successor link="rotor-2"/>
+        <predecessor_origin xyz="6.0 0.0 0.0"/>
+        <successor_origin xyz="1.0 0.0 0.0"/>
     </constraint_joint>
 
 </robot>

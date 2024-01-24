@@ -21,11 +21,8 @@ namespace urdf
         }
         constraint.name = name;
 
-        // TODO(@MatthewChignoli): I think it should instead have child elements called predecessor and successor and then they each have attributes called name and origin.
-        // TODO(@MatthewChignoli): At the very least, the urdf should not use the terms parent and child
-
         // Get transform from Predecessor Link to Constraint Frame
-        TiXmlElement *predecessor_origin_xml = config->FirstChildElement("parent_origin");
+        TiXmlElement *predecessor_origin_xml = config->FirstChildElement("predecessor_origin");
         if (!predecessor_origin_xml)
         {
             constraint.predecessor_to_constraint_origin_transform.clear();
@@ -41,7 +38,7 @@ namespace urdf
         }
 
         // Get Predecessor Link
-        TiXmlElement *predecessor_xml = config->FirstChildElement("parent");
+        TiXmlElement *predecessor_xml = config->FirstChildElement("predecessor");
         if (predecessor_xml)
         {
             const char *pname = predecessor_xml->Attribute("link");
@@ -56,7 +53,7 @@ namespace urdf
         }
 
         // Get transform from Successor Link to Joint Frame
-        TiXmlElement *successor_origin_xml = config->FirstChildElement("child_origin");
+        TiXmlElement *successor_origin_xml = config->FirstChildElement("successor_origin");
         if (!successor_origin_xml)
         {
             constraint.successor_to_constraint_origin_transform.clear();
@@ -72,7 +69,7 @@ namespace urdf
         }
 
         // Get Successor Link
-        TiXmlElement *successor_xml = config->FirstChildElement("child");
+        TiXmlElement *successor_xml = config->FirstChildElement("successor");
         if (successor_xml)
         {
             const char *sname = successor_xml->Attribute("link");

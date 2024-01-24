@@ -66,10 +66,10 @@
         </inertial>
     </link>
     <constraint_joint name="abduct_fr_to_abduct_rotor_fr" type="position">
-        <parent link="abduct_fr"/>
-        <child link="abduct_rotor_fr"/>
-        <parent_origin xyz="0.3 0.0 0.0"/>
-        <child_origin xyz="0.2 0.0 0.0"/>
+        <predecessor link="abduct_fr"/>
+        <successor link="abduct_rotor_fr"/>
+        <predecessor_origin xyz="0.3 0.0 0.0"/>
+        <successor_origin xyz="0.2 0.0 0.0"/>
         <axis xyz="0 0 1"/>
     </constraint_joint>
 
@@ -114,10 +114,10 @@
         </inertial>
     </link>
     <constraint_joint name="thig_fr_to_hip_rotor_fr" type="rotation">
-        <parent link="thigh_fr"/>
-        <child link="hip_rotor_fr"/>
-        <parent_origin xyz="0.3 0.0 0.0"/>
-        <child_origin xyz="0.2 0.0 0.0"/>
+        <predecessor link="thigh_fr"/>
+        <successor link="hip_rotor_fr"/>
+        <predecessor_origin xyz="0.3 0.0 0.0"/>
+        <successor_origin xyz="0.2 0.0 0.0"/>
         <axis xyz="0 0 1"/>
     </constraint_joint>
 
@@ -160,10 +160,10 @@
         </inertial>
     </link>
     <constraint_joint name="shank_fr_to_knee_rotor_fr" type="rotation">
-        <parent link="shank_fr"/>
-        <child link="knee_rotor_fr"/>
-        <parent_origin xyz="0.3 0.0 0.0"/>
-        <child_origin xyz="0.2 0.0 0.0"/>
+        <predecessor link="shank_fr"/>
+        <successor link="knee_rotor_fr"/>
+        <predecessor_origin xyz="0.3 0.0 0.0"/>
+        <successor_origin xyz="0.2 0.0 0.0"/>
         <axis xyz="0 0 1"/>
     </constraint_joint>
 
@@ -243,10 +243,10 @@
         </inertial>
     </link>
     <constraint_joint name="abduct_fl_to_abduct_rotor_fl" type="rotation">
-        <parent link="abduct_fl"/>
-        <child link="abduct_rotor_fl"/>
-        <parent_origin xyz="0.3 0.0 0.0"/>
-        <child_origin xyz="0.2 0.0 0.0"/>
+        <predecessor link="abduct_fl"/>
+        <successor link="abduct_rotor_fl"/>
+        <predecessor_origin xyz="0.3 0.0 0.0"/>
+        <successor_origin xyz="0.2 0.0 0.0"/>
         <axis xyz="0 0 1"/>
     </constraint_joint>
 
@@ -291,10 +291,10 @@
         </inertial>
     </link>
     <constraint_joint name="thig_fl_to_hip_rotor_fl" type="rotation">
-        <parent link="thigh_fl"/>
-        <child link="hip_rotor_fl"/>
-        <parent_origin xyz="0.3 0.0 0.0"/>
-        <child_origin xyz="0.2 0.0 0.0"/>
+        <predecessor link="thigh_fl"/>
+        <successor link="hip_rotor_fl"/>
+        <predecessor_origin xyz="0.3 0.0 0.0"/>
+        <successor_origin xyz="0.2 0.0 0.0"/>
         <axis xyz="0 0 1"/>
     </constraint_joint>
 
@@ -337,10 +337,10 @@
         </inertial>
     </link>
     <constraint_joint name="shank_fl_to_knee_rotor_fl" type="rotation">
-        <parent link="shank_fl"/>
-        <child link="knee_rotor_fl"/>
-        <parent_origin xyz="0.3 0.0 0.0"/>
-        <child_origin xyz="0.2 0.0 0.0"/>
+        <predecessor link="shank_fl"/>
+        <successor link="knee_rotor_fl"/>
+        <predecessor_origin xyz="0.3 0.0 0.0"/>
+        <successor_origin xyz="0.2 0.0 0.0"/>
         <axis xyz="0 0 1"/>
     </constraint_joint>
     
@@ -420,10 +420,10 @@
         </inertial>
     </link>
     <constraint_joint name="abduct_hr_to_abduct_rotor_hr" type="rotation">
-        <parent link="abduct_hr"/>
-        <child link="abduct_rotor_hr"/>
-        <parent_origin xyz="0.3 0.0 0.0"/>
-        <child_origin xyz="0.2 0.0 0.0"/>
+        <predecessor link="abduct_hr"/>
+        <successor link="abduct_rotor_hr"/>
+        <predecessor_origin xyz="0.3 0.0 0.0"/>
+        <successor_origin xyz="0.2 0.0 0.0"/>
         <axis xyz="0 0 1"/>
     </constraint_joint>
 
@@ -468,10 +468,10 @@
         </inertial>
     </link>
     <constraint_joint name="thig_hr_to_hip_rotor_hr" type="rotation">
-        <parent link="thigh_hr"/>
-        <child link="hip_rotor_hr"/>
-        <parent_origin xyz="0.3 0.0 0.0"/>
-        <child_origin xyz="0.2 0.0 0.0"/>
+        <predecessor link="thigh_hr"/>
+        <successor link="hip_rotor_hr"/>
+        <predecessor_origin xyz="0.3 0.0 0.0"/>
+        <successor_origin xyz="0.2 0.0 0.0"/>
         <axis xyz="0 0 1"/>
     </constraint_joint>
 
@@ -514,10 +514,10 @@
         </inertial>
     </link>
     <constraint_joint name="shank_hr_to_knee_rotor_hr" type="rotation">
-        <parent link="shank_hr"/>
-        <child link="knee_rotor_hr"/>
-        <parent_origin xyz="0.3 0.0 0.0"/>
-        <child_origin xyz="0.2 0.0 0.0"/>
+        <predecessor link="shank_hr"/>
+        <successor link="knee_rotor_hr"/>
+        <predecessor_origin xyz="0.3 0.0 0.0"/>
+        <successor_origin xyz="0.2 0.0 0.0"/>
         <axis xyz="0 0 1"/>
     </constraint_joint>
 
@@ -597,10 +597,10 @@
         </inertial>
     </link>
     <constraint_joint name="abduct_hl_to_abduct_rotor_hl" type="rotation">
-        <parent link="abduct_hl"/>
-        <child link="abduct_rotor_hl"/>
-        <parent_origin xyz="0.3 0.0 0.0"/>
-        <child_origin xyz="0.2 0.0 0.0"/>
+        <predecessor link="abduct_hl"/>
+        <successor link="abduct_rotor_hl"/>
+        <predecessor_origin xyz="0.3 0.0 0.0"/>
+        <successor_origin xyz="0.2 0.0 0.0"/>
         <axis xyz="0 0 1"/>
     </constraint_joint>
 
@@ -645,10 +645,10 @@
         </inertial>
     </link>
     <constraint_joint name="thig_hl_to_hip_rotor_hl" type="rotation">
-        <parent link="thigh_hl"/>
-        <child link="hip_rotor_hl"/>
-        <parent_origin xyz="0.3 0.0 0.0"/>
-        <child_origin xyz="0.2 0.0 0.0"/>
+        <predecessor link="thigh_hl"/>
+        <successor link="hip_rotor_hl"/>
+        <predecessor_origin xyz="0.3 0.0 0.0"/>
+        <successor_origin xyz="0.2 0.0 0.0"/>
         <axis xyz="0 0 1"/>
     </constraint_joint>
 
@@ -691,10 +691,10 @@
         </inertial>
     </link>
     <constraint_joint name="shank_hl_to_knee_rotor_hl" type="rotation">
-        <parent link="shank_hl"/>
-        <child link="knee_rotor_hl"/>
-        <parent_origin xyz="0.3 0.0 0.0"/>
-        <child_origin xyz="0.2 0.0 0.0"/>
+        <predecessor link="shank_hl"/>
+        <successor link="knee_rotor_hl"/>
+        <predecessor_origin xyz="0.3 0.0 0.0"/>
+        <successor_origin xyz="0.2 0.0 0.0"/>
         <axis xyz="0 0 1"/>
     </constraint_joint>
 
