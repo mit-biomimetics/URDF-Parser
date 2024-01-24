@@ -44,7 +44,7 @@ namespace urdf
   bool parseMaterial(Material &material, TiXmlElement *config, bool only_name_is_ok);
   bool parseLink(Link &link, TiXmlElement *config);
   bool parseJoint(Joint &joint, TiXmlElement *config);
-  bool parseConstraint(ConstraintJoint &constraint, TiXmlElement *config);
+  bool parseConstraint(Constraint &constraint, TiXmlElement *config);
 
   std::shared_ptr<ModelInterface> parseURDFFile(const std::string &path, bool verbose)
   {
@@ -226,8 +226,8 @@ namespace urdf
     for (TiXmlElement *constraint_xml = robot_xml->FirstChildElement("constraint_joint");
          constraint_xml; constraint_xml = constraint_xml->NextSiblingElement("constraint_joint"))
     {
-      std::shared_ptr<ConstraintJoint> constraint;
-      constraint.reset(new ConstraintJoint);
+      std::shared_ptr<Constraint> constraint;
+      constraint.reset(new Constraint);
 
       if (parseConstraint(*constraint, constraint_xml))
       {
@@ -238,7 +238,7 @@ namespace urdf
         }
         else
         {
-          model->constraint_joints_.insert(make_pair(constraint->name, constraint));
+          model->constraints_.insert(make_pair(constraint->name, constraint));
           ++count;
           if (verbose)
             printf("%d th constraint: %s\n", count, constraint->name.c_str());

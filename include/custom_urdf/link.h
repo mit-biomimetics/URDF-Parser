@@ -249,7 +249,6 @@ namespace urdf
     std::vector<std::shared_ptr<Link>> child_links;
     std::vector<std::shared_ptr<Link>> neighbors;
 
-    // std::vector<std::shared_ptr<ConstraintJoint>> constraint_joints;
     std::vector<std::string> constraint_joint_names;
 
     std::shared_ptr<Link> getParent() const { return parent_link_.lock(); }

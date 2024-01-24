@@ -2,7 +2,7 @@
 #define URDF_INTERFACE_CLUSTER_H
 
 #include "link.h"
-#include "constraint_joint.h"
+#include "constraint.h"
 
 namespace urdf
 {
@@ -14,7 +14,7 @@ namespace urdf
 
         std::vector<std::shared_ptr<Link>> links;
         std::vector<std::shared_ptr<Cluster>> child_clusters;
-        std::vector<std::shared_ptr<ConstraintJoint>> constraint_joints;
+        std::vector<std::shared_ptr<Constraint>> constraints;
 
         std::shared_ptr<Cluster> getParent() const { return parent_cluster_.lock(); }
         void setParent(const std::shared_ptr<Cluster> &parent) { parent_cluster_ = parent; }

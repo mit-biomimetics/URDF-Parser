@@ -74,13 +74,13 @@ namespace urdf
       return ptr;
     };
 
-    std::shared_ptr<const ConstraintJoint> getConstraint(const std::string &name) const
+    std::shared_ptr<const Constraint> getConstraint(const std::string &name) const
     {
-      std::shared_ptr<const ConstraintJoint> ptr;
-      if (this->constraint_joints_.find(name) == this->constraint_joints_.end())
+      std::shared_ptr<const Constraint> ptr;
+      if (this->constraints_.find(name) == this->constraints_.end())
         ptr.reset();
       else
-        ptr = this->constraint_joints_.find(name)->second;
+        ptr = this->constraints_.find(name)->second;
       return ptr;
     };
 
@@ -183,13 +183,13 @@ namespace urdf
     };
 
     // non-const getConstraint()
-    void getConstraint(const std::string &name, std::shared_ptr<ConstraintJoint> &constraint) const
+    void getConstraint(const std::string &name, std::shared_ptr<Constraint> &constraint) const
     {
-      std::shared_ptr<ConstraintJoint> ptr;
-      if (this->constraint_joints_.find(name) == this->constraint_joints_.end())
+      std::shared_ptr<Constraint> ptr;
+      if (this->constraints_.find(name) == this->constraints_.end())
         ptr.reset();
       else
-        ptr = this->constraint_joints_.find(name)->second;
+        ptr = this->constraints_.find(name)->second;
       constraint = ptr;
     };
 
@@ -252,14 +252,14 @@ namespace urdf
       }
 
       // TODO(@MatthewChignoli): Clean this part up later. There are too many messy comments and the implementation is really inefficient
-      for (auto &constraint : this->constraint_joints_)
+      for (auto &constraint : this->constraints_)
       {
         std::string parent_link_name = constraint.second->parent_link_name;
         std::string child_link_name = constraint.second->child_link_name;
 
         if (parent_link_name.empty() || child_link_name.empty())
         {
-          throw ParseError("ConstraintJoint [" + constraint.second->name + "] is missing a parent and/or child link specification.");
+          throw ParseError("Constraint [" + constraint.second->name + "] is missing a parent and/or child link specification.");
         }
         else
         {
@@ -306,9 +306,9 @@ namespace urdf
 
         for (const std::string &constraint_name : link->second->constraint_joint_names)
         {
-          std::shared_ptr<ConstraintJoint> constraint;
+          std::shared_ptr<Constraint> constraint;
           getConstraint(constraint_name, constraint);
-          parent_cluster->constraint_joints.push_back(constraint);
+          parent_cluster->constraints.push_back(constraint);
         }
 
         for (const std::shared_ptr<Link> &child_link : link->second->child_links)
@@ -509,9 +509,8 @@ namespace urdf
     /// \brief complete list of Joints
     std::map<std::string, std::shared_ptr<Joint>> joints_;
     /// \brief complete list of Constraint Joints
-    std::map<std::string, std::shared_ptr<ConstraintJoint>> constraint_joints_;
+    std::map<std::string, std::shared_ptr<Constraint>> constraints_;
     /// \brief complete list of Clusters
-    // TODO(@MatthewChignoli): Should this be a map?
     std::map<std::string, std::shared_ptr<Cluster>> clusters_;
     /// \brief complete list of Materials
     std::map<std::string, std::shared_ptr<Material>> materials_;

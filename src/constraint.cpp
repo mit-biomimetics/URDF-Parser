@@ -1,6 +1,6 @@
 
 #include <sstream>
-#include "custom_urdf/constraint_joint.h"
+#include "custom_urdf/constraint.h"
 #include <algorithm>
 // #include <console_bridge/console.h>
 #include "custom_urdf/tinyxml.h"
@@ -8,7 +8,7 @@
 namespace urdf
 {
 
-    bool parseConstraint(ConstraintJoint &constraint, TiXmlElement *config)
+    bool parseConstraint(Constraint &constraint, TiXmlElement *config)
     {
         constraint.clear();
 
@@ -90,9 +90,9 @@ namespace urdf
 
         std::string type_str = type_char;
         if (type_str == "position")
-            constraint.type = ConstraintJoint::POSITION;
+            constraint.type = Constraint::POSITION;
         else if (type_str == "rotation")
-            constraint.type = ConstraintJoint::ROTATION;
+            constraint.type = Constraint::ROTATION;
         else
         {
             return false;

@@ -1,18 +1,18 @@
-#ifndef URDF_INTERFACE_CONSTRANT_JOINT_H
-#define URDF_INTERFACE_CONSTRANT_JOINT_H
-
-// TODO(@MatthewChignoli): Make sure to also remove dynacore from all of the guards
+#ifndef URDF_INTERFACE_CONSTRANT_H
+#define URDF_INTERFACE_CONSTRANT_H
 
 #include "link.h"
 
 namespace urdf
 {
 
-    class ConstraintJoint
+    // TODO(@MatthewChignoli): I think we should just call this constraint, not constraint joint
+    class Constraint
     {
     public:
-        ConstraintJoint() { this->clear(); };
+        Constraint() { this->clear(); };
 
+        // TODO(@MatthewChignoli): Does rolling make more sense than rotation? Either way, it is important to communicate what the origin transform is for the different types of constraints. Maybe transmission would make more sense.
         std::string name;
         enum
         {
@@ -25,8 +25,8 @@ namespace urdf
         // TODO(@MatthewChignoli): Should we just save the names of the links? We can save the links themselves?
         // TODO(@MatthewChignoli): for sure we should not be using the term origin. Offset is probably better.
 
-        /// child Link element
-        ///   child link frame is the same as the Joint frame
+        /// successor Link element
+        ///   origin specifics the fixed transform from the  link frame is the same as the Joint frame
         std::string child_link_name;
         /// transform from Child Link frame to Joint frame
         Pose child_to_joint_origin_transform;
