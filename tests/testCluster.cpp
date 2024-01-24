@@ -9,12 +9,12 @@
 class FourBar_ClusterTests : public ::testing::Test
 {
 protected:
-    using LinkPtr = std::shared_ptr<dynacore::urdf::Link>;
-    using ClusterPtr = std::shared_ptr<dynacore::urdf::Cluster>;
+    using LinkPtr = std::shared_ptr<urdf::Link>;
+    using ClusterPtr = std::shared_ptr<urdf::Cluster>;
 
     void SetUp() override
     {
-        model_ = dynacore::urdf::parseURDFFile("/home/matt/repos/URDF-Parser/four_bar.urdf", false);
+        model_ = urdf::parseURDFFile("/home/matt/repos/URDF-Parser/four_bar.urdf", false);
 
         model_->getLink("base_link", base_);
         model_->getLink("link1", link1_);
@@ -29,7 +29,7 @@ protected:
         links_parent_ = base_cluster_;
     }
 
-    std::shared_ptr<dynacore::urdf::ModelInterface> model_;
+    std::shared_ptr<urdf::ModelInterface> model_;
     LinkPtr base_, link1_, link2_, link3_;
     ClusterPtr base_cluster_, links_cluster_;
 
@@ -59,12 +59,12 @@ TEST_F(FourBar_ClusterTests, children)
 class MiniCheetah_ClusterTests : public ::testing::Test
 {
 protected:
-    using LinkPtr = std::shared_ptr<dynacore::urdf::Link>;
-    using ClusterPtr = std::shared_ptr<dynacore::urdf::Cluster>;
+    using LinkPtr = std::shared_ptr<urdf::Link>;
+    using ClusterPtr = std::shared_ptr<urdf::Cluster>;
 
     void SetUp() override
     {
-        model_ = dynacore::urdf::parseURDFFile("/home/matt/repos/URDF-Parser/mini_cheetah.urdf", false);
+        model_ = urdf::parseURDFFile("/home/matt/repos/URDF-Parser/mini_cheetah.urdf", false);
 
         model_->getLink("body", body_);
         model_->getLink("abduct_fr", abduct_fr);
@@ -98,7 +98,7 @@ protected:
         abduct_fl_cluster = clusters_["abduct_fl"];
         abduct_hr_cluster = clusters_["abduct_hr"];
         abduct_hl_cluster = clusters_["abduct_hl"];
-        hip_fr_cluster = clusters_["hip_rotor_fr"];        
+        hip_fr_cluster = clusters_["hip_rotor_fr"];
         hip_fl_cluster = clusters_["hip_rotor_fl"];
         hip_hr_cluster = clusters_["hip_rotor_hr"];
         hip_hl_cluster = clusters_["hip_rotor_hl"];
@@ -111,14 +111,14 @@ protected:
         abduct_fr_parent_ = body_cluster;
         abduct_fl_parent_ = body_cluster;
         abduct_hr_parent_ = body_cluster;
-        abduct_hl_parent_ = body_cluster;    
+        abduct_hl_parent_ = body_cluster;
         hip_fr_parent_ = abduct_fr_cluster;
         hip_fl_parent_ = abduct_fl_cluster;
         hip_hr_parent_ = abduct_hr_cluster;
         hip_hl_parent_ = abduct_hl_cluster;
         knee_fr_parent_ = hip_fr_cluster;
         knee_fl_parent_ = hip_fl_cluster;
-        knee_hr_parent_ = hip_hr_cluster; 
+        knee_hr_parent_ = hip_hr_cluster;
         knee_hl_parent_ = hip_hl_cluster;
 
         // Ground Truth Children
@@ -136,7 +136,7 @@ protected:
         hip_hl_children_.push_back(knee_hl_cluster);
     }
 
-    std::shared_ptr<dynacore::urdf::ModelInterface> model_;
+    std::shared_ptr<urdf::ModelInterface> model_;
     LinkPtr body_;
     LinkPtr abduct_fr, abduct_fl, abduct_hr, abduct_hl;
     LinkPtr abduct_rotor_fr, abduct_rotor_fl, abduct_rotor_hr, abduct_rotor_hl;
@@ -149,7 +149,7 @@ protected:
     ClusterPtr abduct_fr_cluster, abduct_fl_cluster, abduct_hr_cluster, abduct_hl_cluster;
     ClusterPtr hip_fr_cluster, hip_fl_cluster, hip_hr_cluster, hip_hl_cluster;
     ClusterPtr knee_fr_cluster, knee_fl_cluster, knee_hr_cluster, knee_hl_cluster;
-    
+
     // Ground Truth parents
     ClusterPtr body_parent_;
     ClusterPtr abduct_fr_parent_, abduct_fl_parent_, abduct_hr_parent_, abduct_hl_parent_;

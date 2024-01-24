@@ -2,7 +2,7 @@
 
 #include "custom_urdf/urdf_parser.h"
 
-using namespace dynacore::urdf;
+using namespace urdf;
 
 GTEST_TEST(UrdfParser, parseUrdfFiles)
 {
@@ -28,7 +28,7 @@ GTEST_TEST(UrdfParser, parseUrdfFiles)
     //     std::cout << "Model name: " << model->getName() << std::endl;
 
     //     // Print the names of the links
-    //     std::vector<std::shared_ptr<dynacore::urdf::Link>> links;
+    //     std::vector<std::shared_ptr<urdf::Link>> links;
     //     model->getLinks(links);
     //     std::cout << "\nLinks:" << std::endl;
     //     for (int i = 0; i < links.size(); i++)
@@ -53,22 +53,22 @@ GTEST_TEST(UrdfParser, parseUrdfFiles)
     //     {
     //         if (links[i]->parent_joint)
     //         {
-    //             if (links[i]->parent_joint->type == dynacore::urdf::Joint::REVOLUTE)
+    //             if (links[i]->parent_joint->type == urdf::Joint::REVOLUTE)
     //                 std::cout << "  "
     //                           << "REVOLUTE" << std::endl;
-    //             else if (links[i]->parent_joint->type == dynacore::urdf::Joint::CONTINUOUS)
+    //             else if (links[i]->parent_joint->type == urdf::Joint::CONTINUOUS)
     //                 std::cout << "  "
     //                           << "CONTINUOUS" << std::endl;
-    //             else if (links[i]->parent_joint->type == dynacore::urdf::Joint::PRISMATIC)
+    //             else if (links[i]->parent_joint->type == urdf::Joint::PRISMATIC)
     //                 std::cout << "  "
     //                           << "PRISMATIC" << std::endl;
-    //             else if (links[i]->parent_joint->type == dynacore::urdf::Joint::FIXED)
+    //             else if (links[i]->parent_joint->type == urdf::Joint::FIXED)
     //                 std::cout << "  "
     //                           << "FIXED" << std::endl;
-    //             else if (links[i]->parent_joint->type == dynacore::urdf::Joint::FLOATING)
+    //             else if (links[i]->parent_joint->type == urdf::Joint::FLOATING)
     //                 std::cout << "  "
     //                           << "FLOATING" << std::endl;
-    //             else if (links[i]->parent_joint->type == dynacore::urdf::Joint::PLANAR)
+    //             else if (links[i]->parent_joint->type == urdf::Joint::PLANAR)
     //                 std::cout << "  "
     //                           << "PLANAR" << std::endl;
     //             else
@@ -81,9 +81,9 @@ GTEST_TEST(UrdfParser, parseUrdfFiles)
     //     }
 
     //     // Print the clusters and the names of the links they contain
-    //     const std::map<std::string, std::shared_ptr<dynacore::urdf::Cluster>> clusters = model->getClusters();
+    //     const std::map<std::string, std::shared_ptr<urdf::Cluster>> clusters = model->getClusters();
     //     std::cout << "\nClusters:" << std::endl;
-    //     for (std::map<std::string, std::shared_ptr<dynacore::urdf::Cluster>>::const_iterator cluster = clusters.begin(); cluster != clusters.end(); cluster++)
+    //     for (std::map<std::string, std::shared_ptr<urdf::Cluster>>::const_iterator cluster = clusters.begin(); cluster != clusters.end(); cluster++)
     //     {
     //         std::cout << "  " << cluster->first << std::endl;
     //         for (std::shared_ptr<Link> link : cluster->second->links)

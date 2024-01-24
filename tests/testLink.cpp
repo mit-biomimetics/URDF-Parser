@@ -6,15 +6,14 @@
 
 // TODO(@MatthewChignoli): The tests themselves are good, but the amount of duplicate code and the poor organization of the tests is not good. Need to refactor.
 
-
 class FourBar_LinkTests : public ::testing::Test
 {
 protected:
-    using LinkPtr = std::shared_ptr<dynacore::urdf::Link>;
+    using LinkPtr = std::shared_ptr<urdf::Link>;
 
     void SetUp() override
     {
-        model_ = dynacore::urdf::parseURDFFile("/home/matt/repos/URDF-Parser/four_bar.urdf", false);
+        model_ = urdf::parseURDFFile("/home/matt/repos/URDF-Parser/four_bar.urdf", false);
         model_->getLink("base_link", base_);
         model_->getLink("link1", link1_);
         model_->getLink("link2", link2_);
@@ -45,7 +44,7 @@ protected:
         link3_neighbors_.push_back(link1_);
     }
 
-    std::shared_ptr<dynacore::urdf::ModelInterface> model_;
+    std::shared_ptr<urdf::ModelInterface> model_;
     LinkPtr base_, link1_, link2_, link3_;
 
     // Ground truth supporting chains
@@ -155,11 +154,11 @@ TEST_F(FourBar_LinkTests, neighbors)
 class SixBar_LinkTests : public ::testing::Test
 {
 protected:
-    using LinkPtr = std::shared_ptr<dynacore::urdf::Link>;
+    using LinkPtr = std::shared_ptr<urdf::Link>;
 
     void SetUp() override
     {
-        model_ = dynacore::urdf::parseURDFFile("/home/matt/repos/URDF-Parser/six_bar.urdf", false);
+        model_ = urdf::parseURDFFile("/home/matt/repos/URDF-Parser/six_bar.urdf", false);
         model_->getLink("base_link", base_);
         model_->getLink("link1", link1_);
         model_->getLink("link2", link2_);
@@ -194,7 +193,7 @@ protected:
         link5_neighbors_.push_back(link1_);
     }
 
-    std::shared_ptr<dynacore::urdf::ModelInterface> model_;
+    std::shared_ptr<urdf::ModelInterface> model_;
     LinkPtr base_, link1_, link2_, link3_, link4_, link5_;
 
     // Ground truth supporting chains

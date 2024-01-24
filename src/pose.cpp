@@ -42,7 +42,6 @@
 #include "custom_urdf/tinyxml.h"
 #include "custom_urdf/urdf_parser.h"
 
-namespace dynacore{
 namespace urdf_export_helpers {
 
 std::string values2str(unsigned int count, const double *values, double (*conv)(double))
@@ -128,6 +127,5 @@ bool exportPose(Pose &pose, TiXmlElement* xml)
   return true;
 }
 
-}
 }
 
