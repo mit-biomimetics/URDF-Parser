@@ -10,45 +10,45 @@
     <link name="link-0">
         <inertial>
             <mass value="1"/>
-            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <origin rpy="0 0 0" xyz="0.5 0 0"/>
             <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1"/>    
         </inertial>
     </link>    
     <link name="rotor-0">
         <inertial>
-            <mass value="1"/>
+            <mass value="0"/>
             <origin rpy="0 0 0" xyz="0 0 0"/>
-            <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1"/>    
+            <inertia ixx="1e-4" ixy="0" ixz="0" iyy="1e-4" iyz="0" izz="1e-4"/>    
         </inertial>
     </link>   
 
     <link name="link-1">
         <inertial>
             <mass value="1"/>
-            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <origin rpy="0 0 0" xyz="0.5 0 0"/>
             <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1"/>    
         </inertial>
     </link>   
     <link name="rotor-1">
         <inertial>
-            <mass value="1"/>
+            <mass value="0"/>
             <origin rpy="0 0 0" xyz="0 0 0"/>
-            <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1"/>    
+            <inertia ixx="1e-4" ixy="0" ixz="0" iyy="1e-4" iyz="0" izz="1e-4"/>    
         </inertial>
     </link>   
 
     <link name="link-2">
         <inertial>
             <mass value="1"/>
-            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <origin rpy="0 0 0" xyz="0.5 0 0"/>
             <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1"/>    
         </inertial>
     </link>   
     <link name="rotor-2">
         <inertial>
-            <mass value="1"/>
+            <mass value="0"/>
             <origin rpy="0 0 0" xyz="0 0 0"/>
-            <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1"/>    
+            <inertia ixx="1e-4" ixy="0" ixz="0" iyy="1e-4" iyz="0" izz="1e-4"/>    
         </inertial>
     </link>   
 
@@ -66,44 +66,48 @@
     <joint name="joint2" type="continuous">
         <parent link="link-0"/>
         <child link="link-1"/>
+        <origin xyz="1.0 0.0 0.0"/>
         <axis xyz="0 0 1"/>
     </joint>
     <joint name="joint2r" type="continuous" independent="false">
         <parent link="link-0"/>
         <child link="rotor-1"/>
+        <origin xyz="1.0 0.0 0.0"/>
         <axis xyz="0 0 1"/>
     </joint>
 
     <joint name="joint3" type="continuous">
         <parent link="link-1"/>
         <child link="link-2"/>
+        <origin xyz="1.0 0.0 0.0"/>
         <axis xyz="0 0 1"/>
     </joint>
     <joint name="joint3r" type="continuous" independent="false">
         <parent link="link-1"/>
         <child link="rotor-2"/>
+        <origin xyz="1.0 0.0 0.0"/>
         <axis xyz="0 0 1"/>
     </joint>
 
     <constraint_joint name="transmission1" type="rotation">
         <parent link="link-0"/>
         <child link="rotor-0"/>
-        <parent_origin xyz="2.0 0.0 0.0"/>
-        <child_origin xyz="0.2 0.0 0.0"/>
+        <parent_origin xyz="6.0 0.0 0.0"/>
+        <child_origin xyz="1.0 0.0 0.0"/>
     </constraint_joint>
 
     <constraint_joint name="transmission2" type="rotation">
         <parent link="link-1"/>
         <child link="rotor-1"/>
-        <parent_origin xyz="2.0 0.0 0.0"/>
-        <child_origin xyz="0.2 0.0 0.0"/>
+        <parent_origin xyz="6.0 0.0 0.0"/>
+        <child_origin xyz="1.0 0.0 0.0"/>
     </constraint_joint>
 
     <constraint_joint name="transmission3" type="rotation">
         <parent link="link-2"/>
         <child link="rotor-2"/>
-        <parent_origin xyz="2.0 0.0 0.0"/>
-        <child_origin xyz="0.2 0.0 0.0"/>
+        <parent_origin xyz="6.0 0.0 0.0"/>
+        <child_origin xyz="1.0 0.0 0.0"/>
     </constraint_joint>
 
 </robot>
