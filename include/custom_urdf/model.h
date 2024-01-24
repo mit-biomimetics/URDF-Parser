@@ -254,12 +254,12 @@ namespace urdf
       // TODO(@MatthewChignoli): Clean this part up later. There are too many messy comments and the implementation is really inefficient
       for (auto &constraint : this->constraints_)
       {
-        std::string succ_link_name = constraint.second->predecessor_link_name;
-        std::string pred_link_name = constraint.second->successor_link_name;
+        std::string pred_link_name = constraint.second->predecessor_link_name;
+        std::string succ_link_name = constraint.second->successor_link_name;
 
         if (succ_link_name.empty() || pred_link_name.empty())
         {
-          throw ParseError("Constraint [" + constraint.second->name + "] is missing a parent and/or child link specification.");
+          throw ParseError("Constraint [" + constraint.second->name + "] is missing a predecessor and/or successor link specification.");
         }
         else
         {
