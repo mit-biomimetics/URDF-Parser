@@ -254,43 +254,43 @@ namespace urdf
       // TODO(@MatthewChignoli): Clean this part up later. There are too many messy comments and the implementation is really inefficient
       for (auto &constraint : this->constraints_)
       {
-        std::string parent_link_name = constraint.second->parent_link_name;
-        std::string child_link_name = constraint.second->child_link_name;
+        std::string succ_link_name = constraint.second->predecessor_link_name;
+        std::string pred_link_name = constraint.second->successor_link_name;
 
-        if (parent_link_name.empty() || child_link_name.empty())
+        if (succ_link_name.empty() || pred_link_name.empty())
         {
           throw ParseError("Constraint [" + constraint.second->name + "] is missing a parent and/or child link specification.");
         }
         else
         {
-          // find child and parent links
-          std::shared_ptr<Link> child_link, parent_link;
-          this->getLink(child_link_name, child_link);
-          if (!child_link)
+          // find successor and predecessor links
+          std::shared_ptr<Link> predecessor_link, successor_link;
+          this->getLink(pred_link_name, predecessor_link);
+          if (!predecessor_link)
           {
-            throw ParseError("child link [" + child_link_name + "] of constraint [" + constraint.first + "] not found");
+            throw ParseError("predecessor link [" + pred_link_name + "] of constraint [" + constraint.first + "] not found.");
           }
-          this->getLink(parent_link_name, parent_link);
-          if (!parent_link)
+          this->getLink(succ_link_name, successor_link);
+          if (!successor_link)
           {
-            throw ParseError("parent link [" + parent_link_name + "] of constraint [" + constraint.first + "] not found.  This is not valid according to the URDF spec. Every link you refer to from a constraint needs to be explicitly defined in the robot description. To fix this problem you can either remove this constraint [" + constraint.first + "] from your urdf file, or add \"<link name=\"" + parent_link_name + "\" />\" to your urdf file.");
+            throw ParseError("successor link [" + succ_link_name + "] of constraint [" + constraint.first + "] not found.");
           }
 
-          // Add the constraint joint to the parent link
-          parent_link->constraint_joint_names.push_back(constraint.first);
+          // Add the constraint joint to the predecessor link
+          predecessor_link->constraint_names.push_back(constraint.first);
 
           // Get supporting trees starting from nearest common ancestor and ending with the
-          // parent and child links
-          std::shared_ptr<Link> nca_link = nearestCommonAncestor(parent_link, child_link);
-          std::vector<std::shared_ptr<Link>> nca_to_parent_subtree, nca_to_child_subtree;
-          getSubtreeBetweenLinks(nca_link->name, parent_link->name, nca_to_parent_subtree);
-          getSubtreeBetweenLinks(nca_link->name, child_link->name, nca_to_child_subtree);
-          constraint.second->nca_to_parent_subtree = nca_to_parent_subtree;
-          constraint.second->nca_to_child_subtree = nca_to_child_subtree;
+          // predecessor and successor links
+          std::shared_ptr<Link> nca_link = nearestCommonAncestor(predecessor_link, successor_link);
+          std::vector<std::shared_ptr<Link>> nca_to_pred_subtree, nca_to_succ_subtree;
+          getSubtreeBetweenLinks(nca_link->name, predecessor_link->name, nca_to_pred_subtree);
+          getSubtreeBetweenLinks(nca_link->name, successor_link->name, nca_to_succ_subtree);
+          constraint.second->nca_to_predecessor_subtree = nca_to_pred_subtree;
+          constraint.second->nca_to_successor_subtree = nca_to_succ_subtree;
 
           // Create cycle for the loop constraint
-          parent_link->neighbors.push_back(nca_to_child_subtree.front());
-          child_link->neighbors.push_back(nca_to_parent_subtree.front());
+          predecessor_link->neighbors.push_back(nca_to_succ_subtree.front());
+          successor_link->neighbors.push_back(nca_to_pred_subtree.front());
         }
       }
 
@@ -304,7 +304,7 @@ namespace urdf
       {
         std::shared_ptr<Cluster> parent_cluster = getClusterContaining(link->first);
 
-        for (const std::string &constraint_name : link->second->constraint_joint_names)
+        for (const std::string &constraint_name : link->second->constraint_names)
         {
           std::shared_ptr<Constraint> constraint;
           getConstraint(constraint_name, constraint);

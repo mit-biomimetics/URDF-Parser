@@ -6,7 +6,6 @@
 namespace urdf
 {
 
-    // TODO(@MatthewChignoli): I think we should just call this constraint, not constraint joint
     class Constraint
     {
     public:
@@ -21,39 +20,38 @@ namespace urdf
             ROTATION
         } type;
 
-        // TODO(@MatthewChignoli): Instead of parent and child, what can we call them? Because there is not directionality...
-        // TODO(@MatthewChignoli): Should we just save the names of the links? We can save the links themselves?
-        // TODO(@MatthewChignoli): for sure we should not be using the term origin. Offset is probably better.
+        /// predecessor Link element
+        ///   origin specifies the transform from predecessor Link to Joint Frame
+        std::string predecessor_link_name;
+        Pose predecessor_to_constraint_origin_transform;
 
         /// successor Link element
-        ///   origin specifics the fixed transform from the  link frame is the same as the Joint frame
-        std::string child_link_name;
-        /// transform from Child Link frame to Joint frame
-        Pose child_to_joint_origin_transform;
+        ///   origin specifies the transform from the succesor link to the constraint frame
+        std::string successor_link_name;
+        Pose successor_to_constraint_origin_transform;
 
-        /// parent Link element
-        ///   origin specifies the transform from Parent Link to Joint Frame
-        std::string parent_link_name;
-        /// transform from Parent Link frame to Joint frame
-        Pose parent_to_joint_origin_transform;
+        /// subtrees rooted at the nearest common ancestor
+        ///   the subtrees begin at (but do not include) the nearest common ancestor and end at 
+        ///   (and do include) the predecessor/successor links
+        std::vector<std::shared_ptr<Link>> nca_to_predecessor_subtree, nca_to_successor_subtree;
 
-        // TODO(@MatthewChignoli): Add explanation comments
-        std::vector<std::shared_ptr<Link>> nca_to_parent_subtree, nca_to_child_subtree;
-
+        // TODO(@MatthewChignoli): return const?
         std::vector<std::shared_ptr<Link>> allLinks() const
         {
             std::vector<std::shared_ptr<Link>> links;
-            links.insert(links.end(), nca_to_parent_subtree.begin(), nca_to_parent_subtree.end());
-            links.insert(links.end(), nca_to_child_subtree.begin(), nca_to_child_subtree.end());
+            links.insert(links.end(), nca_to_predecessor_subtree.begin(),
+                         nca_to_predecessor_subtree.end());
+            links.insert(links.end(), nca_to_successor_subtree.begin(),
+                         nca_to_successor_subtree.end());
             return links;
         }
 
         void clear()
         {
-            this->child_link_name.clear();
-            this->child_to_joint_origin_transform.clear();
-            this->parent_link_name.clear();
-            this->parent_to_joint_origin_transform.clear();
+            this->successor_link_name.clear();
+            this->successor_to_constraint_origin_transform.clear();
+            this->predecessor_link_name.clear();
+            this->predecessor_to_constraint_origin_transform.clear();
             this->type = UNKNOWN;
         };
     };

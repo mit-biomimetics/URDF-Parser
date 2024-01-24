@@ -21,63 +21,68 @@ namespace urdf
         }
         constraint.name = name;
 
-        // Get transform from Parent Link to Joint Frame
-        TiXmlElement *parent_origin_xml = config->FirstChildElement("parent_origin");
-        if (!parent_origin_xml)
+        // TODO(@MatthewChignoli): I think it should instead have child elements called predecessor and successor and then they each have attributes called name and origin.
+        // TODO(@MatthewChignoli): At the very least, the urdf should not use the terms parent and child
+
+        // Get transform from Predecessor Link to Constraint Frame
+        TiXmlElement *predecessor_origin_xml = config->FirstChildElement("parent_origin");
+        if (!predecessor_origin_xml)
         {
-            constraint.parent_to_joint_origin_transform.clear();
+            constraint.predecessor_to_constraint_origin_transform.clear();
         }
         else
         {
-            if (!parsePose(constraint.parent_to_joint_origin_transform, parent_origin_xml))
+            if (!parsePose(constraint.predecessor_to_constraint_origin_transform,
+                           predecessor_origin_xml))
             {
-                constraint.parent_to_joint_origin_transform.clear();
+                constraint.predecessor_to_constraint_origin_transform.clear();
                 return false;
             }
         }
 
-        // Get Parent Link
-        TiXmlElement *parent_xml = config->FirstChildElement("parent");
-        if (parent_xml)
+        // Get Predecessor Link
+        TiXmlElement *predecessor_xml = config->FirstChildElement("parent");
+        if (predecessor_xml)
         {
-            const char *pname = parent_xml->Attribute("link");
+            const char *pname = predecessor_xml->Attribute("link");
             if (!pname)
             {
-                printf("[joint] no parent link name\n");
+                printf("[joint] no predecessor link name\n");
             }
             else
             {
-                constraint.parent_link_name = std::string(pname);
+                constraint.predecessor_link_name = std::string(pname);
             }
         }
 
-        // Get transform from Child Link to Joint Frame
-        TiXmlElement *child_origin_xml = config->FirstChildElement("child_origin");
-        if (!child_origin_xml)
+        // Get transform from Successor Link to Joint Frame
+        TiXmlElement *successor_origin_xml = config->FirstChildElement("child_origin");
+        if (!successor_origin_xml)
         {
-            constraint.child_to_joint_origin_transform.clear();
+            constraint.successor_to_constraint_origin_transform.clear();
         }
         else
         {
-            if (!parsePose(constraint.child_to_joint_origin_transform, child_origin_xml))
+            if (!parsePose(constraint.successor_to_constraint_origin_transform,
+                           successor_origin_xml))
             {
-                constraint.child_to_joint_origin_transform.clear();
+                constraint.successor_to_constraint_origin_transform.clear();
                 return false;
             }
         }
 
-        // Get Child Link
-        TiXmlElement *child_xml = config->FirstChildElement("child");
-        if (child_xml)
+        // Get Successor Link
+        TiXmlElement *successor_xml = config->FirstChildElement("child");
+        if (successor_xml)
         {
-            const char *pname = child_xml->Attribute("link");
-            if (!pname)
+            const char *sname = successor_xml->Attribute("link");
+            if (!sname)
             {
-                printf("[joint] no child link name\n");
+                printf("[joint] no successor link name\n");
             }
             else
             {
-                constraint.child_link_name = std::string(pname);
+                constraint.successor_link_name = std::string(sname);
             }
         }
 
