@@ -3,7 +3,6 @@
 
 // TODO(@MatthewChignoli): Test for other URDFs as well
 // TODO(@MatthewChignoli): Is there a way to template the test on the URDF file? Like so that we can test for multiple robots without having to copy and paste the same test code?
-
 // TODO(@MatthewChignoli): The tests themselves are good, but the amount of duplicate code and the poor organization of the tests is not good. Need to refactor.
 
 class FourBar_ClusterTests : public ::testing::Test
@@ -16,21 +15,14 @@ protected:
     {
         model_ = urdf::parseURDFFile("/home/matt/repos/URDF-Parser/four_bar.urdf", false);
 
-        model_->getLink("base_link", base_);
-        model_->getLink("link1", link1_);
-        model_->getLink("link2", link2_);
-        model_->getLink("link3", link3_);
-
-        std::map<std::string, ClusterPtr> clusters_ = model_->getClusters();
-        base_cluster_ = clusters_["base_link"];
-        links_cluster_ = clusters_["link1"];
+        base_cluster_ = model_->getClusterContaining("base_link");
+        links_cluster_ = model_->getClusterContaining("link1");
 
         base_children_.push_back(links_cluster_);
         links_parent_ = base_cluster_;
     }
 
     std::shared_ptr<urdf::ModelInterface> model_;
-    LinkPtr base_, link1_, link2_, link3_;
     ClusterPtr base_cluster_, links_cluster_;
 
     // Ground Truth children
@@ -66,46 +58,19 @@ protected:
     {
         model_ = urdf::parseURDFFile("/home/matt/repos/URDF-Parser/mini_cheetah.urdf", false);
 
-        model_->getLink("body", body_);
-        model_->getLink("abduct_fr", abduct_fr);
-        model_->getLink("abduct_fl", abduct_fl);
-        model_->getLink("abduct_hr", abduct_hr);
-        model_->getLink("abduct_hl", abduct_hl);
-        model_->getLink("abduct_rotor_fr", abduct_rotor_fr);
-        model_->getLink("abduct_rotor_fl", abduct_rotor_fl);
-        model_->getLink("abduct_rotor_hr", abduct_rotor_hr);
-        model_->getLink("abduct_rotor_hl", abduct_rotor_hl);
-        model_->getLink("thigh_fr", thigh_fr);
-        model_->getLink("thigh_fl", thigh_fl);
-        model_->getLink("thigh_hr", thigh_hr);
-        model_->getLink("thigh_hl", thigh_hl);
-        model_->getLink("hip_rotor_fr", hip_rotor_fr);
-        model_->getLink("hip_rotor_fl", hip_rotor_fl);
-        model_->getLink("hip_rotor_hr", hip_rotor_hr);
-        model_->getLink("hip_rotor_hl", hip_rotor_hl);
-        model_->getLink("shank_fr", shank_fr);
-        model_->getLink("shank_fl", shank_fl);
-        model_->getLink("shank_hr", shank_hr);
-        model_->getLink("shank_hl", shank_hl);
-        model_->getLink("knee_rotor_fr", knee_rotor_fr);
-        model_->getLink("knee_rotor_fl", knee_rotor_fl);
-        model_->getLink("knee_rotor_hr", knee_rotor_hr);
-        model_->getLink("knee_rotor_hl", knee_rotor_hl);
-
-        std::map<std::string, ClusterPtr> clusters_ = model_->getClusters();
-        body_cluster = clusters_["body"];
-        abduct_fr_cluster = clusters_["abduct_fr"];
-        abduct_fl_cluster = clusters_["abduct_fl"];
-        abduct_hr_cluster = clusters_["abduct_hr"];
-        abduct_hl_cluster = clusters_["abduct_hl"];
-        hip_fr_cluster = clusters_["hip_rotor_fr"];
-        hip_fl_cluster = clusters_["hip_rotor_fl"];
-        hip_hr_cluster = clusters_["hip_rotor_hr"];
-        hip_hl_cluster = clusters_["hip_rotor_hl"];
-        knee_fr_cluster = clusters_["knee_rotor_fr"];
-        knee_fl_cluster = clusters_["knee_rotor_fl"];
-        knee_hr_cluster = clusters_["knee_rotor_hr"];
-        knee_hl_cluster = clusters_["knee_rotor_hl"];
+        body_cluster = model_->getClusterContaining("body");
+        abduct_fr_cluster = model_->getClusterContaining("abduct_fr");
+        abduct_fl_cluster = model_->getClusterContaining("abduct_fl");
+        abduct_hr_cluster = model_->getClusterContaining("abduct_hr");
+        abduct_hl_cluster = model_->getClusterContaining("abduct_hl");
+        hip_fr_cluster = model_->getClusterContaining("hip_rotor_fr");
+        hip_fl_cluster = model_->getClusterContaining("hip_rotor_fl");
+        hip_hr_cluster = model_->getClusterContaining("hip_rotor_hr");
+        hip_hl_cluster = model_->getClusterContaining("hip_rotor_hl");
+        knee_fr_cluster = model_->getClusterContaining("knee_rotor_fr");
+        knee_fl_cluster = model_->getClusterContaining("knee_rotor_fl");
+        knee_hr_cluster = model_->getClusterContaining("knee_rotor_hr");
+        knee_hl_cluster = model_->getClusterContaining("knee_rotor_hl");
 
         // Ground Truth Parents
         abduct_fr_parent_ = body_cluster;
@@ -137,13 +102,6 @@ protected:
     }
 
     std::shared_ptr<urdf::ModelInterface> model_;
-    LinkPtr body_;
-    LinkPtr abduct_fr, abduct_fl, abduct_hr, abduct_hl;
-    LinkPtr abduct_rotor_fr, abduct_rotor_fl, abduct_rotor_hr, abduct_rotor_hl;
-    LinkPtr thigh_fr, thigh_fl, thigh_hr, thigh_hl;
-    LinkPtr hip_rotor_fr, hip_rotor_fl, hip_rotor_hr, hip_rotor_hl;
-    LinkPtr shank_fr, shank_fl, shank_hr, shank_hl;
-    LinkPtr knee_rotor_fr, knee_rotor_fl, knee_rotor_hr, knee_rotor_hl;
 
     ClusterPtr body_cluster;
     ClusterPtr abduct_fr_cluster, abduct_fl_cluster, abduct_hr_cluster, abduct_hl_cluster;

@@ -94,8 +94,6 @@ namespace urdf
       }
     };
 
-    const std::map<std::string, std::shared_ptr<Cluster>> &getClusters() const { return clusters_; }
-
     void getSupportingChain(const std::string &link_name,
                             std::vector<std::shared_ptr<Link>> &supporting_chain) const
     {
@@ -253,7 +251,8 @@ namespace urdf
         }
       }
 
-      // TODO(@MatthewChignoli): Clean this part up later. There are too many messy comments and the implementation is really inefficient
+      // loop through all constraints, assign them to their respective predecessor links, and add 
+      // resulting neighbors to the graph
       for (auto &constraint : this->constraints_)
       {
         std::string pred_link_name = constraint.second->predecessor_link_name;
@@ -296,11 +295,10 @@ namespace urdf
         }
       }
 
-      // TODO(@MatthewChignoli): How can the clusters have names? I think the names need to be automatic, because the clusters are not defined in the URDF, so then the names cannot be. And we cannot just name the cluster after the constraint joint because there can be multiple constraint joints in a cluster. Maybe we can just append the name?
-      // And then from there we implement an SCC algorithm to optimally cluster the bodies?
-      extractStronglyConnectedComponents();
+      extractClustersAsStronglyConnectedComponents();
 
-      // loop through all links, for every link, find the cluster that contains it and the clusters that contain its child links. Then assign parent and child clusters
+      // loop through all links, for every link, find the cluster that contains it and the clusters 
+      // that contain its child links. Then assign parent and child clusters
       for (std::map<std::string, std::shared_ptr<Link>>::iterator link = this->links_.begin();
            link != this->links_.end(); link++)
       {
@@ -324,7 +322,8 @@ namespace urdf
           }
 
           // Check if child cluster is already a child of the parent cluster
-          if (std::find(parent_cluster->child_clusters.begin(), parent_cluster->child_clusters.end(),
+          if (std::find(parent_cluster->child_clusters.begin(),
+                        parent_cluster->child_clusters.end(),
                         child_cluster) != parent_cluster->child_clusters.end())
           {
             continue;
@@ -338,20 +337,9 @@ namespace urdf
 
     std::shared_ptr<Cluster> getClusterContaining(const std::string &link_name)
     {
-      for (std::map<std::string, std::shared_ptr<Cluster>>::iterator cluster = this->clusters_.begin(); cluster != this->clusters_.end(); cluster++)
-      {
-        for (const std::shared_ptr<Link> &link : cluster->second->links)
-        {
-          if (link->name == link_name)
-          {
-            return cluster->second;
-          }
-        }
-      }
-      throw ParseError("Link [" + link_name + "] not found in any cluster");
+      return clusters_.at(cluster_keys_.at(link_name));
     }
 
-    // TODO(@MatthewChignoli): Should this be a static function?
     std::shared_ptr<Link> nearestCommonAncestor(const std::shared_ptr<Link> &link1,
                                                 const std::shared_ptr<Link> &link2) const
     {
@@ -395,10 +383,10 @@ namespace urdf
       return ancestor;
     }
 
-    // TODO(@MatthewChignoli): Maybe move these SCC functions to a separate file?
-    void dfs_first_pass(const std::string &link_name,
-                        std::map<std::string, bool> &visited,
-                        std::stack<std::string> &finishing_order)
+    void
+    dfsFirstPass(const std::string &link_name,
+                 std::map<std::string, bool> &visited,
+                 std::stack<std::string> &finishing_order)
     {
       visited[link_name] = true;
       for (const std::shared_ptr<Link> neighbor : links_.at(link_name)->neighbors)
@@ -406,15 +394,16 @@ namespace urdf
         const std::string &neighbor_name = neighbor->name;
         if (!visited[neighbor_name])
         {
-          dfs_first_pass(neighbor_name, visited, finishing_order);
+          dfsFirstPass(neighbor_name, visited, finishing_order);
         }
       }
       finishing_order.push(link_name);
     }
 
-    void dfs_second_pass(const std::map<std::string, std::vector<std::shared_ptr<Link>>> &reverse_graph,
-                         const std::string &link_name, std::map<std::string, bool> &visited,
-                         std::vector<std::shared_ptr<Link>> &scc)
+    void
+    dfsSecondPass(const std::map<std::string, std::vector<std::shared_ptr<Link>>> &reverse_graph,
+                  const std::string &link_name, std::map<std::string, bool> &visited,
+                  std::vector<std::shared_ptr<Link>> &scc)
     {
       visited[link_name] = true;
       scc.push_back(links_.at(link_name));
@@ -423,13 +412,12 @@ namespace urdf
         const std::string &neighbor_name = neighbor->name;
         if (!visited[neighbor_name])
         {
-          dfs_second_pass(reverse_graph, neighbor_name, visited, scc);
+          dfsSecondPass(reverse_graph, neighbor_name, visited, scc);
         }
       }
     }
 
-    // TODO(@MatthewChignoli): Better name?
-    void extractStronglyConnectedComponents()
+    void extractClustersAsStronglyConnectedComponents()
     {
       std::map<std::string, bool> visited;
       std::stack<std::string> finishing_order;
@@ -454,7 +442,7 @@ namespace urdf
         const std::string &link_name = link.first;
         if (!visited[link_name])
         {
-          dfs_first_pass(link_name, visited, finishing_order);
+          dfsFirstPass(link_name, visited, finishing_order);
         }
       }
 
@@ -469,11 +457,15 @@ namespace urdf
         if (!visited[link_name])
         {
           std::vector<std::shared_ptr<Link>> scc;
-          dfs_second_pass(reverse_link_graph, link_name, visited, scc);
-          // TODO(@MatthewChignoli): How to name/identify clusters?
-          clusters_.insert(make_pair(link_name, new Cluster()));
-          clusters_.at(link_name)->name = link_name;
-          clusters_.at(link_name)->links = scc;
+          dfsSecondPass(reverse_link_graph, link_name, visited, scc);
+          // TODO(@MatthewChignoli): need to unit test this. The unit test should be on getClusterContaining
+          for (const std::shared_ptr<Link> &link : scc)
+          {
+            cluster_keys_.insert(make_pair(link->name, clusters_.size()));
+          }
+          std::shared_ptr<Cluster> cluster = std::make_shared<Cluster>();
+          cluster->links = scc;
+          clusters_.insert(make_pair(clusters_.size(), cluster));
         }
       }
     }
@@ -513,7 +505,8 @@ namespace urdf
     /// \brief complete list of Constraint Joints
     std::map<std::string, std::shared_ptr<Constraint>> constraints_;
     /// \brief complete list of Clusters
-    std::map<std::string, std::shared_ptr<Cluster>> clusters_;
+    std::map<std::string, int> cluster_keys_;
+    std::map<int, std::shared_ptr<Cluster>> clusters_;
     /// \brief complete list of Materials
     std::map<std::string, std::shared_ptr<Material>> materials_;
 

@@ -10,8 +10,6 @@ namespace urdf
     class Cluster
     {
     public:
-        std::string name;
-
         std::vector<std::shared_ptr<Link>> links;
         std::vector<std::shared_ptr<Cluster>> child_clusters;
         std::vector<std::shared_ptr<Constraint>> constraints;
