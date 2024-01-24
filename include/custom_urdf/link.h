@@ -207,7 +207,6 @@ namespace urdf
     std::string group_name;
   };
 
-  // TODO(@MatthewChignoli): Should there be some abstraction between link and cluster?
   class Link
   {
   public:
@@ -264,6 +263,8 @@ namespace urdf
       this->parent_joint.reset();
       this->child_joints.clear();
       this->child_links.clear();
+      this->neighbors.clear();
+      this->constraint_names.clear();
       this->collision_array.clear();
       this->visual_array.clear();
       this->collision_groups.clear();

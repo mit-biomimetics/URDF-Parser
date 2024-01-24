@@ -84,10 +84,8 @@ namespace urdf
       return ptr;
     };
 
-    // TODO(@MatthewChignoli): Cleaner accessor
-    const std::map<std::string, std::shared_ptr<Cluster>> &getClusters() const { return clusters_; }
-
     const std::string &getName() const { return name_; };
+
     void getLinks(std::vector<std::shared_ptr<Link>> &links) const
     {
       for (std::map<std::string, std::shared_ptr<Link>>::const_iterator link = this->links_.begin(); link != this->links_.end(); link++)
@@ -95,6 +93,8 @@ namespace urdf
         links.push_back(link->second);
       }
     };
+
+    const std::map<std::string, std::shared_ptr<Cluster>> &getClusters() const { return clusters_; }
 
     // TODO(@MatthewChignoli): Proximal links are at the back of the chain, should we reverse this? Probably yes...
     void getSupportingChain(const std::string &link_name,
