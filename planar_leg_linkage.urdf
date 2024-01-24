@@ -4,6 +4,8 @@
 
 <robot name="planar_leg_linkage" xmlns:xacro="http://ros.org/wiki/xacro">
 
+    <link name="base"/>
+
     <link name="thigh">
         <inertial>
             <mass value="0.23"/>
@@ -35,6 +37,13 @@
             <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0.000022176"/>
         </inertial>
     </link>
+
+    <joint name="base_to_thigh" type="continuous">
+        <parent link="base"/>
+        <child link="thigh"/>
+        <origin xyz="0.0 0.0 0.0"/>
+        <axis xyz="0 0 1"/>
+    </joint>
 
     <joint name="thigh_to_driver" type="continuous" independent="true">
         <parent link="thigh"/>

@@ -5,16 +5,16 @@
 
 <robot name="revolute_rotor_chain" xmlns:xacro="http://ros.org/wiki/xacro">
 
-    <link name="base_link"/>
+    <link name="ground"/>
 
-    <link name="link1">
+    <link name="link-0">
         <inertial>
             <mass value="1"/>
             <origin rpy="0 0 0" xyz="0 0 0"/>
             <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1"/>    
         </inertial>
     </link>    
-    <link name="rotor1">
+    <link name="rotor-0">
         <inertial>
             <mass value="1"/>
             <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -22,14 +22,14 @@
         </inertial>
     </link>   
 
-    <link name="link2">
+    <link name="link-1">
         <inertial>
             <mass value="1"/>
             <origin rpy="0 0 0" xyz="0 0 0"/>
             <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1"/>    
         </inertial>
     </link>   
-    <link name="rotor2">
+    <link name="rotor-1">
         <inertial>
             <mass value="1"/>
             <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -37,14 +37,14 @@
         </inertial>
     </link>   
 
-    <link name="link3">
+    <link name="link-2">
         <inertial>
             <mass value="1"/>
             <origin rpy="0 0 0" xyz="0 0 0"/>
             <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1"/>    
         </inertial>
     </link>   
-    <link name="rotor3">
+    <link name="rotor-2">
         <inertial>
             <mass value="1"/>
             <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -53,55 +53,55 @@
     </link>   
 
     <joint name="joint1" type="continuous">
-        <parent link="base_link"/>
-        <child link="link1"/>
+        <parent link="ground"/>
+        <child link="link-0"/>
         <axis xyz="0 0 1"/>
     </joint>
     <joint name="joint1r" type="continuous" independent="false">
-        <parent link="base_link"/>
-        <child link="rotor1"/>
+        <parent link="ground"/>
+        <child link="rotor-0"/>
         <axis xyz="0 0 1"/>
     </joint>
 
     <joint name="joint2" type="continuous">
-        <parent link="link1"/>
-        <child link="link2"/>
+        <parent link="link-0"/>
+        <child link="link-1"/>
         <axis xyz="0 0 1"/>
     </joint>
     <joint name="joint2r" type="continuous" independent="false">
-        <parent link="link1"/>
-        <child link="rotor2"/>
+        <parent link="link-0"/>
+        <child link="rotor-1"/>
         <axis xyz="0 0 1"/>
     </joint>
 
     <joint name="joint3" type="continuous">
-        <parent link="link2"/>
-        <child link="link3"/>
+        <parent link="link-1"/>
+        <child link="link-2"/>
         <axis xyz="0 0 1"/>
     </joint>
     <joint name="joint3r" type="continuous" independent="false">
-        <parent link="link2"/>
-        <child link="rotor3"/>
+        <parent link="link-1"/>
+        <child link="rotor-2"/>
         <axis xyz="0 0 1"/>
     </joint>
 
     <constraint_joint name="transmission1" type="rotation">
-        <parent link="link1"/>
-        <child link="rotor1"/>
+        <parent link="link-0"/>
+        <child link="rotor-0"/>
         <parent_origin xyz="2.0 0.0 0.0"/>
         <child_origin xyz="0.2 0.0 0.0"/>
     </constraint_joint>
 
     <constraint_joint name="transmission2" type="rotation">
-        <parent link="link2"/>
-        <child link="rotor2"/>
+        <parent link="link-1"/>
+        <child link="rotor-1"/>
         <parent_origin xyz="2.0 0.0 0.0"/>
         <child_origin xyz="0.2 0.0 0.0"/>
     </constraint_joint>
 
     <constraint_joint name="transmission3" type="rotation">
-        <parent link="link3"/>
-        <child link="rotor3"/>
+        <parent link="link-2"/>
+        <child link="rotor-2"/>
         <parent_origin xyz="2.0 0.0 0.0"/>
         <child_origin xyz="0.2 0.0 0.0"/>
     </constraint_joint>

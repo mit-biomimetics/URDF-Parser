@@ -2,8 +2,7 @@
 
 <robot name="mini_cheetah_leg" xmlns:xacro="http://ros.org/wiki/xacro">
     
-    <link name="base">
-    </link>
+    <link name="base"/>
 
     <joint name="base_to_abduct" type="continuous">
         <parent link="base"/>
