@@ -34,8 +34,8 @@
 
 /* Author: Wim Meeussen */
 
-#ifndef DYNACORE_URDF_INTERFACE_JOINT_H
-#define DYNACORE_URDF_INTERFACE_JOINT_H
+#ifndef URDF_INTERFACE_JOINT_H
+#define URDF_INTERFACE_JOINT_H
 
 #include <string>
 #include <vector>

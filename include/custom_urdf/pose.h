@@ -34,8 +34,8 @@
 
 /* Author: Wim Meeussen */
 
-#ifndef DYNACORE_URDF_INTERFACE_POSE_H
-#define DYNACORE_URDF_INTERFACE_POSE_H
+#ifndef URDF_INTERFACE_POSE_H
+#define URDF_INTERFACE_POSE_H
 
 #include <string>
 #include <sstream>

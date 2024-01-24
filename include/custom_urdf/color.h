@@ -34,8 +34,8 @@
 
 /* Author: Josh Faust */
 
-#ifndef DYNACORE_URDF_INTERFACE_COLOR_H
-#define DYNACORE_URDF_INTERFACE_COLOR_H
+#ifndef URDF_INTERFACE_COLOR_H
+#define URDF_INTERFACE_COLOR_H
 
 #include <string>
 #include <vector>

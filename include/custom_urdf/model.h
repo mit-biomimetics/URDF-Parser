@@ -34,8 +34,8 @@
 
 /* Author: Wim Meeussen */
 
-#ifndef DYNACORE_URDF_INTERFACE_MODEL_H
-#define DYNACORE_URDF_INTERFACE_MODEL_H
+#ifndef URDF_INTERFACE_MODEL_H
+#define URDF_INTERFACE_MODEL_H
 
 #include <string>
 #include <map>

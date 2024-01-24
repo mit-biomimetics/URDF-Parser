@@ -1,5 +1,5 @@
-#ifndef DYNACORE_URDF_INTERFACE_CLUSTER_H
-#define DYNACORE_URDF_INTERFACE_CLUSTER_H
+#ifndef URDF_INTERFACE_CLUSTER_H
+#define URDF_INTERFACE_CLUSTER_H
 
 #include "link.h"
 #include "constraint_joint.h"

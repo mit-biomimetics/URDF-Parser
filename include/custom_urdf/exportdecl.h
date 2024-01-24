@@ -34,8 +34,8 @@
 
 /* Author: Thomas Moulard */
 
-#ifndef DYNACORE_URDFDOM_EXPORTDECL_H
-#define DYNACORE_URDFDOM_EXPORTDECL_H
+#ifndef URDFDOM_EXPORTDECL_H
+#define URDFDOM_EXPORTDECL_H
 
 // Handle portable symbol export.
 // Defining manually which symbol should be exported is required

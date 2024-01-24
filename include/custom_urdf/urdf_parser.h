@@ -42,8 +42,8 @@
 // - Where should we put the urdfs?
 // - I plan on using this code to help write mine, but I will make substanstial changes. Do I still need to include the copyright at the top?
 
-#ifndef DYNACORE_URDF_PARSER_URDF_PARSER_H
-#define DYNACORE_URDF_PARSER_URDF_PARSER_H
+#ifndef URDF_PARSER_URDF_PARSER_H
+#define URDF_PARSER_URDF_PARSER_H
 
 #include <string>
 #include <map>

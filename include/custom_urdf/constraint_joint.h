@@ -1,5 +1,5 @@
-#ifndef DYNACORE_URDF_INTERFACE_CONSTRANT_JOINT_H
-#define DYNACORE_URDF_INTERFACE_CONSTRANT_JOINT_H
+#ifndef URDF_INTERFACE_CONSTRANT_JOINT_H
+#define URDF_INTERFACE_CONSTRANT_JOINT_H
 
 // TODO(@MatthewChignoli): Make sure to also remove dynacore from all of the guards
 
