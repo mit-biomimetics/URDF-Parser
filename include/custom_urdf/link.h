@@ -42,7 +42,6 @@
 #include <map>
 #include <memory>
 #include "joint.h"
-// #include "constraint_joint.h"
 #include "color.h"
 
 namespace urdf

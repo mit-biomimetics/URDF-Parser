@@ -66,11 +66,11 @@
         <axis xyz="0 0 1"/>
     </joint>
 
-    <constraint_joint name="linkage" type="position">
+    <constraint name="linkage" type="position">
         <predecessor link="foot"/>
         <successor link="shank_support"/>
         <predecessor_origin xyz="0.031 0.0 0.0"/>
         <successor_origin xyz="0.096 0.0 0.0"/>
-    </constraint_joint>
+    </constraint>
 
 </robot>

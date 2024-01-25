@@ -89,25 +89,25 @@
         <axis xyz="0 0 1"/>
     </joint>
 
-    <constraint_joint name="transmission1" type="rotation">
+    <constraint name="transmission1" type="rotation">
         <predecessor link="link-0"/>
         <successor link="rotor-0"/>
         <predecessor_origin xyz="6.0 0.0 0.0"/>
         <successor_origin xyz="1.0 0.0 0.0"/>
-    </constraint_joint>
+    </constraint>
 
-    <constraint_joint name="transmission2" type="rotation">
+    <constraint name="transmission2" type="rotation">
         <predecessor link="link-1"/>
         <successor link="rotor-1"/>
         <predecessor_origin xyz="6.0 0.0 0.0"/>
         <successor_origin xyz="1.0 0.0 0.0"/>
-    </constraint_joint>
+    </constraint>
 
-    <constraint_joint name="transmission3" type="rotation">
+    <constraint name="transmission3" type="rotation">
         <predecessor link="link-2"/>
         <successor link="rotor-2"/>
         <predecessor_origin xyz="6.0 0.0 0.0"/>
         <successor_origin xyz="1.0 0.0 0.0"/>
-    </constraint_joint>
+    </constraint>
 
 </robot>

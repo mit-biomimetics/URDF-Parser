@@ -223,8 +223,8 @@ namespace urdf
 
     // Get all Constraint Joint elements
     count = 0;
-    for (TiXmlElement *constraint_xml = robot_xml->FirstChildElement("constraint_joint");
-         constraint_xml; constraint_xml = constraint_xml->NextSiblingElement("constraint_joint"))
+    for (TiXmlElement *constraint_xml = robot_xml->FirstChildElement("constraint");
+         constraint_xml; constraint_xml = constraint_xml->NextSiblingElement("constraint"))
     {
       std::shared_ptr<Constraint> constraint;
       constraint.reset(new Constraint);

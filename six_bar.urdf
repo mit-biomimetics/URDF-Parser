@@ -87,11 +87,11 @@
         <axis xyz="0 0 1"/>
     </joint>
 
-    <constraint_joint name="constraint1" type="position">
+    <constraint name="constraint1" type="position">
         <predecessor link="link3"/>
         <successor link="link5"/>
         <predecessor_origin xyz="0.3 0.0 0.0"/>
         <successor_origin xyz="0.5 0.0 0.0"/>
-    </constraint_joint>
+    </constraint>
 
 </robot>

@@ -41,8 +41,6 @@
 #include <map>
 #include <stack>
 #include <algorithm>
-// #include "link.h"
-// #include "constraint_joint.h"
 #include "cluster.h"
 #include "exception.h"
 #include <memory>

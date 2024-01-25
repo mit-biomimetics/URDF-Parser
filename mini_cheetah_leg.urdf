@@ -30,12 +30,12 @@
         </inertial>
     </link>
 
-    <constraint_joint name="abduct_transmission" type="rotation">
+    <constraint name="abduct_transmission" type="rotation">
         <predecessor link="abduct"/>
         <successor link="abduct_rotor"/>
         <predecessor_origin xyz="6.0 0.0 0.0"/>
         <successor_origin xyz="1.0 0.0 0.0"/>
-    </constraint_joint>
+    </constraint>
     
     <joint name="abduct_to_thigh_j" type="continuous">
         <axis xyz="0 -1 0"/>
@@ -68,12 +68,12 @@
         </inertial>
     </link>
 
-    <constraint_joint name="hip_transmission" type="rotation">
+    <constraint name="hip_transmission" type="rotation">
         <predecessor link="thigh"/>
         <successor link="hip_rotor"/>
         <predecessor_origin xyz="6.0 0.0 0.0"/>
         <successor_origin xyz="1.0 0.0 0.0"/>
-    </constraint_joint>
+    </constraint>
 
     <joint name="thigh_to_knee_j" type="continuous">
         <axis xyz="0 -1 0"/>
@@ -103,11 +103,11 @@
         </inertial>
     </link>
 
-    <constraint_joint name="knee_transmission" type="rotation">
+    <constraint name="knee_transmission" type="rotation">
         <predecessor link="shank"/>
         <successor link="knee_rotor"/>
         <predecessor_origin xyz="9.0 0.0 0.0"/>
         <successor_origin xyz="1.0 0.0 0.0"/>
-    </constraint_joint>
+    </constraint>
 
 </robot>
