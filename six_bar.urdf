@@ -1,7 +1,5 @@
 <?xml version="1.0" ?>
 
-<!-- TODO(@MatthewChignoli): Use xacro to clean up the code -->
-
 <robot name="six_bar" xmlns:xacro="http://ros.org/wiki/xacro">
 
     <link name="base_link">

@@ -11,14 +11,25 @@ namespace urdf
     public:
         Constraint() { this->clear(); };
 
-        // TODO(@MatthewChignoli): Does rolling make more sense than rotation? Either way, it is important to communicate what the origin transform is for the different types of constraints. Maybe transmission would make more sense.
         std::string name;
         enum
         {
             UNKNOWN,
             POSITION,
-            ROTATION
+            ROLLING
         } type;
+
+        /// \brief     type_       meaning of <link>_to_constraint_origin_transform
+        /// ------------------------------------------------------
+        ///           UNKNOWN     unknown type
+        ///           POSITION    Transform from <link> frame to constraint frame. The origins of 
+        ///                       the constraint frames as computed via the paths from the nearest 
+        ///                       common ancestor through the predecessor and successor must be 
+        ///                       coincident.
+        ///           ROLLING     Transform from <link> frame to a frame on the rolling contact 
+        ///                       surface of <link>. The magnitude of the translation is equal to 
+        ///                       the radius of the rolling contact and is therefore used to 
+        ///                       determine the reduction ratio of the transmission. 
 
         /// predecessor Link element
         ///   origin specifies the transform from predecessor Link to Joint Frame
@@ -35,7 +46,6 @@ namespace urdf
         ///   (and do include) the predecessor/successor links
         std::vector<std::shared_ptr<Link>> nca_to_predecessor_subtree, nca_to_successor_subtree;
 
-        // TODO(@MatthewChignoli): return const?
         std::vector<std::shared_ptr<Link>> allLinks() const
         {
             std::vector<std::shared_ptr<Link>> links;

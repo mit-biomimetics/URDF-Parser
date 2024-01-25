@@ -457,7 +457,6 @@ namespace urdf
         {
           std::vector<std::shared_ptr<Link>> scc;
           dfsSecondPass(reverse_link_graph, link_name, visited, scc);
-          // TODO(@MatthewChignoli): need to unit test this. The unit test should be on getClusterContaining
           for (const std::shared_ptr<Link> &link : scc)
           {
             cluster_keys_.insert(make_pair(link->name, clusters_.size()));

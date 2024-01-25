@@ -1,6 +1,5 @@
 <?xml version="1.0" ?>
 
-<!-- TODO(@MatthewChignoli): Use xacro to clean up the code -->
 <!-- TODO(@MatthewChignoli): Use correct values for the rotors -->
 
 <robot name="mini_cheetah" xmlns:xacro="http://ros.org/wiki/xacro">
@@ -113,7 +112,7 @@
                 iyy="0.000832" iyz="0.00000095" izz="0.000249"/>
         </inertial>
     </link>
-    <constraint name="thig_fr_to_hip_rotor_fr" type="rotation">
+    <constraint name="thig_fr_to_hip_rotor_fr" type="rolling">
         <predecessor link="thigh_fr"/>
         <successor link="hip_rotor_fr"/>
         <predecessor_origin xyz="0.3 0.0 0.0"/>
@@ -159,7 +158,7 @@
             <inertia ixx="0.000245" ixy="0" ixz="0.0" iyy="0.000248" iyz="0" izz="0.000006"/>
         </inertial>
     </link>
-    <constraint name="shank_fr_to_knee_rotor_fr" type="rotation">
+    <constraint name="shank_fr_to_knee_rotor_fr" type="rolling">
         <predecessor link="shank_fr"/>
         <successor link="knee_rotor_fr"/>
         <predecessor_origin xyz="0.3 0.0 0.0"/>
@@ -242,7 +241,7 @@
                 iyy="0.000560" iyz="0.00000095" izz="0.000444"/>
         </inertial>
     </link>
-    <constraint name="abduct_fl_to_abduct_rotor_fl" type="rotation">
+    <constraint name="abduct_fl_to_abduct_rotor_fl" type="rolling">
         <predecessor link="abduct_fl"/>
         <successor link="abduct_rotor_fl"/>
         <predecessor_origin xyz="0.3 0.0 0.0"/>
@@ -290,7 +289,7 @@
                 iyy="0.000560" iyz="0.00000095" izz="0.000444"/>
         </inertial>
     </link>
-    <constraint name="thig_fl_to_hip_rotor_fl" type="rotation">
+    <constraint name="thig_fl_to_hip_rotor_fl" type="rolling">
         <predecessor link="thigh_fl"/>
         <successor link="hip_rotor_fl"/>
         <predecessor_origin xyz="0.3 0.0 0.0"/>
@@ -336,7 +335,7 @@
             <inertia ixx="0.000245" ixy="0" ixz="0.0" iyy="0.000248" iyz="0" izz="0.000006"/>
         </inertial>
     </link>
-    <constraint name="shank_fl_to_knee_rotor_fl" type="rotation">
+    <constraint name="shank_fl_to_knee_rotor_fl" type="rolling">
         <predecessor link="shank_fl"/>
         <successor link="knee_rotor_fl"/>
         <predecessor_origin xyz="0.3 0.0 0.0"/>
@@ -419,7 +418,7 @@
                 iyy="0.000832" iyz="0.00000095" izz="0.000249"/>
         </inertial>
     </link>
-    <constraint name="abduct_hr_to_abduct_rotor_hr" type="rotation">
+    <constraint name="abduct_hr_to_abduct_rotor_hr" type="rolling">
         <predecessor link="abduct_hr"/>
         <successor link="abduct_rotor_hr"/>
         <predecessor_origin xyz="0.3 0.0 0.0"/>
@@ -467,7 +466,7 @@
                 iyy="0.000832" iyz="0.00000095" izz="0.000249"/>
         </inertial>
     </link>
-    <constraint name="thig_hr_to_hip_rotor_hr" type="rotation">
+    <constraint name="thig_hr_to_hip_rotor_hr" type="rolling">
         <predecessor link="thigh_hr"/>
         <successor link="hip_rotor_hr"/>
         <predecessor_origin xyz="0.3 0.0 0.0"/>
@@ -513,7 +512,7 @@
             <inertia ixx="0.000245" ixy="0" ixz="0.0" iyy="0.000248" iyz="0" izz="0.000006"/>
         </inertial>
     </link>
-    <constraint name="shank_hr_to_knee_rotor_hr" type="rotation">
+    <constraint name="shank_hr_to_knee_rotor_hr" type="rolling">
         <predecessor link="shank_hr"/>
         <successor link="knee_rotor_hr"/>
         <predecessor_origin xyz="0.3 0.0 0.0"/>
@@ -596,7 +595,7 @@
                 iyy="0.000560" iyz="0.00000095" izz="0.000444"/>
         </inertial>
     </link>
-    <constraint name="abduct_hl_to_abduct_rotor_hl" type="rotation">
+    <constraint name="abduct_hl_to_abduct_rotor_hl" type="rolling">
         <predecessor link="abduct_hl"/>
         <successor link="abduct_rotor_hl"/>
         <predecessor_origin xyz="0.3 0.0 0.0"/>
@@ -644,7 +643,7 @@
                 iyy="0.000560" iyz="0.00000095" izz="0.000444"/>
         </inertial>
     </link>
-    <constraint name="thig_hl_to_hip_rotor_hl" type="rotation">
+    <constraint name="thig_hl_to_hip_rotor_hl" type="rolling">
         <predecessor link="thigh_hl"/>
         <successor link="hip_rotor_hl"/>
         <predecessor_origin xyz="0.3 0.0 0.0"/>
@@ -690,7 +689,7 @@
             <inertia ixx="0.000245" ixy="0" ixz="0.0" iyy="0.000248" iyz="0" izz="0.000006"/>
         </inertial>
     </link>
-    <constraint name="shank_hl_to_knee_rotor_hl" type="rotation">
+    <constraint name="shank_hl_to_knee_rotor_hl" type="rolling">
         <predecessor link="shank_hl"/>
         <successor link="knee_rotor_hl"/>
         <predecessor_origin xyz="0.3 0.0 0.0"/>

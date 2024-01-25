@@ -93,8 +93,8 @@ namespace urdf
         std::string type_str = type_char;
         if (type_str == "position")
             constraint.type = Constraint::POSITION;
-        else if (type_str == "rotation")
-            constraint.type = Constraint::ROTATION;
+        else if (type_str == "rolling")
+            constraint.type = Constraint::ROLLING;
         else
         {
             return false;

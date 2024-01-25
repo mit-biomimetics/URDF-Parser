@@ -30,7 +30,7 @@
         </inertial>
     </link>
 
-    <constraint name="abduct_transmission" type="rotation">
+    <constraint name="abduct_transmission" type="rolling">
         <predecessor link="abduct"/>
         <successor link="abduct_rotor"/>
         <predecessor_origin xyz="6.0 0.0 0.0"/>
@@ -68,7 +68,7 @@
         </inertial>
     </link>
 
-    <constraint name="hip_transmission" type="rotation">
+    <constraint name="hip_transmission" type="rolling">
         <predecessor link="thigh"/>
         <successor link="hip_rotor"/>
         <predecessor_origin xyz="6.0 0.0 0.0"/>
@@ -103,7 +103,7 @@
         </inertial>
     </link>
 
-    <constraint name="knee_transmission" type="rotation">
+    <constraint name="knee_transmission" type="rolling">
         <predecessor link="shank"/>
         <successor link="knee_rotor"/>
         <predecessor_origin xyz="9.0 0.0 0.0"/>

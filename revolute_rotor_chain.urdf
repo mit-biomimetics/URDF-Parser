@@ -1,8 +1,5 @@
 <?xml version="1.0" ?>
 
-<!-- TODO(@MatthewChignoli): Use xacro to clean up the code -->
-<!-- TODO(@MatthewChignoli): Not sure I love this name for the file/robot -->
-
 <robot name="revolute_rotor_chain" xmlns:xacro="http://ros.org/wiki/xacro">
 
     <link name="ground"/>
@@ -89,21 +86,21 @@
         <axis xyz="0 0 1"/>
     </joint>
 
-    <constraint name="transmission1" type="rotation">
+    <constraint name="transmission1" type="rolling">
         <predecessor link="link-0"/>
         <successor link="rotor-0"/>
         <predecessor_origin xyz="6.0 0.0 0.0"/>
         <successor_origin xyz="1.0 0.0 0.0"/>
     </constraint>
 
-    <constraint name="transmission2" type="rotation">
+    <constraint name="transmission2" type="rolling">
         <predecessor link="link-1"/>
         <successor link="rotor-1"/>
         <predecessor_origin xyz="6.0 0.0 0.0"/>
         <successor_origin xyz="1.0 0.0 0.0"/>
     </constraint>
 
-    <constraint name="transmission3" type="rotation">
+    <constraint name="transmission3" type="rolling">
         <predecessor link="link-2"/>
         <successor link="rotor-2"/>
         <predecessor_origin xyz="6.0 0.0 0.0"/>

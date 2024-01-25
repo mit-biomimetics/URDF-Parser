@@ -41,6 +41,7 @@
 // - Should we modify the code to conform to our style guide?
 // - Where should we put the urdfs?
 // - I plan on using this code to help write mine, but I will make substanstial changes. Do I still need to include the copyright at the top?
+// - Might be nice if we could make better use of xacro to make the urdfs more readable
 
 #ifndef URDF_PARSER_URDF_PARSER_H
 #define URDF_PARSER_URDF_PARSER_H
