@@ -380,8 +380,137 @@ TEST_P(SubtreeBetweenLinksTest, subtree_between_links)
     }
 }
 
-// TODO(@MatthewChignoli): Make a list of remaining tests that I will eventually make before realeasing the repo. They should mostly just be the existing tests, but with the new setup that has less redundant code
-// Tests needed:
-// - neighbors for links
-// - parents for clusters
-// - children for clusters
+// TODO(@MatthewChignoli): Explain this test
+struct NeighborsTestData
+{
+    std::string urdf_file;
+    std::map<std::string, std::vector<std::string>> links_and_neighbors;
+};
+
+std::vector<NeighborsTestData> GetLinksAndNeighbors()
+{
+    std::vector<NeighborsTestData> datas;
+
+    NeighborsTestData four_bar_data;
+    four_bar_data.urdf_file = "four_bar";
+    four_bar_data.links_and_neighbors.insert(std::make_pair("base_link", std::vector<std::string>{"link1", "link3"}));
+    four_bar_data.links_and_neighbors.insert(std::make_pair("link1", std::vector<std::string>{"link2"}));
+    four_bar_data.links_and_neighbors.insert(std::make_pair("link2", std::vector<std::string>{"link3"}));
+    four_bar_data.links_and_neighbors.insert(std::make_pair("link3", std::vector<std::string>{"link1"}));
+    datas.push_back(four_bar_data);
+
+    NeighborsTestData mini_cheetah_leg_data;
+    mini_cheetah_leg_data.urdf_file = "mini_cheetah_leg";
+    mini_cheetah_leg_data.links_and_neighbors.insert(std::make_pair("base", std::vector<std::string>{"abduct", "abduct_rotor"}));
+    mini_cheetah_leg_data.links_and_neighbors.insert(std::make_pair("abduct", std::vector<std::string>{"abduct_rotor", "thigh", "hip_rotor"}));
+    mini_cheetah_leg_data.links_and_neighbors.insert(std::make_pair("abduct_rotor", std::vector<std::string>{"abduct"}));
+    mini_cheetah_leg_data.links_and_neighbors.insert(std::make_pair("thigh", std::vector<std::string>{"hip_rotor", "shank", "knee_rotor"}));
+    mini_cheetah_leg_data.links_and_neighbors.insert(std::make_pair("hip_rotor", std::vector<std::string>{"thigh"}));
+    mini_cheetah_leg_data.links_and_neighbors.insert(std::make_pair("shank", std::vector<std::string>{"knee_rotor"}));
+    mini_cheetah_leg_data.links_and_neighbors.insert(std::make_pair("knee_rotor", std::vector<std::string>{"shank"}));
+    datas.push_back(mini_cheetah_leg_data);
+
+    // @MatthewChignoli: Can add more robots here if desired...
+
+    return datas;
+}
+
+class NeighborsTest : public ::testing::TestWithParam<NeighborsTestData>
+{
+protected:
+    NeighborsTest()
+    {
+        model_ = urdf::parseURDFFile("/home/matt/repos/URDF-Parser/" +
+                                     GetParam().urdf_file + ".urdf");
+    }
+    std::shared_ptr<urdf::ModelInterface> model_;
+};
+
+INSTANTIATE_TEST_CASE_P(NeighborsTest, NeighborsTest,
+                        ::testing::ValuesIn(GetLinksAndNeighbors()));
+
+TEST_P(NeighborsTest, neighbors)
+{
+    for (const auto &link_and_neighbors : GetParam().links_and_neighbors)
+    {
+        const std::string &link_name = link_and_neighbors.first;
+        const std::vector<std::string> &neighbors_names = link_and_neighbors.second;
+
+        ASSERT_EQ(neighbors_names.size(), model_->getLink(link_name)->neighbors.size());
+        for (const auto &neighbor_name : neighbors_names)
+        {
+            bool found_neighbor = false;
+            for (const auto &neighbor_link : model_->getLink(link_name)->neighbors)
+            {
+                if (neighbor_link->name == neighbor_name)
+                {
+                    found_neighbor = true;
+                    break;
+                }
+            }
+            ASSERT_TRUE(found_neighbor);
+        }
+    }
+}
+
+// TODO(@MatthewChignoli): Explain this test
+class ClustersTest : public ::testing::TestWithParam<std::string>
+{
+protected:
+    ClustersTest()
+    {
+        model_ = urdf::parseURDFFile("/home/matt/repos/URDF-Parser/" +
+                                     GetParam() + ".urdf");
+    }
+    std::shared_ptr<urdf::ModelInterface> model_;
+};
+
+INSTANTIATE_TEST_CASE_P(ClustersTest, ClustersTest, ::testing::ValuesIn(GetTestUrdfFiles()));
+
+TEST_P(ClustersTest, parents)
+{
+    using LinkPtr = std::shared_ptr<Link>;
+    using ClusterPtr = std::shared_ptr<Cluster>;
+
+    std::vector<LinkPtr> links;
+    model_->getLinks(links);
+
+    for (const LinkPtr &link : links)
+    {
+        if (link->getParent() == nullptr)
+            continue;
+
+        LinkPtr parent = link->getParent();
+
+        ClusterPtr cluster_containing_link = model_->getClusterContaining(link->name);
+        ClusterPtr cluster_containing_parent = model_->getClusterContaining(parent->name);
+        ClusterPtr parent_cluster_of_cluster_containing_link = cluster_containing_link->getParent();
+
+        ASSERT_TRUE(cluster_containing_parent == cluster_containing_link ||
+                    cluster_containing_parent == parent_cluster_of_cluster_containing_link);
+    }
+}
+
+TEST_P(ClustersTest, children)
+{
+    using LinkPtr = std::shared_ptr<Link>;
+    using ClusterPtr = std::shared_ptr<Cluster>;
+
+    std::vector<LinkPtr> links;
+    model_->getLinks(links);
+
+    for (const LinkPtr &link : links)
+    {
+        ClusterPtr cluster_containing_link = model_->getClusterContaining(link->name);
+        std::vector<ClusterPtr> child_clusters = cluster_containing_link->child_clusters;
+
+        for (const LinkPtr &child_link : link->child_links)
+        {
+            ClusterPtr cluster_containing_child_link =
+                model_->getClusterContaining(child_link->name);
+
+            ASSERT_TRUE(cluster_containing_child_link == cluster_containing_link ||
+                        std::find(child_clusters.begin(), child_clusters.end(), cluster_containing_child_link) != child_clusters.end());
+        }
+    }
+}
