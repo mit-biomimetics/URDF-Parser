@@ -4,6 +4,7 @@
 
 using namespace urdf;
 
+// TODO(@MatthewChignoli): Explain this test
 std::vector<std::string> GetTestUrdfFiles()
 {
     std::vector<std::string> test_urdf_files;
@@ -29,38 +30,46 @@ TEST_P(ParserTest, createModelFromUrdfFile)
     ASSERT_TRUE(model != nullptr);
 }
 
-using StrStrMap = std::map<std::string, std::string>;
-std::vector<std::pair<std::string, StrStrMap>> GetLinksAndParents()
+// TODO(@MatthewChignoli): Explain this test
+struct ParentLinkTestData
 {
-    std::vector<std::pair<std::string, StrStrMap>> robots_links_parents;
+    std::string urdf_file;
+    std::map<std::string, std::string> links_and_parents;
+};
 
-    StrStrMap four_bar_links_parents;
-    four_bar_links_parents.insert(std::make_pair("link1", "base_link"));
-    four_bar_links_parents.insert(std::make_pair("link2", "link1"));
-    four_bar_links_parents.insert(std::make_pair("link3", "base_link"));
-    robots_links_parents.push_back(std::make_pair("four_bar",
-                                                  four_bar_links_parents));
+// using StrtoStrMap = std::map<std::string, std::string>;
+std::vector<ParentLinkTestData> GetLinksAndParents()
+{
+    std::vector<ParentLinkTestData> datas;
 
-    StrStrMap mini_cheetah_leg_links_parents;
-    mini_cheetah_leg_links_parents.insert(std::make_pair("abduct", "base"));
-    mini_cheetah_leg_links_parents.insert(std::make_pair("abduct_rotor", "base"));
-    mini_cheetah_leg_links_parents.insert(std::make_pair("thigh", "abduct"));
-    mini_cheetah_leg_links_parents.insert(std::make_pair("hip_rotor", "abduct"));
-    mini_cheetah_leg_links_parents.insert(std::make_pair("shank", "thigh"));
-    mini_cheetah_leg_links_parents.insert(std::make_pair("knee_rotor", "thigh"));
-    robots_links_parents.push_back(std::make_pair("mini_cheetah_leg",
-                                                  mini_cheetah_leg_links_parents));
+    ParentLinkTestData four_bar_data;
+    four_bar_data.urdf_file = "four_bar";
+    four_bar_data.links_and_parents.insert(std::make_pair("link1", "base_link"));
+    four_bar_data.links_and_parents.insert(std::make_pair("link2", "link1"));
+    four_bar_data.links_and_parents.insert(std::make_pair("link3", "base_link"));
+    datas.push_back(four_bar_data);
+
+    ParentLinkTestData mini_cheetah_leg_data;
+    mini_cheetah_leg_data.urdf_file = "mini_cheetah_leg";
+    mini_cheetah_leg_data.links_and_parents.insert(std::make_pair("abduct", "base"));
+    mini_cheetah_leg_data.links_and_parents.insert(std::make_pair("abduct_rotor", "base"));
+    mini_cheetah_leg_data.links_and_parents.insert(std::make_pair("thigh", "abduct"));
+    mini_cheetah_leg_data.links_and_parents.insert(std::make_pair("hip_rotor", "abduct"));
+    mini_cheetah_leg_data.links_and_parents.insert(std::make_pair("shank", "thigh"));
+    mini_cheetah_leg_data.links_and_parents.insert(std::make_pair("knee_rotor", "thigh"));
+    datas.push_back(mini_cheetah_leg_data);
 
     // TODO(@MatthewChignoli): Can add more robots here if desired...
 
-    return robots_links_parents;
+    return datas;
 }
-class ParentLinkTest : public ::testing::TestWithParam<std::pair<std::string, StrStrMap>>
+class ParentLinkTest : public ::testing::TestWithParam<ParentLinkTestData>
 {
 protected:
     ParentLinkTest()
     {
-        model_ = urdf::parseURDFFile("/home/matt/repos/URDF-Parser/" + GetParam().first + ".urdf");
+        model_ = urdf::parseURDFFile("/home/matt/repos/URDF-Parser/" +
+                                     GetParam().urdf_file + ".urdf");
     }
     std::shared_ptr<urdf::ModelInterface> model_;
 };
@@ -69,21 +78,310 @@ INSTANTIATE_TEST_CASE_P(ParentLinkTest, ParentLinkTest, ::testing::ValuesIn(GetL
 
 TEST_P(ParentLinkTest, parent)
 {
-    const StrStrMap &links_and_parents = GetParam().second;
-    for (const auto &link_and_parent : links_and_parents)
+    for (const auto &link_and_parent : GetParam().links_and_parents)
     {
-        EXPECT_EQ(link_and_parent.second,
-                  model_->getLink(link_and_parent.first)->getParent()->name);
+        const std::string &link_name = link_and_parent.first;
+        const std::string &parent_name = link_and_parent.second;
+        ASSERT_EQ(parent_name, model_->getLink(link_name)->getParent()->name);
+    }
+}
+
+// TODO(@MatthewChignoli): Explain this test
+struct ChildrenLinksTestData
+{
+    std::string urdf_file;
+    std::map<std::string, std::vector<std::string>> links_and_children;
+};
+
+// using StrToVecStrMap = std::map<std::string, std::vector<std::string>>;
+std::vector<ChildrenLinksTestData> GetLinksAndChildren()
+{
+    std::vector<ChildrenLinksTestData> datas;
+
+    ChildrenLinksTestData four_bar_data;
+    four_bar_data.urdf_file = "four_bar";
+    four_bar_data.links_and_children.insert(std::make_pair("base_link", std::vector<std::string>{"link1", "link3"}));
+    four_bar_data.links_and_children.insert(std::make_pair("link1", std::vector<std::string>{"link2"}));
+    four_bar_data.links_and_children.insert(std::make_pair("link2", std::vector<std::string>{}));
+    four_bar_data.links_and_children.insert(std::make_pair("link3", std::vector<std::string>{}));
+    datas.push_back(four_bar_data);
+
+    ChildrenLinksTestData mini_cheetah_leg_data;
+    mini_cheetah_leg_data.urdf_file = "mini_cheetah_leg";
+    mini_cheetah_leg_data.links_and_children.insert(std::make_pair("base", std::vector<std::string>{"abduct", "abduct_rotor"}));
+    mini_cheetah_leg_data.links_and_children.insert(std::make_pair("abduct", std::vector<std::string>{"thigh", "hip_rotor"}));
+    mini_cheetah_leg_data.links_and_children.insert(std::make_pair("abduct_rotor", std::vector<std::string>{}));
+    mini_cheetah_leg_data.links_and_children.insert(std::make_pair("thigh", std::vector<std::string>{"shank", "knee_rotor"}));
+    mini_cheetah_leg_data.links_and_children.insert(std::make_pair("hip_rotor", std::vector<std::string>{}));
+    mini_cheetah_leg_data.links_and_children.insert(std::make_pair("shank", std::vector<std::string>{}));
+    mini_cheetah_leg_data.links_and_children.insert(std::make_pair("knee_rotor", std::vector<std::string>{}));
+    datas.push_back(mini_cheetah_leg_data);
+
+    // @MatthewChignoli: Can add more robots here if desired...
+
+    return datas;
+}
+
+class ChildrenLinksTest : public ::testing::TestWithParam<ChildrenLinksTestData>
+{
+protected:
+    ChildrenLinksTest()
+    {
+        model_ = urdf::parseURDFFile("/home/matt/repos/URDF-Parser/" +
+                                     GetParam().urdf_file + ".urdf");
+    }
+    std::shared_ptr<urdf::ModelInterface> model_;
+};
+
+INSTANTIATE_TEST_CASE_P(ChildrenLinksTest, ChildrenLinksTest,
+                        ::testing::ValuesIn(GetLinksAndChildren()));
+
+TEST_P(ChildrenLinksTest, children)
+{
+    // const StrToVecStrMap &links_and_children = GetParam().second;
+    for (const auto &link_and_children : GetParam().links_and_children)
+    {
+        const std::string &link_name = link_and_children.first;
+        const std::vector<std::string> &children_names = link_and_children.second;
+
+        ASSERT_EQ(children_names.size(), model_->getLink(link_name)->child_links.size());
+        for (const auto &child_name : children_names)
+        {
+            bool found_child = false;
+            for (const auto &child_link : model_->getLink(link_name)->child_links)
+            {
+                if (child_link->name == child_name)
+                {
+                    found_child = true;
+                    break;
+                }
+            }
+            ASSERT_TRUE(found_child);
+        }
+    }
+}
+
+// TODO(@MatthewChignoli): Explain this test
+struct SupportingChainsTestData
+{
+    std::string urdf_file;
+    std::map<std::string, std::vector<std::string>> links_and_supporting_chains;
+};
+
+std::vector<SupportingChainsTestData> GetLinksAndSupportingChains()
+{
+    std::vector<SupportingChainsTestData> datas;
+
+    SupportingChainsTestData four_bar_data;
+    four_bar_data.urdf_file = "four_bar";
+    four_bar_data.links_and_supporting_chains.insert(std::make_pair("base_link", std::vector<std::string>{"base_link"}));
+    four_bar_data.links_and_supporting_chains.insert(std::make_pair("link1", std::vector<std::string>{"base_link", "link1"}));
+    four_bar_data.links_and_supporting_chains.insert(std::make_pair("link2", std::vector<std::string>{"base_link", "link1", "link2"}));
+    four_bar_data.links_and_supporting_chains.insert(std::make_pair("link3", std::vector<std::string>{"base_link", "link3"}));
+    datas.push_back(four_bar_data);
+
+    SupportingChainsTestData mini_cheetah_leg_data;
+    mini_cheetah_leg_data.urdf_file = "mini_cheetah_leg";
+    mini_cheetah_leg_data.links_and_supporting_chains.insert(std::make_pair("base", std::vector<std::string>{"base"}));
+    mini_cheetah_leg_data.links_and_supporting_chains.insert(std::make_pair("abduct", std::vector<std::string>{"base", "abduct"}));
+    mini_cheetah_leg_data.links_and_supporting_chains.insert(std::make_pair("abduct_rotor", std::vector<std::string>{"base", "abduct_rotor"}));
+    mini_cheetah_leg_data.links_and_supporting_chains.insert(std::make_pair("thigh", std::vector<std::string>{"base", "abduct", "thigh"}));
+    mini_cheetah_leg_data.links_and_supporting_chains.insert(std::make_pair("hip_rotor", std::vector<std::string>{"base", "abduct", "hip_rotor"}));
+    mini_cheetah_leg_data.links_and_supporting_chains.insert(std::make_pair("shank", std::vector<std::string>{"base", "abduct", "thigh", "shank"}));
+    mini_cheetah_leg_data.links_and_supporting_chains.insert(std::make_pair("knee_rotor", std::vector<std::string>{"base", "abduct", "thigh", "knee_rotor"}));
+    datas.push_back(mini_cheetah_leg_data);
+
+    // @MatthewChignoli: Can add more robots here if desired...
+
+    return datas;
+}
+
+class SupportingChainsTest : public ::testing::TestWithParam<SupportingChainsTestData>
+{
+protected:
+    SupportingChainsTest()
+    {
+        model_ = urdf::parseURDFFile("/home/matt/repos/URDF-Parser/" +
+                                     GetParam().urdf_file + ".urdf");
+    }
+    std::shared_ptr<urdf::ModelInterface> model_;
+};
+
+INSTANTIATE_TEST_CASE_P(SupportingChainsTest, SupportingChainsTest,
+                        ::testing::ValuesIn(GetLinksAndSupportingChains()));
+
+TEST_P(SupportingChainsTest, supporting_chains)
+{
+    for (const auto &link_and_supporting_chains : GetParam().links_and_supporting_chains)
+    {
+        const std::string &link_name = link_and_supporting_chains.first;
+        const std::vector<std::string> &supporting_chains_names = link_and_supporting_chains.second;
+
+        std::vector<std::shared_ptr<Link>> supporting_chain;
+        model_->getSupportingChain(link_name, supporting_chain);
+
+        ASSERT_EQ(supporting_chains_names.size(), supporting_chain.size());
+        for (size_t i = 0; i < supporting_chains_names.size(); ++i)
+        {
+            ASSERT_EQ(supporting_chains_names[i], supporting_chain[i]->name);
+        }
+    }
+}
+
+// TODO(@MatthewChignoli): Explain this test
+using StrPair = std::pair<std::string, std::string>;
+struct NearestCommonAncestorTestData
+{
+    std::string urdf_file;
+    std::map<StrPair, std::string> link_pairs_and_nearest_common_ancestors;
+};
+
+std::vector<NearestCommonAncestorTestData> GetLinkPairsAndNearestCommonAncestors()
+{
+    std::vector<NearestCommonAncestorTestData> datas;
+
+    NearestCommonAncestorTestData four_bar_data;
+    four_bar_data.urdf_file = "four_bar";
+    four_bar_data.link_pairs_and_nearest_common_ancestors.insert(std::make_pair(StrPair{"base_link", "link1"}, "base_link"));
+    four_bar_data.link_pairs_and_nearest_common_ancestors.insert(std::make_pair(StrPair{"base_link", "link2"}, "base_link"));
+    four_bar_data.link_pairs_and_nearest_common_ancestors.insert(std::make_pair(StrPair{"base_link", "link3"}, "base_link"));
+    four_bar_data.link_pairs_and_nearest_common_ancestors.insert(std::make_pair(StrPair{"link1", "link2"}, "link1"));
+    four_bar_data.link_pairs_and_nearest_common_ancestors.insert(std::make_pair(StrPair{"link1", "link3"}, "base_link"));
+    four_bar_data.link_pairs_and_nearest_common_ancestors.insert(std::make_pair(StrPair{"link2", "link3"}, "base_link"));
+    datas.push_back(four_bar_data);
+
+    NearestCommonAncestorTestData mini_cheetah_leg_data;
+    mini_cheetah_leg_data.urdf_file = "mini_cheetah_leg";
+    mini_cheetah_leg_data.link_pairs_and_nearest_common_ancestors.insert(std::make_pair(StrPair{"base", "abduct"}, "base"));
+    mini_cheetah_leg_data.link_pairs_and_nearest_common_ancestors.insert(std::make_pair(StrPair{"base", "abduct_rotor"}, "base"));
+    mini_cheetah_leg_data.link_pairs_and_nearest_common_ancestors.insert(std::make_pair(StrPair{"base", "thigh"}, "base"));
+    mini_cheetah_leg_data.link_pairs_and_nearest_common_ancestors.insert(std::make_pair(StrPair{"base", "hip_rotor"}, "base"));
+    mini_cheetah_leg_data.link_pairs_and_nearest_common_ancestors.insert(std::make_pair(StrPair{"base", "shank"}, "base"));
+    mini_cheetah_leg_data.link_pairs_and_nearest_common_ancestors.insert(std::make_pair(StrPair{"base", "knee_rotor"}, "base"));
+    mini_cheetah_leg_data.link_pairs_and_nearest_common_ancestors.insert(std::make_pair(StrPair{"abduct", "abduct_rotor"}, "base"));
+    mini_cheetah_leg_data.link_pairs_and_nearest_common_ancestors.insert(std::make_pair(StrPair{"abduct", "thigh"}, "abduct"));
+    mini_cheetah_leg_data.link_pairs_and_nearest_common_ancestors.insert(std::make_pair(StrPair{"abduct", "hip_rotor"}, "abduct"));
+    mini_cheetah_leg_data.link_pairs_and_nearest_common_ancestors.insert(std::make_pair(StrPair{"abduct", "shank"}, "abduct"));
+    mini_cheetah_leg_data.link_pairs_and_nearest_common_ancestors.insert(std::make_pair(StrPair{"abduct", "knee_rotor"}, "abduct"));
+    mini_cheetah_leg_data.link_pairs_and_nearest_common_ancestors.insert(std::make_pair(StrPair{"abduct_rotor", "thigh"}, "base"));
+    mini_cheetah_leg_data.link_pairs_and_nearest_common_ancestors.insert(std::make_pair(StrPair{"abduct_rotor", "hip_rotor"}, "base"));
+    mini_cheetah_leg_data.link_pairs_and_nearest_common_ancestors.insert(std::make_pair(StrPair{"abduct_rotor", "shank"}, "base"));
+    mini_cheetah_leg_data.link_pairs_and_nearest_common_ancestors.insert(std::make_pair(StrPair{"abduct_rotor", "knee_rotor"}, "base"));
+    mini_cheetah_leg_data.link_pairs_and_nearest_common_ancestors.insert(std::make_pair(StrPair{"thigh", "hip_rotor"}, "abduct"));
+    mini_cheetah_leg_data.link_pairs_and_nearest_common_ancestors.insert(std::make_pair(StrPair{"thigh", "shank"}, "thigh"));
+    mini_cheetah_leg_data.link_pairs_and_nearest_common_ancestors.insert(std::make_pair(StrPair{"thigh", "knee_rotor"}, "thigh"));
+    mini_cheetah_leg_data.link_pairs_and_nearest_common_ancestors.insert(std::make_pair(StrPair{"hip_rotor", "shank"}, "abduct"));
+    mini_cheetah_leg_data.link_pairs_and_nearest_common_ancestors.insert(std::make_pair(StrPair{"hip_rotor", "knee_rotor"}, "abduct"));
+    mini_cheetah_leg_data.link_pairs_and_nearest_common_ancestors.insert(std::make_pair(StrPair{"shank", "knee_rotor"}, "thigh"));
+    datas.push_back(mini_cheetah_leg_data);
+
+    // @MatthewChignoli: Can add more robots here if desired...
+
+    return datas;
+}
+
+class NearestCommonAncestorTest : public ::testing::TestWithParam<NearestCommonAncestorTestData>
+{
+protected:
+    NearestCommonAncestorTest()
+    {
+        model_ = urdf::parseURDFFile("/home/matt/repos/URDF-Parser/" +
+                                     GetParam().urdf_file + ".urdf");
+    }
+    std::shared_ptr<urdf::ModelInterface> model_;
+};
+
+INSTANTIATE_TEST_CASE_P(NearestCommonAncestorTest, NearestCommonAncestorTest,
+                        ::testing::ValuesIn(GetLinkPairsAndNearestCommonAncestors()));
+
+TEST_P(NearestCommonAncestorTest, nearest_common_ancestor)
+{
+    for (const auto &link_pair_and_nearest_common_ancestor :
+         GetParam().link_pairs_and_nearest_common_ancestors)
+    {
+        const StrPair &link_name_pair = link_pair_and_nearest_common_ancestor.first;
+        const std::string &nca_name = link_pair_and_nearest_common_ancestor.second;
+
+        std::shared_ptr<const Link> nca = model_->nearestCommonAncestor(
+            model_->getLink(link_name_pair.first), model_->getLink(link_name_pair.second));
+
+        ASSERT_EQ(nca_name, nca->name);
+    }
+}
+
+// TODO(@MatthewChignoli): Explain this test
+struct SubtreeBetweenLinksTestData
+{
+    std::string urdf_file;
+    std::map<StrPair, std::vector<std::string>> link_pairs_and_subtrees;
+};
+
+std::vector<SubtreeBetweenLinksTestData> GetLinkPairsAndSubtrees()
+{
+    std::vector<SubtreeBetweenLinksTestData> datas;
+
+    SubtreeBetweenLinksTestData four_bar_data;
+    four_bar_data.urdf_file = "four_bar";
+    four_bar_data.link_pairs_and_subtrees.insert(std::make_pair(StrPair{"base_link", "link1"}, std::vector<std::string>{"link1"}));
+    four_bar_data.link_pairs_and_subtrees.insert(std::make_pair(StrPair{"base_link", "link2"}, std::vector<std::string>{"link1", "link2"}));
+    four_bar_data.link_pairs_and_subtrees.insert(std::make_pair(StrPair{"base_link", "link3"}, std::vector<std::string>{"link3"}));
+    four_bar_data.link_pairs_and_subtrees.insert(std::make_pair(StrPair{"link1", "link2"}, std::vector<std::string>{"link2"}));
+    datas.push_back(four_bar_data);
+
+    SubtreeBetweenLinksTestData mini_cheetah_leg_data;
+    mini_cheetah_leg_data.urdf_file = "mini_cheetah_leg";
+    mini_cheetah_leg_data.link_pairs_and_subtrees.insert(std::make_pair(StrPair{"base", "abduct"}, std::vector<std::string>{"abduct"}));
+    mini_cheetah_leg_data.link_pairs_and_subtrees.insert(std::make_pair(StrPair{"base", "abduct_rotor"}, std::vector<std::string>{"abduct_rotor"}));
+    mini_cheetah_leg_data.link_pairs_and_subtrees.insert(std::make_pair(StrPair{"base", "thigh"}, std::vector<std::string>{"abduct", "thigh"}));
+    mini_cheetah_leg_data.link_pairs_and_subtrees.insert(std::make_pair(StrPair{"base", "hip_rotor"}, std::vector<std::string>{"abduct", "hip_rotor"}));
+    mini_cheetah_leg_data.link_pairs_and_subtrees.insert(std::make_pair(StrPair{"base", "shank"}, std::vector<std::string>{"abduct", "thigh", "shank"}));
+    mini_cheetah_leg_data.link_pairs_and_subtrees.insert(std::make_pair(StrPair{"base", "knee_rotor"}, std::vector<std::string>{"abduct", "thigh", "knee_rotor"}));
+    mini_cheetah_leg_data.link_pairs_and_subtrees.insert(std::make_pair(StrPair{"abduct", "thigh"}, std::vector<std::string>{"thigh"}));
+    mini_cheetah_leg_data.link_pairs_and_subtrees.insert(std::make_pair(StrPair{"abduct", "hip_rotor"}, std::vector<std::string>{"hip_rotor"}));
+    mini_cheetah_leg_data.link_pairs_and_subtrees.insert(std::make_pair(StrPair{"abduct", "shank"}, std::vector<std::string>{"thigh", "shank"}));
+    mini_cheetah_leg_data.link_pairs_and_subtrees.insert(std::make_pair(StrPair{"abduct", "knee_rotor"}, std::vector<std::string>{"thigh", "knee_rotor"}));
+    mini_cheetah_leg_data.link_pairs_and_subtrees.insert(std::make_pair(StrPair{"thigh", "shank"}, std::vector<std::string>{"shank"}));
+    mini_cheetah_leg_data.link_pairs_and_subtrees.insert(std::make_pair(StrPair{"thigh", "knee_rotor"}, std::vector<std::string>{"knee_rotor"}));
+
+    // @MatthewChignoli: Can add more robots here if desired...
+
+    return datas;
+}
+
+class SubtreeBetweenLinksTest : public ::testing::TestWithParam<SubtreeBetweenLinksTestData>
+{
+protected:
+    SubtreeBetweenLinksTest()
+    {
+        model_ = urdf::parseURDFFile("/home/matt/repos/URDF-Parser/" +
+                                     GetParam().urdf_file + ".urdf");
+    }
+    std::shared_ptr<urdf::ModelInterface> model_;
+};
+
+INSTANTIATE_TEST_CASE_P(SubtreeBetweenLinksTest, SubtreeBetweenLinksTest,
+                        ::testing::ValuesIn(GetLinkPairsAndSubtrees()));
+
+TEST_P(SubtreeBetweenLinksTest, subtree_between_links)
+{
+    for (const auto &link_pair_and_subtree : GetParam().link_pairs_and_subtrees)
+    {
+        const StrPair &link_name_pair = link_pair_and_subtree.first;
+        const std::vector<std::string> &subtree_names = link_pair_and_subtree.second;
+
+        std::vector<std::shared_ptr<Link>> subtree;
+        model_->getSubtreeBetweenLinks(link_name_pair.first, link_name_pair.second, subtree);
+
+        ASSERT_EQ(subtree_names.size(), subtree.size());
+        for (size_t i = 0; i < subtree_names.size(); ++i)
+        {
+            ASSERT_EQ(subtree_names[i], subtree[i]->name);
+        }
     }
 }
 
 // TODO(@MatthewChignoli): Make a list of remaining tests that I will eventually make before realeasing the repo. They should mostly just be the existing tests, but with the new setup that has less redundant code
 // Tests needed:
-// - children for links
-// - supporting chains for links
-// - subtrees for links
-// - subtrees between links for links
-// - nearest common ancestor for links
 // - neighbors for links
 // - parents for clusters
 // - children for clusters

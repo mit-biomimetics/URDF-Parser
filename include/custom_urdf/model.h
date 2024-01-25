@@ -282,7 +282,8 @@ namespace urdf
 
           // Get supporting trees starting from nearest common ancestor and ending with the
           // predecessor and successor links
-          std::shared_ptr<Link> nca_link = nearestCommonAncestor(predecessor_link, successor_link);
+          std::shared_ptr<const Link> nca_link = nearestCommonAncestor(predecessor_link,
+                                                                       successor_link);
           std::vector<std::shared_ptr<Link>> nca_to_pred_subtree, nca_to_succ_subtree;
           getSubtreeBetweenLinks(nca_link->name, predecessor_link->name, nca_to_pred_subtree);
           getSubtreeBetweenLinks(nca_link->name, successor_link->name, nca_to_succ_subtree);
@@ -340,15 +341,15 @@ namespace urdf
       return clusters_.at(cluster_keys_.at(link_name));
     }
 
-    std::shared_ptr<Link> nearestCommonAncestor(const std::shared_ptr<Link> &link1,
-                                                const std::shared_ptr<Link> &link2) const
+    std::shared_ptr<const Link> nearestCommonAncestor(
+        const std::shared_ptr<const Link> &link1, const std::shared_ptr<const Link> &link2) const
     {
-      std::shared_ptr<Link> link1_ptr = link1;
-      std::shared_ptr<Link> link2_ptr = link2;
+      std::shared_ptr<const Link> link1_ptr = link1;
+      std::shared_ptr<const Link> link2_ptr = link2;
 
       // if either link is NULL, return NULL
       if (!link1_ptr || !link2_ptr)
-        return std::shared_ptr<Link>();
+        return nullptr;
 
       // if both links are the same, return the link
       if (link1_ptr == link2_ptr)
