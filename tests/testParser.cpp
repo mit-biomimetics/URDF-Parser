@@ -4,7 +4,8 @@
 
 using namespace urdf;
 
-// TODO(@MatthewChignoli): Explain this test
+// TODO(@MatthewChignoli): Can add more robots later
+
 std::vector<std::string> GetTestUrdfFiles()
 {
     std::vector<std::string> test_urdf_files;
@@ -30,14 +31,12 @@ TEST_P(ParserTest, createModelFromUrdfFile)
     ASSERT_TRUE(model != nullptr);
 }
 
-// TODO(@MatthewChignoli): Explain this test
 struct ParentLinkTestData
 {
     std::string urdf_file;
     std::map<std::string, std::string> links_and_parents;
 };
 
-// using StrtoStrMap = std::map<std::string, std::string>;
 std::vector<ParentLinkTestData> GetLinksAndParents()
 {
     std::vector<ParentLinkTestData> datas;
@@ -58,8 +57,6 @@ std::vector<ParentLinkTestData> GetLinksAndParents()
     mini_cheetah_leg_data.links_and_parents.insert(std::make_pair("shank", "thigh"));
     mini_cheetah_leg_data.links_and_parents.insert(std::make_pair("knee_rotor", "thigh"));
     datas.push_back(mini_cheetah_leg_data);
-
-    // TODO(@MatthewChignoli): Can add more robots here if desired...
 
     return datas;
 }
@@ -86,14 +83,12 @@ TEST_P(ParentLinkTest, parent)
     }
 }
 
-// TODO(@MatthewChignoli): Explain this test
 struct ChildrenLinksTestData
 {
     std::string urdf_file;
     std::map<std::string, std::vector<std::string>> links_and_children;
 };
 
-// using StrToVecStrMap = std::map<std::string, std::vector<std::string>>;
 std::vector<ChildrenLinksTestData> GetLinksAndChildren()
 {
     std::vector<ChildrenLinksTestData> datas;
@@ -117,8 +112,6 @@ std::vector<ChildrenLinksTestData> GetLinksAndChildren()
     mini_cheetah_leg_data.links_and_children.insert(std::make_pair("knee_rotor", std::vector<std::string>{}));
     datas.push_back(mini_cheetah_leg_data);
 
-    // @MatthewChignoli: Can add more robots here if desired...
-
     return datas;
 }
 
@@ -138,7 +131,6 @@ INSTANTIATE_TEST_CASE_P(ChildrenLinksTest, ChildrenLinksTest,
 
 TEST_P(ChildrenLinksTest, children)
 {
-    // const StrToVecStrMap &links_and_children = GetParam().second;
     for (const auto &link_and_children : GetParam().links_and_children)
     {
         const std::string &link_name = link_and_children.first;
@@ -161,7 +153,6 @@ TEST_P(ChildrenLinksTest, children)
     }
 }
 
-// TODO(@MatthewChignoli): Explain this test
 struct SupportingChainsTestData
 {
     std::string urdf_file;
@@ -190,8 +181,6 @@ std::vector<SupportingChainsTestData> GetLinksAndSupportingChains()
     mini_cheetah_leg_data.links_and_supporting_chains.insert(std::make_pair("shank", std::vector<std::string>{"base", "abduct", "thigh", "shank"}));
     mini_cheetah_leg_data.links_and_supporting_chains.insert(std::make_pair("knee_rotor", std::vector<std::string>{"base", "abduct", "thigh", "knee_rotor"}));
     datas.push_back(mini_cheetah_leg_data);
-
-    // @MatthewChignoli: Can add more robots here if desired...
 
     return datas;
 }
@@ -228,7 +217,6 @@ TEST_P(SupportingChainsTest, supporting_chains)
     }
 }
 
-// TODO(@MatthewChignoli): Explain this test
 using StrPair = std::pair<std::string, std::string>;
 struct NearestCommonAncestorTestData
 {
@@ -275,8 +263,6 @@ std::vector<NearestCommonAncestorTestData> GetLinkPairsAndNearestCommonAncestors
     mini_cheetah_leg_data.link_pairs_and_nearest_common_ancestors.insert(std::make_pair(StrPair{"shank", "knee_rotor"}, "thigh"));
     datas.push_back(mini_cheetah_leg_data);
 
-    // @MatthewChignoli: Can add more robots here if desired...
-
     return datas;
 }
 
@@ -309,7 +295,6 @@ TEST_P(NearestCommonAncestorTest, nearest_common_ancestor)
     }
 }
 
-// TODO(@MatthewChignoli): Explain this test
 struct SubtreeBetweenLinksTestData
 {
     std::string urdf_file;
@@ -342,8 +327,6 @@ std::vector<SubtreeBetweenLinksTestData> GetLinkPairsAndSubtrees()
     mini_cheetah_leg_data.link_pairs_and_subtrees.insert(std::make_pair(StrPair{"abduct", "knee_rotor"}, std::vector<std::string>{"thigh", "knee_rotor"}));
     mini_cheetah_leg_data.link_pairs_and_subtrees.insert(std::make_pair(StrPair{"thigh", "shank"}, std::vector<std::string>{"shank"}));
     mini_cheetah_leg_data.link_pairs_and_subtrees.insert(std::make_pair(StrPair{"thigh", "knee_rotor"}, std::vector<std::string>{"knee_rotor"}));
-
-    // @MatthewChignoli: Can add more robots here if desired...
 
     return datas;
 }
@@ -380,7 +363,6 @@ TEST_P(SubtreeBetweenLinksTest, subtree_between_links)
     }
 }
 
-// TODO(@MatthewChignoli): Explain this test
 struct NeighborsTestData
 {
     std::string urdf_file;
@@ -409,8 +391,6 @@ std::vector<NeighborsTestData> GetLinksAndNeighbors()
     mini_cheetah_leg_data.links_and_neighbors.insert(std::make_pair("shank", std::vector<std::string>{"knee_rotor"}));
     mini_cheetah_leg_data.links_and_neighbors.insert(std::make_pair("knee_rotor", std::vector<std::string>{"shank"}));
     datas.push_back(mini_cheetah_leg_data);
-
-    // @MatthewChignoli: Can add more robots here if desired...
 
     return datas;
 }
@@ -453,7 +433,6 @@ TEST_P(NeighborsTest, neighbors)
     }
 }
 
-// TODO(@MatthewChignoli): Explain this test
 class ClustersTest : public ::testing::TestWithParam<std::string>
 {
 protected:
