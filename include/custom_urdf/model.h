@@ -292,6 +292,7 @@ namespace urdf
         }
       }
 
+      // TODO(@MatthewChignoli): We need to make sure that when we add links to a cluster, it is being done such that the order of the links as they are in links_ is preserved
       extractClustersAsStronglyConnectedComponents();
 
       // loop through all links, for every link, find the cluster that contains it and the clusters 
@@ -415,9 +416,12 @@ namespace urdf
 
     void extractClustersAsStronglyConnectedComponents()
     {
+      // TODO(@MatthewChignoli): so maybe visted should be a std::vector instead of a map?
       std::map<std::string, bool> visited;
       std::stack<std::string> finishing_order;
 
+      // TODO(@MatthewChignoli): Can we use a std::vector for this as well? It seems like we should, which means that we also need to make sure that when we add neighbors to a link, we are doing so in the order that they are listed in the URDF. I wonder if there is a better way we can do this. Maybe associated with order in the link class?
+      // TODO(@MatthewChignoli): Ok so yeah what I have to do here is the same thing where I have a map and a vector and the map needs to point to the order of the vector.
       // Build the reverse graph
       std::map<std::string, std::vector<std::shared_ptr<Link>>> reverse_link_graph;
       for (auto &link : this->links_)

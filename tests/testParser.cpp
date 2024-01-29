@@ -99,6 +99,17 @@ TEST_P(LinkOrderTest, link_order)
     {
         ASSERT_EQ(GetParam().link_order[i], model_->links_[i]->name);
     }
+
+    // TODO(@MatthewChignoli): Make this part of the test more formal
+    // Now we want to print the links in each cluster and check their order
+    for (const auto &cluster : model_->clusters_)
+    {
+        std::cout << "Cluster: " << cluster.second->links[0]->name << std::endl;
+        for (std::shared_ptr<Link> link : cluster.second->links)
+        {
+            std::cout << link->name << std::endl;
+        }
+    }
 }
 
 struct ParentLinkTestData
