@@ -127,7 +127,8 @@ namespace urdf
     }
     int count(0);
     // Get all Link elements
-    for (TiXmlElement *link_xml = robot_xml->FirstChildElement("link"); link_xml; link_xml = link_xml->NextSiblingElement("link"))
+    for (TiXmlElement *link_xml = robot_xml->FirstChildElement("link"); link_xml;
+         link_xml = link_xml->NextSiblingElement("link"))
     {
 
       std::shared_ptr<Link> link;
@@ -166,7 +167,9 @@ namespace urdf
               }
             }
           }
-          model->links_.insert(make_pair(link->name, link));
+          model->link_keys_.insert(make_pair(link->name, model->links_.size()));
+          model->links_.push_back(link);
+
           ++count;
           if (verbose)
             printf("%d th link: %s\n", count, link->name.c_str());
@@ -283,38 +286,39 @@ namespace urdf
     return model;
   }
 
-  bool exportMaterial(Material &material, TiXmlElement *config);
-  bool exportLink(Link &link, TiXmlElement *config);
-  bool exportJoint(Joint &joint, TiXmlElement *config);
-  TiXmlDocument *exportURDF(const ModelInterface &model)
-  {
-    TiXmlDocument *doc = new TiXmlDocument();
+  // TODO(@MatthewChignoli): Add the export functions later
+  // bool exportMaterial(Material &material, TiXmlElement *config);
+  // bool exportLink(Link &link, TiXmlElement *config);
+  // bool exportJoint(Joint &joint, TiXmlElement *config);
+  // TiXmlDocument *exportURDF(const ModelInterface &model)
+  // {
+  //   TiXmlDocument *doc = new TiXmlDocument();
 
-    TiXmlElement *robot = new TiXmlElement("robot");
-    robot->SetAttribute("name", model.name_);
-    doc->LinkEndChild(robot);
+  //   TiXmlElement *robot = new TiXmlElement("robot");
+  //   robot->SetAttribute("name", model.name_);
+  //   doc->LinkEndChild(robot);
 
-    for (std::map<std::string, std::shared_ptr<Material>>::const_iterator m = model.materials_.begin(); m != model.materials_.end(); m++)
-    {
-      exportMaterial(*(m->second), robot);
-    }
+  //   for (std::map<std::string, std::shared_ptr<Material>>::const_iterator m = model.materials_.begin(); m != model.materials_.end(); m++)
+  //   {
+  //     exportMaterial(*(m->second), robot);
+  //   }
 
-    for (std::map<std::string, std::shared_ptr<Link>>::const_iterator l = model.links_.begin(); l != model.links_.end(); l++)
-    {
-      exportLink(*(l->second), robot);
-    }
+  //   for (std::map<std::string, std::shared_ptr<Link>>::const_iterator l = model.links_.begin(); l != model.links_.end(); l++)
+  //   {
+  //     exportLink(*(l->second), robot);
+  //   }
 
-    for (std::map<std::string, std::shared_ptr<Joint>>::const_iterator j = model.joints_.begin(); j != model.joints_.end(); j++)
-    {
-      exportJoint(*(j->second), robot);
-    }
+  //   for (std::map<std::string, std::shared_ptr<Joint>>::const_iterator j = model.joints_.begin(); j != model.joints_.end(); j++)
+  //   {
+  //     exportJoint(*(j->second), robot);
+  //   }
 
-    return doc;
-  }
+  //   return doc;
+  // }
 
-  TiXmlDocument *exportURDF(std::shared_ptr<ModelInterface> &model)
-  {
-    return exportURDF(*model);
-  }
+  // TiXmlDocument *exportURDF(std::shared_ptr<ModelInterface> &model)
+  // {
+  //   return exportURDF(*model);
+  // }
 
 }

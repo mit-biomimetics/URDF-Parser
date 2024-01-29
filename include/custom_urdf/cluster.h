@@ -10,6 +10,7 @@ namespace urdf
     class Cluster
     {
     public:
+        // TODO(@MatthewChignoli): Is this vector in the same order as model->links? It should be
         std::vector<std::shared_ptr<Link>> links;
         std::vector<std::shared_ptr<Cluster>> child_clusters;
         std::vector<std::shared_ptr<Constraint>> constraints;
