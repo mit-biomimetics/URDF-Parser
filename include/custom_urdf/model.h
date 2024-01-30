@@ -464,7 +464,10 @@ namespace urdf
             cluster_keys_.insert(make_pair(link->name, clusters_.size()));
           }
           std::shared_ptr<Cluster> cluster = std::make_shared<Cluster>();
-          cluster->links = scc;
+          for (std::shared_ptr<Link> &link : scc)
+          {
+            cluster->links.insert(make_pair(this->link_keys_.at(link->name), link));
+          }
           clusters_.insert(make_pair(clusters_.size(), cluster));
         }
       }
