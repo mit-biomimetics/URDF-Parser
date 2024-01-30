@@ -238,13 +238,14 @@ namespace urdf
           child_link->parent_joint = joint->second;
 
           // set child joint for parent link
-          parent_link->child_joints.push_back(joint->second);
+          int child_index = this->links_.keyIndex(child_link_name);
+          parent_link->child_joints.insert({child_index, joint->second});
 
           // set child link for parent link
-          parent_link->child_links.push_back(child_link);
+          parent_link->child_links.insert({child_index, child_link});
 
           // child links are neighbors of parent link
-          parent_link->neighbors.insert({this->links_.keyIndex(child_link_name), child_link});
+          parent_link->neighbors.insert({child_index, child_link});
 
           // fill in child/parent string map
           parent_link_tree[child_link->name] = parent_link_name;
@@ -316,8 +317,9 @@ namespace urdf
           parent_cluster->constraints.push_back(constraint);
         }
 
-        for (const std::shared_ptr<Link> &child_link : link->child_links)
+        for (const auto &pair : link->child_links)
         {
+          std::shared_ptr<Link> child_link = pair.second;
           std::shared_ptr<Cluster> child_cluster = getClusterContaining(child_link->name);
 
           // Check if child cluster is the same as parent cluster
