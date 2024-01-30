@@ -88,9 +88,9 @@ namespace urdf
     void getLinks(std::vector<std::shared_ptr<Link>> &links) const
     {
       links.clear();
-      for (const auto &link : this->links_)
+      for (const auto &name_and_link : this->links_)
       {
-        links.push_back(link.second);
+        links.push_back(name_and_link.second);
       }
     };
 
@@ -294,21 +294,20 @@ namespace urdf
           std::shared_ptr<Link> succ_subtree_root = nca_to_succ_subtree.front();
           predecessor_link->neighbors.insert({this->links_.keyIndex(succ_subtree_root->name),
                                               succ_subtree_root});
-                                              
+
           std::shared_ptr<Link> pred_subtree_root = nca_to_pred_subtree.front();
           successor_link->neighbors.insert({this->links_.keyIndex(pred_subtree_root->name),
                                             pred_subtree_root});
         }
       }
 
-      // TODO(@MatthewChignoli): We need to make sure that when we add links to a cluster, it is being done such that the order of the links as they are in links_ is preserved
       extractClustersAsStronglyConnectedComponents();
 
       // loop through all links, for every link, find the cluster that contains it and the clusters
       // that contain its child links. Then assign parent and child clusters
-      for (const auto &pair : this->links_)
+      for (const auto &name_and_link : this->links_)
       {
-        std::shared_ptr<Link> link = pair.second;
+        std::shared_ptr<Link> link = name_and_link.second;
 
         std::shared_ptr<Cluster> parent_cluster = getClusterContaining(link->name);
 
@@ -434,23 +433,22 @@ namespace urdf
       // TODO(@MatthewChignoli): Ok so yeah what I have to do here is the same thing where I have a map and a vector and the map needs to point to the order of the vector.
       // Build the reverse graph
       std::map<std::string, std::vector<std::shared_ptr<Link>>> reverse_link_graph;
-      for (auto &link : this->links_)
+      for (auto &name_and_link : this->links_)
       {
-        // TODO(@MatthewChignoli): Should we use pair or link.second?
-        reverse_link_graph[link.second->name] = std::vector<std::shared_ptr<Link>>();
+        reverse_link_graph[name_and_link.first] = std::vector<std::shared_ptr<Link>>();
       }
-      for (auto &link : this->links_)
+      for (auto &name_and_link : this->links_)
       {
-        for (auto &neighbor : link.second->neighbors)
+        for (auto &neighbor : name_and_link.second->neighbors)
         {
-          reverse_link_graph[neighbor.second->name].push_back(link.second);
+          reverse_link_graph[neighbor.second->name].push_back(name_and_link.second);
         }
       }
 
       // First Pass: Calculate finishing times
-      for (auto &link : this->links_)
+      for (auto &name_and_link : this->links_)
       {
-        const std::string &link_name = link.second->name;
+        const std::string &link_name = name_and_link.first;
         if (!visited[this->links_.keyIndex(link_name)])
         {
           dfsFirstPass(link_name, visited, finishing_order);
@@ -483,26 +481,24 @@ namespace urdf
       }
     }
 
-    // TODO(@MatthewChignoli): be consisten about the use of "this" and "->" for member access
     void initRoot(const std::map<std::string, std::string> &parent_link_tree)
     {
       this->root_link_.reset();
 
       // find the links that have no parent in the tree
-      for (const auto &link : this->links_)
+      for (const auto &name_and_link : this->links_)
       {
-        std::map<std::string, std::string>::const_iterator parent = parent_link_tree.find(link.second->name);
-        if (parent == parent_link_tree.end())
+        if (parent_link_tree.find(name_and_link.first) == parent_link_tree.end())
         {
           // store root link
           if (!this->root_link_)
           {
-            getLink(link.second->name, this->root_link_);
+            getLink(name_and_link.second->name, this->root_link_);
           }
           // we already found a root link
           else
           {
-            throw ParseError("Two root links found: [" + this->root_link_->name + "] and [" + link.second->name + "]");
+            throw ParseError("Two root links found: [" + this->root_link_->name + "] and [" + name_and_link.first + "]");
           }
         }
       }
@@ -511,10 +507,6 @@ namespace urdf
         throw ParseError("No root link found. The robot xml is not a valid tree.");
       }
     }
-
-    // TODO(@MatthewChignoli): We can try keys and names thing for everything to make sure things are loaded in the order that they are listed in the URDF. And then we need to unit test this
-
-    // TODO(@MatthewChignoli): Would be nice to have a single data struct rather than separate ones for the keys and the actual data
 
     /// \brief complete list of Links
     LifoMap<std::string, std::shared_ptr<Link>> links_;
