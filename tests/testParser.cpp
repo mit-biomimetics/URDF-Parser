@@ -15,6 +15,7 @@ std::vector<std::string> GetTestUrdfFiles()
     test_urdf_files.push_back("six_bar");
     test_urdf_files.push_back("planar_leg_linkage");
     test_urdf_files.push_back("revolute_rotor_chain");
+    test_urdf_files.push_back("mit_humanoid_leg");
     return test_urdf_files;
 }
 
@@ -29,6 +30,75 @@ TEST_P(ParserTest, createModelFromUrdfFile)
     std::shared_ptr<ModelInterface> model = parseURDFFile("/home/matt/repos/URDF-Parser/" +
                                                           GetParam() + ".urdf");
     ASSERT_TRUE(model != nullptr);
+}
+
+struct LinkOrderTestdata
+{
+    std::string urdf_file;
+    std::vector<std::string> link_order;
+};
+
+std::vector<LinkOrderTestdata> GetLinkOrders()
+{
+    std::vector<LinkOrderTestdata> datas;
+
+    LinkOrderTestdata four_bar_data;
+    four_bar_data.urdf_file = "four_bar";
+    four_bar_data.link_order.push_back("base_link");
+    four_bar_data.link_order.push_back("link1");
+    four_bar_data.link_order.push_back("link2");
+    four_bar_data.link_order.push_back("link3");
+    datas.push_back(four_bar_data);
+
+    LinkOrderTestdata mini_cheetah_leg_data;
+    mini_cheetah_leg_data.urdf_file = "mini_cheetah_leg";
+    mini_cheetah_leg_data.link_order.push_back("base");
+    mini_cheetah_leg_data.link_order.push_back("abduct");
+    mini_cheetah_leg_data.link_order.push_back("abduct_rotor");
+    mini_cheetah_leg_data.link_order.push_back("thigh");
+    mini_cheetah_leg_data.link_order.push_back("hip_rotor");
+    mini_cheetah_leg_data.link_order.push_back("shank");
+    mini_cheetah_leg_data.link_order.push_back("knee_rotor");
+    datas.push_back(mini_cheetah_leg_data);
+
+    LinkOrderTestdata mit_humanoid_leg_data;
+    mit_humanoid_leg_data.urdf_file = "mit_humanoid_leg";
+    mit_humanoid_leg_data.link_order.push_back("base");
+    mit_humanoid_leg_data.link_order.push_back("hip_rz_link");
+    mit_humanoid_leg_data.link_order.push_back("hip_rz_rotor");
+    mit_humanoid_leg_data.link_order.push_back("hip_rx_link");
+    mit_humanoid_leg_data.link_order.push_back("hip_rx_rotor");
+    mit_humanoid_leg_data.link_order.push_back("hip_ry_link");
+    mit_humanoid_leg_data.link_order.push_back("hip_ry_rotor");
+    mit_humanoid_leg_data.link_order.push_back("knee_link");
+    mit_humanoid_leg_data.link_order.push_back("knee_rotor");
+    mit_humanoid_leg_data.link_order.push_back("ankle_rotor");
+    mit_humanoid_leg_data.link_order.push_back("ankle_link");
+    datas.push_back(mit_humanoid_leg_data);
+
+    return datas;
+}
+
+class LinkOrderTest : public ::testing::TestWithParam<LinkOrderTestdata>
+{
+protected:
+    LinkOrderTest()
+    {
+        model_ = urdf::parseURDFFile("/home/matt/repos/URDF-Parser/" +
+                                     GetParam().urdf_file + ".urdf");
+    }
+    std::shared_ptr<urdf::ModelInterface> model_;
+};
+
+INSTANTIATE_TEST_CASE_P(LinkOrderTest, LinkOrderTest, ::testing::ValuesIn(GetLinkOrders()));
+
+TEST_P(LinkOrderTest, link_order)
+{
+    ASSERT_EQ(GetParam().link_order.size(), model_->links_.size());
+    for (size_t i = 0; i < GetParam().link_order.size(); ++i)
+    {
+        ASSERT_EQ(GetParam().link_order[i], model_->links_[i]->name);
+    }
 }
 
 struct ParentLinkTestData
@@ -411,24 +481,19 @@ INSTANTIATE_TEST_CASE_P(NeighborsTest, NeighborsTest,
 
 TEST_P(NeighborsTest, neighbors)
 {
+    // NOTE: The order of the neighbors matters 
+    
     for (const auto &link_and_neighbors : GetParam().links_and_neighbors)
     {
         const std::string &link_name = link_and_neighbors.first;
         const std::vector<std::string> &neighbors_names = link_and_neighbors.second;
 
         ASSERT_EQ(neighbors_names.size(), model_->getLink(link_name)->neighbors.size());
-        for (const auto &neighbor_name : neighbors_names)
+        int i = 0;
+        for (const auto& neighbor : model_->getLink(link_name)->neighbors)
         {
-            bool found_neighbor = false;
-            for (const auto &neighbor_link : model_->getLink(link_name)->neighbors)
-            {
-                if (neighbor_link->name == neighbor_name)
-                {
-                    found_neighbor = true;
-                    break;
-                }
-            }
-            ASSERT_TRUE(found_neighbor);
+            ASSERT_EQ(neighbors_names[i], neighbor.second->name);
+            i++;
         }
     }
 }

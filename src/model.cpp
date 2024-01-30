@@ -127,7 +127,8 @@ namespace urdf
     }
     int count(0);
     // Get all Link elements
-    for (TiXmlElement *link_xml = robot_xml->FirstChildElement("link"); link_xml; link_xml = link_xml->NextSiblingElement("link"))
+    for (TiXmlElement *link_xml = robot_xml->FirstChildElement("link"); link_xml;
+         link_xml = link_xml->NextSiblingElement("link"))
     {
 
       std::shared_ptr<Link> link;
@@ -166,7 +167,8 @@ namespace urdf
               }
             }
           }
-          model->links_.insert(make_pair(link->name, link));
+          model->links_.insert({link->name, link});
+
           ++count;
           if (verbose)
             printf("%d th link: %s\n", count, link->name.c_str());
@@ -299,7 +301,7 @@ namespace urdf
       exportMaterial(*(m->second), robot);
     }
 
-    for (std::map<std::string, std::shared_ptr<Link>>::const_iterator l = model.links_.begin(); l != model.links_.end(); l++)
+    for (std::vector<std::pair<std::string, std::shared_ptr<Link>>>::const_iterator l = model.links_.begin(); l != model.links_.end(); l++)
     {
       exportLink(*(l->second), robot);
     }
