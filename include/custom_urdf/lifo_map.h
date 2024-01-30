@@ -6,25 +6,36 @@
 
 namespace urdf
 {
+    // A custom variant of std::map that differs in the following ways:
+    // 1. It is a map where multiple keys can point to the same value
+    // 2. The values are stored in a vector in the order they were inserted
     template <typename Key, typename Value>
     class LifoMap
     {
     public:
         void insert(const Key &key, const Value &value)
         {
-            data.push_back({key, value});
+            data.push_back(value);
             map[key] = data.size() - 1;
         }
         void insert(const std::pair<Key, Value> &pair)
         {
-            data.push_back(pair);
+            data.push_back(pair.second);
             map[pair.first] = data.size() - 1;
         }
+        void insert(const std::pair<std::vector<Key>, Value> &pair)
+        {
+            data.push_back(pair.second);
+            for (const auto &key : pair.first)
+            {
+                map[key] = data.size() - 1;
+            }
+        }
 
-        Value &operator[](const Key &key) { return data[map[key]].second; }
-        Value &operator[](const size_t &index) { return data[index].second; }
+        Value &operator[](const Key &key) { return data[map[key]]; }
+        Value &operator[](const size_t &index) { return data[index]; }
 
-        const Value &at(const Key &key) const { return data[map.at(key)].second; }
+        const Value &at(const Key &key) const { return data[map.at(key)]; }
 
         size_t keyIndex(const Key &key) const { return map.at(key); }
 
@@ -38,8 +49,8 @@ namespace urdf
 
         size_t size() const { return data.size(); }
 
-        using iterator = typename std::vector<std::pair<Key, Value>>::iterator;
-        using const_iterator = typename std::vector<std::pair<Key, Value>>::const_iterator;
+        using iterator = typename std::vector<Value>::iterator;
+        using const_iterator = typename std::vector<Value>::const_iterator;
 
         const_iterator begin() const { return const_iterator(data.begin()); }
         iterator begin() { return iterator(data.begin()); }
@@ -72,7 +83,7 @@ namespace urdf
         }
 
     private:
-        std::vector<std::pair<Key, Value>> data;
+        std::vector<Value> data;
         std::unordered_map<Key, size_t> map;
     };
 }

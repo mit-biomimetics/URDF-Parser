@@ -88,9 +88,9 @@ namespace urdf
     void getLinks(std::vector<std::shared_ptr<Link>> &links) const
     {
       links.clear();
-      for (const auto &name_and_link : this->links_)
+      for (const std::shared_ptr<Link> &link : this->links_)
       {
-        links.push_back(name_and_link.second);
+        links.push_back(link);
       }
     };
 
@@ -305,10 +305,8 @@ namespace urdf
 
       // loop through all links, for every link, find the cluster that contains it and the clusters
       // that contain its child links. Then assign parent and child clusters
-      for (const auto &name_and_link : this->links_)
+      for (const std::shared_ptr<Link> &link : this->links_)
       {
-        std::shared_ptr<Link> link = name_and_link.second;
-
         std::shared_ptr<Cluster> parent_cluster = getClusterContaining(link->name);
 
         for (const std::string &constraint_name : link->constraint_names)
@@ -344,7 +342,7 @@ namespace urdf
 
     std::shared_ptr<Cluster> getClusterContaining(const std::string &link_name)
     {
-      return clusters_.at(cluster_keys_.at(link_name));
+      return this->clusters_.at(link_name);
     }
 
     std::shared_ptr<const Link> nearestCommonAncestor(
@@ -429,22 +427,22 @@ namespace urdf
 
       // Build the reverse graph
       std::map<std::string, std::vector<std::shared_ptr<Link>>> reverse_link_graph;
-      for (auto &name_and_link : this->links_)
+      for (std::shared_ptr<Link> &link : this->links_)
       {
-        reverse_link_graph[name_and_link.first] = std::vector<std::shared_ptr<Link>>();
+        reverse_link_graph[link->name] = std::vector<std::shared_ptr<Link>>();
       }
-      for (auto &name_and_link : this->links_)
+      for (auto &link : this->links_)
       {
-        for (auto &neighbor : name_and_link.second->neighbors)
+        for (auto &neighbor : link->neighbors)
         {
-          reverse_link_graph[neighbor.second->name].push_back(name_and_link.second);
+          reverse_link_graph[neighbor.second->name].push_back(link);
         }
       }
 
       // First Pass: Calculate finishing times
-      for (auto &name_and_link : this->links_)
+      for (std::shared_ptr<Link> &link : this->links_)
       {
-        const std::string &link_name = name_and_link.first;
+        const std::string &link_name = link->name;
         if (!visited[link_name])
         {
           dfsFirstPass(link_name, visited, finishing_order);
@@ -463,16 +461,15 @@ namespace urdf
         {
           std::vector<std::shared_ptr<Link>> scc;
           dfsSecondPass(reverse_link_graph, link_name, visited, scc);
-          for (const std::shared_ptr<Link> &link : scc)
-          {
-            cluster_keys_.insert(make_pair(link->name, clusters_.size()));
-          }
+          
+          std::vector<std::string> link_names;
           std::shared_ptr<Cluster> cluster = std::make_shared<Cluster>();
           for (std::shared_ptr<Link> &link : scc)
           {
+            link_names.push_back(link->name);
             cluster->links.insert(make_pair(this->links_.keyIndex(link->name), link));
           }
-          clusters_.insert(make_pair(clusters_.size(), cluster));
+          this->clusters_.insert({link_names, cluster});
         }
       }
     }
@@ -482,19 +479,19 @@ namespace urdf
       this->root_link_.reset();
 
       // find the links that have no parent in the tree
-      for (const auto &name_and_link : this->links_)
+      for (const std::shared_ptr<Link> &link : this->links_)
       {
-        if (parent_link_tree.find(name_and_link.first) == parent_link_tree.end())
+        if (parent_link_tree.find(link->name) == parent_link_tree.end())
         {
           // store root link
           if (!this->root_link_)
           {
-            getLink(name_and_link.first, this->root_link_);
+            getLink(link->name, this->root_link_);
           }
           // we already found a root link
           else
           {
-            throw ParseError("Two root links found: [" + this->root_link_->name + "] and [" + name_and_link.first + "]");
+            throw ParseError("Two root links found: [" + this->root_link_->name + "] and [" + link->name + "]");
           }
         }
       }
@@ -511,8 +508,7 @@ namespace urdf
     /// \brief complete list of Constraint Joints
     std::map<std::string, std::shared_ptr<Constraint>> constraints_;
     /// \brief complete list of Clusters
-    std::map<std::string, int> cluster_keys_;
-    std::map<int, std::shared_ptr<Cluster>> clusters_;
+    LifoMap<std::string, std::shared_ptr<Cluster>> clusters_;
     /// \brief complete list of Materials
     std::map<std::string, std::shared_ptr<Material>> materials_;
 
