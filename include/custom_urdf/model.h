@@ -390,15 +390,14 @@ namespace urdf
       return ancestor;
     }
 
-    void dfsFirstPass(const std::string &link_name, std::map<int, bool> &visited,
+    void dfsFirstPass(const std::string &link_name, std::map<std::string, bool> &visited,
                       std::stack<std::string> &finishing_order)
     {
-      // TODO(@MatthewChignoli): Can we revert the visited <int,bool> map to a visited <string,bool> vector?
-      visited[this->links_.keyIndex(link_name)] = true;
+      visited[link_name] = true;
       for (const auto &neighbor : this->links_.at(link_name)->neighbors)
       {
         const std::string &neighbor_name = neighbor.second->name;
-        if (!visited[this->links_.keyIndex(neighbor_name)])
+        if (!visited[neighbor_name])
         {
           dfsFirstPass(neighbor_name, visited, finishing_order);
         }
@@ -408,15 +407,15 @@ namespace urdf
 
     void
     dfsSecondPass(const std::map<std::string, std::vector<std::shared_ptr<Link>>> &reverse_graph,
-                  const std::string &link_name, std::map<int, bool> &visited,
+                  const std::string &link_name, std::map<std::string, bool> &visited,
                   std::vector<std::shared_ptr<Link>> &scc)
     {
-      visited[this->links_.keyIndex(link_name)] = true;
+      visited[link_name] = true;
       scc.push_back(this->links_.at(link_name));
       for (const std::shared_ptr<Link> neighbor : reverse_graph.at(link_name))
       {
         const std::string &neighbor_name = neighbor->name;
-        if (!visited[this->links_.keyIndex(neighbor_name)])
+        if (!visited[neighbor_name])
         {
           dfsSecondPass(reverse_graph, neighbor_name, visited, scc);
         }
@@ -425,12 +424,9 @@ namespace urdf
 
     void extractClustersAsStronglyConnectedComponents()
     {
-      // TODO(@MatthewChignoli): so maybe visted should be a std::vector instead of a map?
-      std::map<int, bool> visited;
+      std::map<std::string, bool> visited;
       std::stack<std::string> finishing_order;
 
-      // TODO(@MatthewChignoli): Can we use a std::vector for this as well? It seems like we should, which means that we also need to make sure that when we add neighbors to a link, we are doing so in the order that they are listed in the URDF. I wonder if there is a better way we can do this. Maybe associated with order in the link class?
-      // TODO(@MatthewChignoli): Ok so yeah what I have to do here is the same thing where I have a map and a vector and the map needs to point to the order of the vector.
       // Build the reverse graph
       std::map<std::string, std::vector<std::shared_ptr<Link>>> reverse_link_graph;
       for (auto &name_and_link : this->links_)
@@ -449,7 +445,7 @@ namespace urdf
       for (auto &name_and_link : this->links_)
       {
         const std::string &link_name = name_and_link.first;
-        if (!visited[this->links_.keyIndex(link_name)])
+        if (!visited[link_name])
         {
           dfsFirstPass(link_name, visited, finishing_order);
         }
@@ -463,7 +459,7 @@ namespace urdf
         const std::string link_name = finishing_order.top();
         finishing_order.pop();
 
-        if (!visited[this->links_.keyIndex(link_name)])
+        if (!visited[link_name])
         {
           std::vector<std::shared_ptr<Link>> scc;
           dfsSecondPass(reverse_link_graph, link_name, visited, scc);
@@ -493,7 +489,7 @@ namespace urdf
           // store root link
           if (!this->root_link_)
           {
-            getLink(name_and_link.second->name, this->root_link_);
+            getLink(name_and_link.first, this->root_link_);
           }
           // we already found a root link
           else
