@@ -167,8 +167,7 @@ namespace urdf
               }
             }
           }
-          model->link_keys_.insert(make_pair(link->name, model->links_.size()));
-          model->links_.push_back(link);
+          model->links_.insert({link->name, link});
 
           ++count;
           if (verbose)

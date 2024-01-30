@@ -41,6 +41,7 @@
 #include <map>
 #include <stack>
 #include <algorithm>
+#include "lifo_map.h"
 #include "cluster.h"
 #include "exception.h"
 #include <memory>
@@ -55,10 +56,10 @@ namespace urdf
     std::shared_ptr<const Link> getLink(const std::string &name) const
     {
       std::shared_ptr<const Link> ptr;
-      if (this->link_keys_.find(name) == this->link_keys_.end())
+      if (this->links_.find(name) == this->links_.end())
         ptr.reset();
       else
-        ptr = this->links_.at(this->link_keys_.find(name)->second);
+        ptr = this->links_.at(name);
       return ptr;
     };
 
@@ -86,7 +87,11 @@ namespace urdf
 
     void getLinks(std::vector<std::shared_ptr<Link>> &links) const
     {
-        links = this->links_;
+      links.clear();
+      for (const auto &link : this->links_)
+      {
+        links.push_back(link.second);
+      }
     };
 
     void getSupportingChain(const std::string &link_name,
@@ -160,7 +165,6 @@ namespace urdf
     void clear()
     {
       name_.clear();
-      this->link_keys_.clear();
       this->links_.clear();
       this->joints_.clear();
       this->materials_.clear();
@@ -171,10 +175,10 @@ namespace urdf
     void getLink(const std::string &name, std::shared_ptr<Link> &link) const
     {
       std::shared_ptr<Link> ptr;
-      if (this->link_keys_.find(name) == this->link_keys_.end())
+      if (this->links_.find(name) == this->links_.end())
         ptr.reset();
       else
-        ptr = this->links(name);
+        ptr = this->links_.at(name);
       link = ptr;
     };
 
@@ -240,14 +244,14 @@ namespace urdf
           parent_link->child_links.push_back(child_link);
 
           // child links are neighbors of parent link
-          parent_link->neighbors.insert({this->link_keys_.at(child_link_name), child_link});
+          parent_link->neighbors.insert({this->links_.keyIndex(child_link_name), child_link});
 
           // fill in child/parent string map
           parent_link_tree[child_link->name] = parent_link_name;
         }
       }
 
-      // loop through all constraints, assign them to their respective predecessor links, and add 
+      // loop through all constraints, assign them to their respective predecessor links, and add
       // resulting neighbors to the graph
       for (auto &constraint : this->constraints_)
       {
@@ -287,21 +291,25 @@ namespace urdf
           constraint.second->nca_to_successor_subtree = nca_to_succ_subtree;
 
           // Create cycle for the loop constraint
-          // TODO(@MatthewChignoli): This is silly
-          predecessor_link->neighbors.insert({this->link_keys_.at(nca_to_succ_subtree.front()->name),
-                                              nca_to_succ_subtree.front()});
-          successor_link->neighbors.insert({this->link_keys_.at(nca_to_pred_subtree.front()->name),
-                                            nca_to_pred_subtree.front()});
+          std::shared_ptr<Link> succ_subtree_root = nca_to_succ_subtree.front();
+          predecessor_link->neighbors.insert({this->links_.keyIndex(succ_subtree_root->name),
+                                              succ_subtree_root});
+                                              
+          std::shared_ptr<Link> pred_subtree_root = nca_to_pred_subtree.front();
+          successor_link->neighbors.insert({this->links_.keyIndex(pred_subtree_root->name),
+                                            pred_subtree_root});
         }
       }
 
       // TODO(@MatthewChignoli): We need to make sure that when we add links to a cluster, it is being done such that the order of the links as they are in links_ is preserved
       extractClustersAsStronglyConnectedComponents();
 
-      // loop through all links, for every link, find the cluster that contains it and the clusters 
+      // loop through all links, for every link, find the cluster that contains it and the clusters
       // that contain its child links. Then assign parent and child clusters
-      for (std::shared_ptr<Link> link : this->links_)
+      for (const auto &pair : this->links_)
       {
+        std::shared_ptr<Link> link = pair.second;
+
         std::shared_ptr<Cluster> parent_cluster = getClusterContaining(link->name);
 
         for (const std::string &constraint_name : link->constraint_names)
@@ -386,11 +394,12 @@ namespace urdf
     void dfsFirstPass(const std::string &link_name, std::map<int, bool> &visited,
                       std::stack<std::string> &finishing_order)
     {
-      visited[this->link_keys_.at(link_name)] = true;
-      for (const auto& neighbor : links(link_name)->neighbors)
+      // TODO(@MatthewChignoli): Can we revert the visited <int,bool> map to a visited <string,bool> vector?
+      visited[this->links_.keyIndex(link_name)] = true;
+      for (const auto &neighbor : this->links_.at(link_name)->neighbors)
       {
         const std::string &neighbor_name = neighbor.second->name;
-        if (!visited[this->link_keys_.at(neighbor_name)])
+        if (!visited[this->links_.keyIndex(neighbor_name)])
         {
           dfsFirstPass(neighbor_name, visited, finishing_order);
         }
@@ -403,12 +412,12 @@ namespace urdf
                   const std::string &link_name, std::map<int, bool> &visited,
                   std::vector<std::shared_ptr<Link>> &scc)
     {
-      visited[this->link_keys_.at(link_name)] = true;
-      scc.push_back(links(link_name));
+      visited[this->links_.keyIndex(link_name)] = true;
+      scc.push_back(this->links_.at(link_name));
       for (const std::shared_ptr<Link> neighbor : reverse_graph.at(link_name))
       {
         const std::string &neighbor_name = neighbor->name;
-        if (!visited[this->link_keys_.at(neighbor_name)])
+        if (!visited[this->links_.keyIndex(neighbor_name)])
         {
           dfsSecondPass(reverse_graph, neighbor_name, visited, scc);
         }
@@ -427,21 +436,22 @@ namespace urdf
       std::map<std::string, std::vector<std::shared_ptr<Link>>> reverse_link_graph;
       for (auto &link : this->links_)
       {
-        reverse_link_graph[link->name] = std::vector<std::shared_ptr<Link>>();
+        // TODO(@MatthewChignoli): Should we use pair or link.second?
+        reverse_link_graph[link.second->name] = std::vector<std::shared_ptr<Link>>();
       }
       for (auto &link : this->links_)
       {
-        for (auto &neighbor : link->neighbors)
+        for (auto &neighbor : link.second->neighbors)
         {
-          reverse_link_graph[neighbor.second->name].push_back(link);
+          reverse_link_graph[neighbor.second->name].push_back(link.second);
         }
       }
 
       // First Pass: Calculate finishing times
       for (auto &link : this->links_)
       {
-        const std::string &link_name = link->name;
-        if (!visited[this->link_keys_.at(link_name)])
+        const std::string &link_name = link.second->name;
+        if (!visited[this->links_.keyIndex(link_name)])
         {
           dfsFirstPass(link_name, visited, finishing_order);
         }
@@ -455,7 +465,7 @@ namespace urdf
         const std::string link_name = finishing_order.top();
         finishing_order.pop();
 
-        if (!visited[this->link_keys_.at(link_name)])
+        if (!visited[this->links_.keyIndex(link_name)])
         {
           std::vector<std::shared_ptr<Link>> scc;
           dfsSecondPass(reverse_link_graph, link_name, visited, scc);
@@ -466,7 +476,7 @@ namespace urdf
           std::shared_ptr<Cluster> cluster = std::make_shared<Cluster>();
           for (std::shared_ptr<Link> &link : scc)
           {
-            cluster->links.insert(make_pair(this->link_keys_.at(link->name), link));
+            cluster->links.insert(make_pair(this->links_.keyIndex(link->name), link));
           }
           clusters_.insert(make_pair(clusters_.size(), cluster));
         }
@@ -479,20 +489,20 @@ namespace urdf
       this->root_link_.reset();
 
       // find the links that have no parent in the tree
-      for (std::shared_ptr<Link> link : this->links_)
+      for (const auto &link : this->links_)
       {
-        std::map<std::string, std::string>::const_iterator parent = parent_link_tree.find(link->name);
+        std::map<std::string, std::string>::const_iterator parent = parent_link_tree.find(link.second->name);
         if (parent == parent_link_tree.end())
         {
           // store root link
           if (!this->root_link_)
           {
-            getLink(link->name, this->root_link_);
+            getLink(link.second->name, this->root_link_);
           }
           // we already found a root link
           else
           {
-            throw ParseError("Two root links found: [" + this->root_link_->name + "] and [" + link->name + "]");
+            throw ParseError("Two root links found: [" + this->root_link_->name + "] and [" + link.second->name + "]");
           }
         }
       }
@@ -507,9 +517,7 @@ namespace urdf
     // TODO(@MatthewChignoli): Would be nice to have a single data struct rather than separate ones for the keys and the actual data
 
     /// \brief complete list of Links
-    std::map<std::string, int> link_keys_;
-    std::vector<std::shared_ptr<Link>> links_;
-    std::shared_ptr<Link> links(std::string name) const { return links_.at(link_keys_.at(name)); }
+    LifoMap<std::string, std::shared_ptr<Link>> links_;
     /// \brief complete list of Joints
     std::map<std::string, std::shared_ptr<Joint>> joints_;
     /// \brief complete list of Constraint Joints
