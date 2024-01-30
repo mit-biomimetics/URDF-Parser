@@ -99,17 +99,6 @@ TEST_P(LinkOrderTest, link_order)
     {
         ASSERT_EQ(GetParam().link_order[i], model_->links_[i]->name);
     }
-
-    // TODO(@MatthewChignoli): Make this part of the test more formal
-    // Now we want to print the links in each cluster and check their order
-    for (const auto &cluster : model_->clusters_)
-    {
-        std::cout << "Cluster: " << cluster.second->links[0]->name << std::endl;
-        for (std::shared_ptr<Link> link : cluster.second->links)
-        {
-            std::cout << link->name << std::endl;
-        }
-    }
 }
 
 struct ParentLinkTestData
@@ -492,24 +481,19 @@ INSTANTIATE_TEST_CASE_P(NeighborsTest, NeighborsTest,
 
 TEST_P(NeighborsTest, neighbors)
 {
+    // NOTE: The order of the neighbors matters 
+
     for (const auto &link_and_neighbors : GetParam().links_and_neighbors)
     {
         const std::string &link_name = link_and_neighbors.first;
         const std::vector<std::string> &neighbors_names = link_and_neighbors.second;
 
         ASSERT_EQ(neighbors_names.size(), model_->getLink(link_name)->neighbors.size());
-        for (const auto &neighbor_name : neighbors_names)
+        int i = 0;
+        for (const auto& neighbor : model_->getLink(link_name)->neighbors)
         {
-            bool found_neighbor = false;
-            for (const auto &neighbor_link : model_->getLink(link_name)->neighbors)
-            {
-                if (neighbor_link->name == neighbor_name)
-                {
-                    found_neighbor = true;
-                    break;
-                }
-            }
-            ASSERT_TRUE(found_neighbor);
+            ASSERT_EQ(neighbors_names[i], neighbor.second->name);
+            i++;
         }
     }
 }

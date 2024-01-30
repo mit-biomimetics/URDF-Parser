@@ -240,7 +240,7 @@ namespace urdf
           parent_link->child_links.push_back(child_link);
 
           // child links are neighbors of parent link
-          parent_link->neighbors.push_back(child_link);
+          parent_link->neighbors.insert({this->link_keys_.at(child_link_name), child_link});
 
           // fill in child/parent string map
           parent_link_tree[child_link->name] = parent_link_name;
@@ -287,8 +287,11 @@ namespace urdf
           constraint.second->nca_to_successor_subtree = nca_to_succ_subtree;
 
           // Create cycle for the loop constraint
-          predecessor_link->neighbors.push_back(nca_to_succ_subtree.front());
-          successor_link->neighbors.push_back(nca_to_pred_subtree.front());
+          // TODO(@MatthewChignoli): This is silly
+          predecessor_link->neighbors.insert({this->link_keys_.at(nca_to_succ_subtree.front()->name),
+                                              nca_to_succ_subtree.front()});
+          successor_link->neighbors.insert({this->link_keys_.at(nca_to_pred_subtree.front()->name),
+                                            nca_to_pred_subtree.front()});
         }
       }
 
@@ -380,16 +383,14 @@ namespace urdf
       return ancestor;
     }
 
-    void
-    dfsFirstPass(const std::string &link_name,
-                 std::map<std::string, bool> &visited,
-                 std::stack<std::string> &finishing_order)
+    void dfsFirstPass(const std::string &link_name, std::map<int, bool> &visited,
+                      std::stack<std::string> &finishing_order)
     {
-      visited[link_name] = true;
-      for (const std::shared_ptr<Link> neighbor : links(link_name)->neighbors)
+      visited[this->link_keys_.at(link_name)] = true;
+      for (const auto& neighbor : links(link_name)->neighbors)
       {
-        const std::string &neighbor_name = neighbor->name;
-        if (!visited[neighbor_name])
+        const std::string &neighbor_name = neighbor.second->name;
+        if (!visited[this->link_keys_.at(neighbor_name)])
         {
           dfsFirstPass(neighbor_name, visited, finishing_order);
         }
@@ -399,15 +400,15 @@ namespace urdf
 
     void
     dfsSecondPass(const std::map<std::string, std::vector<std::shared_ptr<Link>>> &reverse_graph,
-                  const std::string &link_name, std::map<std::string, bool> &visited,
+                  const std::string &link_name, std::map<int, bool> &visited,
                   std::vector<std::shared_ptr<Link>> &scc)
     {
-      visited[link_name] = true;
+      visited[this->link_keys_.at(link_name)] = true;
       scc.push_back(links(link_name));
       for (const std::shared_ptr<Link> neighbor : reverse_graph.at(link_name))
       {
         const std::string &neighbor_name = neighbor->name;
-        if (!visited[neighbor_name])
+        if (!visited[this->link_keys_.at(neighbor_name)])
         {
           dfsSecondPass(reverse_graph, neighbor_name, visited, scc);
         }
@@ -417,7 +418,7 @@ namespace urdf
     void extractClustersAsStronglyConnectedComponents()
     {
       // TODO(@MatthewChignoli): so maybe visted should be a std::vector instead of a map?
-      std::map<std::string, bool> visited;
+      std::map<int, bool> visited;
       std::stack<std::string> finishing_order;
 
       // TODO(@MatthewChignoli): Can we use a std::vector for this as well? It seems like we should, which means that we also need to make sure that when we add neighbors to a link, we are doing so in the order that they are listed in the URDF. I wonder if there is a better way we can do this. Maybe associated with order in the link class?
@@ -432,7 +433,7 @@ namespace urdf
       {
         for (auto &neighbor : link->neighbors)
         {
-          reverse_link_graph[neighbor->name].push_back(link);
+          reverse_link_graph[neighbor.second->name].push_back(link);
         }
       }
 
@@ -440,7 +441,7 @@ namespace urdf
       for (auto &link : this->links_)
       {
         const std::string &link_name = link->name;
-        if (!visited[link_name])
+        if (!visited[this->link_keys_.at(link_name)])
         {
           dfsFirstPass(link_name, visited, finishing_order);
         }
@@ -454,7 +455,7 @@ namespace urdf
         const std::string link_name = finishing_order.top();
         finishing_order.pop();
 
-        if (!visited[link_name])
+        if (!visited[this->link_keys_.at(link_name)])
         {
           std::vector<std::shared_ptr<Link>> scc;
           dfsSecondPass(reverse_link_graph, link_name, visited, scc);

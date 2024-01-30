@@ -245,7 +245,9 @@ namespace urdf
 
     std::vector<std::shared_ptr<Joint>> child_joints;
     std::vector<std::shared_ptr<Link>> child_links;
-    std::vector<std::shared_ptr<Link>> neighbors;
+    // TODO(@MatthewChignoli): Idk, but look at this
+    std::map<int, std::shared_ptr<Link>> neighbors;
+    // std::vector<std::shared_ptr<Link>> neighbors;
 
     std::vector<std::string> constraint_names;
 
