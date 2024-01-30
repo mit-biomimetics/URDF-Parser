@@ -342,7 +342,15 @@ namespace urdf
 
     std::shared_ptr<Cluster> getClusterContaining(const std::string &link_name)
     {
-      return this->clusters_.at(link_name);
+      for (const auto &pair : this->clusters_)
+      {
+        std::shared_ptr<Cluster> cluster = pair.second;
+        if (cluster->links.find(this->links_.keyIndex(link_name)) != cluster->links.end())
+        {
+          return cluster;
+        }
+      }
+      throw ParseError("Link [" + link_name + "] not found in any cluster");
     }
 
     std::shared_ptr<const Link> nearestCommonAncestor(
@@ -461,15 +469,15 @@ namespace urdf
         {
           std::vector<std::shared_ptr<Link>> scc;
           dfsSecondPass(reverse_link_graph, link_name, visited, scc);
-          
-          std::vector<std::string> link_names;
+
+          std::vector<int> link_indices;
           std::shared_ptr<Cluster> cluster = std::make_shared<Cluster>();
           for (std::shared_ptr<Link> &link : scc)
           {
-            link_names.push_back(link->name);
+            link_indices.push_back(this->links_.keyIndex(link->name));
             cluster->links.insert(make_pair(this->links_.keyIndex(link->name), link));
           }
-          this->clusters_.insert({link_names, cluster});
+          this->clusters_.insert({link_indices, cluster});
         }
       }
     }
@@ -508,7 +516,7 @@ namespace urdf
     /// \brief complete list of Constraint Joints
     std::map<std::string, std::shared_ptr<Constraint>> constraints_;
     /// \brief complete list of Clusters
-    LifoMap<std::string, std::shared_ptr<Cluster>> clusters_;
+    std::map<std::vector<int>, std::shared_ptr<Cluster>> clusters_;
     /// \brief complete list of Materials
     std::map<std::string, std::shared_ptr<Material>> materials_;
 

@@ -6,9 +6,8 @@
 
 namespace urdf
 {
-    // A custom variant of std::map that differs in the following ways:
-    // 1. It is a map where multiple keys can point to the same value
-    // 2. The values are stored in a vector in the order they were inserted
+    // A custom variant of std::map that differs in that the values are stored in a vector 
+    // in the order they were inserted
     template <typename Key, typename Value>
     class LifoMap
     {
@@ -22,14 +21,6 @@ namespace urdf
         {
             data.push_back(pair.second);
             map[pair.first] = data.size() - 1;
-        }
-        void insert(const std::pair<std::vector<Key>, Value> &pair)
-        {
-            data.push_back(pair.second);
-            for (const auto &key : pair.first)
-            {
-                map[key] = data.size() - 1;
-            }
         }
 
         Value &operator[](const Key &key) { return data[map[key]]; }
