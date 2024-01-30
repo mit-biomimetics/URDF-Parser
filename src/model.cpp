@@ -285,7 +285,6 @@ namespace urdf
     return model;
   }
 
-  // TODO(@MatthewChignoli): Add the export functions later
   bool exportMaterial(Material &material, TiXmlElement *config);
   bool exportLink(Link &link, TiXmlElement *config);
   bool exportJoint(Joint &joint, TiXmlElement *config);

@@ -482,7 +482,7 @@ INSTANTIATE_TEST_CASE_P(NeighborsTest, NeighborsTest,
 TEST_P(NeighborsTest, neighbors)
 {
     // NOTE: The order of the neighbors matters 
-
+    
     for (const auto &link_and_neighbors : GetParam().links_and_neighbors)
     {
         const std::string &link_name = link_and_neighbors.first;
