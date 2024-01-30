@@ -212,7 +212,7 @@ TEST_P(ChildrenLinksTest, children)
             bool found_child = false;
             for (const auto &child_link : model_->getLink(link_name)->child_links)
             {
-                if (child_link->name == child_name)
+                if (child_link.second->name == child_name)
                 {
                     found_child = true;
                     break;
@@ -548,10 +548,10 @@ TEST_P(ClustersTest, children)
         ClusterPtr cluster_containing_link = model_->getClusterContaining(link->name);
         std::vector<ClusterPtr> child_clusters = cluster_containing_link->child_clusters;
 
-        for (const LinkPtr &child_link : link->child_links)
+        for (const auto &child_link : link->child_links)
         {
             ClusterPtr cluster_containing_child_link =
-                model_->getClusterContaining(child_link->name);
+                model_->getClusterContaining(child_link.second->name);
 
             ASSERT_TRUE(cluster_containing_child_link == cluster_containing_link ||
                         std::find(child_clusters.begin(), child_clusters.end(), cluster_containing_child_link) != child_clusters.end());

@@ -244,9 +244,8 @@ namespace urdf
     ///   every link can have one parent
     std::shared_ptr<Joint> parent_joint;
 
-    std::vector<std::shared_ptr<Joint>> child_joints;
-    std::vector<std::shared_ptr<Link>> child_links;
-
+    std::map<int, std::shared_ptr<Joint>> child_joints;
+    std::map<int, std::shared_ptr<Link>> child_links;
     std::map<int, std::shared_ptr<Link>> neighbors;
 
     std::vector<std::string> constraint_names;

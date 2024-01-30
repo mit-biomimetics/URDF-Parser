@@ -150,18 +150,19 @@
     </link>
 
     <xacro:abad prefix="FR" x_sign="1" y_sign="-1"/>
-    <xacro:abad prefix="FL" x_sign="1" y_sign="1"/>
-    <xacro:abad prefix="HR" x_sign="-1" y_sign="-1"/>
-    <xacro:abad prefix="HL" x_sign="-1" y_sign="1"/>
-
     <xacro:hip prefix="FR" x_sign="1" y_sign="-1"/>
-    <xacro:hip prefix="FL" x_sign="1" y_sign="1"/>
-    <xacro:hip prefix="HR" x_sign="-1" y_sign="-1"/>
-    <xacro:hip prefix="HL" x_sign="-1" y_sign="1"/>
-
     <xacro:knee prefix="FR" x_sign="1" y_sign="-1"/>
+
+    <xacro:abad prefix="FL" x_sign="1" y_sign="1"/>
+    <xacro:hip prefix="FL" x_sign="1" y_sign="1"/>
     <xacro:knee prefix="FL" x_sign="1" y_sign="1"/>
+
+    <xacro:abad prefix="HR" x_sign="-1" y_sign="-1"/>
+    <xacro:hip prefix="HR" x_sign="-1" y_sign="-1"/>
     <xacro:knee prefix="HR" x_sign="-1" y_sign="-1"/>
+
+    <xacro:abad prefix="HL" x_sign="-1" y_sign="1"/>
+    <xacro:hip prefix="HL" x_sign="-1" y_sign="1"/>
     <xacro:knee prefix="HL" x_sign="-1" y_sign="1"/>
 
 </robot>
