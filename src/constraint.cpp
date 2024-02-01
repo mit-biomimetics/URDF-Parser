@@ -73,7 +73,7 @@ namespace urdf
             constraint.type = Constraint::ROLLING;
             constraint.ratio = std::make_shared<double>();
 
-            // Get ratio of radii of the two rolling surfaces (N = r_pred / r_succ)
+            // Get ratio of radii of the predecessor and successor rolling contacts
             TiXmlElement *ratio_xml = config->FirstChildElement("ratio");
             if (!ratio_xml)
             {
@@ -90,27 +90,6 @@ namespace urdf
                 {
                     std::stringstream stm;
                     stm << "Ratio [" << ratio_xml->Attribute("value") << "] is not a float";
-                    return false;
-                }
-            }
-
-            // Get polarity of the rolling constraint
-            TiXmlElement *polarity_xml = config->FirstChildElement("polarity");
-            if (!polarity_xml)
-            {
-                constraint.polarity = std::make_shared<int>(1);
-            }
-            else
-            {
-                try
-                {
-                    int polarity = std::stoi(polarity_xml->Attribute("value"));
-                    constraint.polarity = std::make_shared<int>(polarity);
-                }
-                catch (int e)
-                {
-                    std::stringstream stm;
-                    stm << "Polarity [" << polarity_xml->Attribute("value") << "] is not an integer";
                     return false;
                 }
             }
