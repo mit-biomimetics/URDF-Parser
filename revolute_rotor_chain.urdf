@@ -89,22 +89,19 @@
     <constraint name="transmission1" type="rolling">
         <predecessor link="link-0"/>
         <successor link="rotor-0"/>
-        <predecessor_origin xyz="6.0 0.0 0.0"/>
-        <successor_origin xyz="1.0 0.0 0.0"/>
+        <ratio value="6.0"/>
     </constraint>
 
     <constraint name="transmission2" type="rolling">
         <predecessor link="link-1"/>
         <successor link="rotor-1"/>
-        <predecessor_origin xyz="6.0 0.0 0.0"/>
-        <successor_origin xyz="1.0 0.0 0.0"/>
+        <ratio value="6.0"/>
     </constraint>
 
     <constraint name="transmission3" type="rolling">
         <predecessor link="link-2"/>
         <successor link="rotor-2"/>
-        <predecessor_origin xyz="6.0 0.0 0.0"/>
-        <successor_origin xyz="1.0 0.0 0.0"/>
+        <ratio value="6.0"/>
     </constraint>
 
 </robot>

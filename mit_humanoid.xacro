@@ -38,8 +38,7 @@
         <constraint name="${prefix}hipz_transmission" type="rolling">
             <predecessor link="${prefix}hip_rz_link"/>
             <successor link="${prefix}hip_rz_rotor"/>
-            <predecessor_origin xyz="6.0 0.0 0.0"/>
-            <successor_origin xyz="1.0 0.0 0.0"/>
+            <ratio value="6.0"/>
         </constraint>
     </xacro:macro>
 
@@ -79,8 +78,7 @@
         <constraint name="${prefix}hipx_transmission" type="rolling">
             <predecessor link="${prefix}hip_rx_link"/>
             <successor link="${prefix}hip_rx_rotor"/>
-            <predecessor_origin xyz="0.0 6.0 0.0"/>
-            <successor_origin xyz="0.0 1.0 0.0"/>
+            <ratio value="6.0"/>
         </constraint>
     </xacro:macro>
 
@@ -119,8 +117,7 @@
         <constraint name="${prefix}hipy_transmission" type="rolling">
             <predecessor link="${prefix}hip_ry_link"/>
             <successor link="${prefix}hip_ry_rotor"/>
-            <predecessor_origin xyz="6.0 0.0 0.0"/>
-            <successor_origin xyz="1.0 0.0 0.0"/>
+            <ratio value="6.0"/>
         </constraint>
     </xacro:macro>
 
@@ -159,8 +156,7 @@
         <constraint name="${prefix}knee_transmission" type="rolling">
             <predecessor link="${prefix}knee_link"/>
             <successor link="${prefix}knee_rotor"/>
-            <predecessor_origin xyz="12 0.0 0.0"/>
-            <successor_origin xyz="1.0 0.0 0.0"/>
+            <ratio value="12.0"/>
         </constraint>
     </xacro:macro>
 
@@ -199,8 +195,7 @@
         <constraint name="${prefix}ankle_transmission" type="rolling">
             <predecessor link="${prefix}ankle_link"/>
             <successor link="${prefix}ankle_rotor"/>
-            <predecessor_origin xyz="12.0 0.0 0.0"/>
-            <successor_origin xyz="1.0 0.0 0.0"/>
+            <ratio value="12.0"/>
         </constraint>
     </xacro:macro>
 
@@ -239,8 +234,7 @@
         <constraint name="${prefix}shouldery_transmission" type="rolling">
             <predecessor link="${prefix}shoulder_ry_link"/>
             <successor link="${prefix}shoulder_ry_rotor"/>
-            <predecessor_origin xyz="6.0 0.0 0.0"/>
-            <successor_origin xyz="1.0 0.0 0.0"/>
+            <ratio value="6.0"/>
         </constraint>
     </xacro:macro>
 
@@ -279,8 +273,7 @@
         <constraint name="${prefix}shoulderx_transmission" type="rolling">
             <predecessor link="${prefix}shoulder_rx_link"/>
             <successor link="${prefix}shoulder_rx_rotor"/>
-            <predecessor_origin xyz="0.0 6.0 0.0"/>
-            <successor_origin xyz="0.0 1.0 0.0"/>
+            <ratio value="6.0"/>
         </constraint>
     </xacro:macro>
 
@@ -319,8 +312,7 @@
         <constraint name="${prefix}shoulderz_transmission" type="rolling">
             <predecessor link="${prefix}shoulder_rz_link"/>
             <successor link="${prefix}shoulder_rz_rotor"/>
-            <predecessor_origin xyz="6.0 0.0 0.0"/>
-            <successor_origin xyz="1.0 0.0 0.0"/>
+            <ratio value="6.0"/>
         </constraint>
     </xacro:macro>
 
@@ -359,8 +351,7 @@
         <constraint name="${prefix}elbow_transmission" type="rolling">
             <predecessor link="${prefix}elbow_link"/>
             <successor link="${prefix}elbow_rotor"/>
-            <predecessor_origin xyz="9.0 0.0 0.0"/>
-            <successor_origin xyz="1.0 0.0 0.0"/>
+            <ratio value="9.0"/>
         </constraint>
     </xacro:macro>    
     <!-- End of macro definitions -->

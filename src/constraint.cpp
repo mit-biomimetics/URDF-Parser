@@ -81,9 +81,15 @@ namespace urdf
             }
             else
             {
-                if (ratio_xml->QueryDoubleAttribute("value", constraint.ratio.get()))
+                try
                 {
-                    constraint.ratio = std::make_shared<double>(1.0);
+                    double ratio = std::stod(ratio_xml->Attribute("value"));
+                    constraint.ratio = std::make_shared<double>(ratio);
+                }
+                catch (int e)
+                {
+                    std::stringstream stm;
+                    stm << "Ratio [" << ratio_xml->Attribute("value") << "] is not a float";
                     return false;
                 }
             }
@@ -96,9 +102,15 @@ namespace urdf
             }
             else
             {
-                if (polarity_xml->QueryIntAttribute("value", constraint.polarity.get()))
+                try
                 {
-                    constraint.polarity = std::make_shared<int>(1);
+                    int polarity = std::stoi(polarity_xml->Attribute("value"));
+                    constraint.polarity = std::make_shared<int>(polarity);
+                }
+                catch (int e)
+                {
+                    std::stringstream stm;
+                    stm << "Polarity [" << polarity_xml->Attribute("value") << "] is not an integer";
                     return false;
                 }
             }
