@@ -21,6 +21,46 @@ namespace urdf
         }
         constraint.name = name;
 
+        // Get Predecessor Link
+        TiXmlElement *predecessor_xml = config->FirstChildElement("predecessor");
+        if (predecessor_xml)
+        {
+            const char *pname = predecessor_xml->Attribute("link");
+            if (!pname)
+            {
+                printf("[Constraint] no predecessor link name\n");
+            }
+            else
+            {
+                constraint.predecessor_link_name = std::string(pname);
+            }
+        }
+        else
+        {
+            printf("[Constraint] no predecessor link\n");
+            return false;
+        }
+
+        // Get Successor Link
+        TiXmlElement *successor_xml = config->FirstChildElement("successor");
+        if (successor_xml)
+        {
+            const char *sname = successor_xml->Attribute("link");
+            if (!sname)
+            {
+                printf("[Constraint] no successor link name\n");
+            }
+            else
+            {
+                constraint.successor_link_name = std::string(sname);
+            }
+        }
+        else
+        {
+            printf("[Constraint] no successor link\n");
+            return false;
+        }
+
         // Get Joint type
         const char *type_char = config->Attribute("type");
         if (!type_char)
@@ -35,9 +75,8 @@ namespace urdf
             constraint.predecessor_to_constraint_origin_transform = std::make_shared<Pose>();
             constraint.successor_to_constraint_origin_transform = std::make_shared<Pose>();
 
-            // TODO(@MatthewChignoli): Should these be Poses or Vector3s? Maybe we could make an element called offets and then have pred and succ be Vector3s
             // Get transform from Predecessor Link to Constraint Frame
-            TiXmlElement *predecessor_origin_xml = config->FirstChildElement("predecessor_origin");
+            TiXmlElement *predecessor_origin_xml = predecessor_xml->FirstChildElement("origin");
             if (!predecessor_origin_xml)
             {
                 constraint.predecessor_to_constraint_origin_transform->clear();
@@ -53,7 +92,7 @@ namespace urdf
             }
 
             // Get transform from Successor Link to Joint Frame
-            TiXmlElement *successor_origin_xml = config->FirstChildElement("successor_origin");
+            TiXmlElement *successor_origin_xml = successor_xml->FirstChildElement("origin");
             if (!successor_origin_xml)
             {
                 constraint.successor_to_constraint_origin_transform->clear();
@@ -97,36 +136,6 @@ namespace urdf
         else
         {
             return false;
-        }
-
-        // Get Predecessor Link
-        TiXmlElement *predecessor_xml = config->FirstChildElement("predecessor");
-        if (predecessor_xml)
-        {
-            const char *pname = predecessor_xml->Attribute("link");
-            if (!pname)
-            {
-                printf("[joint] no predecessor link name\n");
-            }
-            else
-            {
-                constraint.predecessor_link_name = std::string(pname);
-            }
-        }
-
-        // Get Successor Link
-        TiXmlElement *successor_xml = config->FirstChildElement("successor");
-        if (successor_xml)
-        {
-            const char *sname = successor_xml->Attribute("link");
-            if (!sname)
-            {
-                printf("[joint] no successor link name\n");
-            }
-            else
-            {
-                constraint.successor_link_name = std::string(sname);
-            }
         }
 
         return true;
