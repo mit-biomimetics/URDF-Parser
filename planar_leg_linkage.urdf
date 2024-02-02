@@ -67,9 +67,11 @@
     <constraint name="linkage" type="position">
         <predecessor link="foot">
             <origin xyz="0.031 0.0 0.0"/>
+            <axis xyz="1 1 0"/>
         </predecessor>
         <successor link="shank_support">
             <origin xyz="0.096 0.0 0.0"/>
+            <axis xyz="1 1 0"/>
         </successor>
     </constraint>
 

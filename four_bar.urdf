@@ -52,9 +52,11 @@
     <constraint name="constraint1" type="position">
         <predecessor link="link3">
             <origin xyz="0.3 0.0 0.0"/>
+            <axis xyz="1 1 0"/>
         </predecessor>
         <successor link="link2">
             <origin xyz="0.2 0.0 0.0"/>
+            <axis xyz="1 1 0"/>
         </successor>
     </constraint>
 

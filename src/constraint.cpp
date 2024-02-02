@@ -21,6 +21,8 @@ namespace urdf
         }
         constraint.name = name;
 
+        // TODO(@MatthewChignoli): Make some helper functions so that we do not have to repeat code for the predecessor and successor links?
+
         // Get Predecessor Link
         TiXmlElement *predecessor_xml = config->FirstChildElement("predecessor");
         if (predecessor_xml)
@@ -73,7 +75,9 @@ namespace urdf
         {
             constraint.type = Constraint::POSITION;
             constraint.predecessor_to_constraint_origin_transform = std::make_shared<Pose>();
+            constraint.predecessor_axis = std::make_shared<Vector3>();
             constraint.successor_to_constraint_origin_transform = std::make_shared<Pose>();
+            constraint.successor_axis = std::make_shared<Vector3>();
 
             // Get transform from Predecessor Link to Constraint Frame
             TiXmlElement *predecessor_origin_xml = predecessor_xml->FirstChildElement("origin");
@@ -88,6 +92,29 @@ namespace urdf
                 {
                     constraint.predecessor_to_constraint_origin_transform->clear();
                     return false;
+                }
+            }
+
+            // Get axis in Predecessor Frame
+            TiXmlElement *predecessor_axis_xml = predecessor_xml->FirstChildElement("axis");
+            if (!predecessor_axis_xml)
+            {
+                printf("[Constraint] no axis specified\n");
+                return false;
+            }
+            else
+            {
+                if (predecessor_axis_xml->Attribute("xyz"))
+                {
+                    try
+                    {
+                        constraint.predecessor_axis->init(predecessor_axis_xml->Attribute("xyz"));
+                    }
+                    catch (ParseError &e)
+                    {
+                        constraint.predecessor_axis->clear();
+                        return false;
+                    }
                 }
             }
 
@@ -106,7 +133,30 @@ namespace urdf
                     return false;
                 }
             }
-        }
+
+            // Get axis in Successor Frame
+            TiXmlElement *successor_axis_xml = successor_xml->FirstChildElement("axis");
+            if (!successor_axis_xml)
+            {
+                printf("[Constraint] no axis specified\n");
+                return false;
+            }
+            else
+            {
+                if (successor_axis_xml->Attribute("xyz"))
+                {
+                    try
+                    {
+                        constraint.successor_axis->init(successor_axis_xml->Attribute("xyz"));
+                    }
+                    catch (ParseError &e)
+                    {
+                        constraint.successor_axis->clear();
+                        return false;
+                    }
+                }
+            }
+                }
         else if (type_str == "rolling")
         {
             constraint.type = Constraint::ROLLING;
