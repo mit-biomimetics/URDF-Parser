@@ -42,8 +42,7 @@
         <constraint name="${prefix}_abad_tranmission" type="rolling">
             <predecessor link="${prefix}_abad_link"/>
             <successor link="${prefix}_abad_rotor"/>
-            <predecessor_origin xyz="0.0 6.0 0.0"/>
-            <successor_origin xyz="0.0 1.0 0.0"/>
+            <ratio value="6.0"/>
         </constraint>
 
     </xacro:macro>
@@ -88,8 +87,7 @@
         <constraint name="${prefix}_hip_tranmission" type="rolling">
             <predecessor link="${prefix}_hip_link"/>
             <successor link="${prefix}_hip_rotor"/>
-            <predecessor_origin xyz="6.0 0.0 0.0"/>
-            <successor_origin xyz="1.0 0.0 0.0"/>
+            <ratio value="6.0"/>
         </constraint>
 
     </xacro:macro>
@@ -133,8 +131,7 @@
         <constraint name="${prefix}_knee_tranmission" type="rolling">
             <predecessor link="${prefix}_knee_link"/>
             <successor link="${prefix}_knee_rotor"/>
-            <predecessor_origin xyz="9.33 0.0 0.0"/>
-            <successor_origin xyz="1.0 0.0 0.0"/>
+            <ratio value="9.33"/>
         </constraint>
 
     </xacro:macro>

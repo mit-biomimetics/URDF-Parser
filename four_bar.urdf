@@ -50,10 +50,12 @@
     </joint>
 
     <constraint name="constraint1" type="position">
-        <predecessor link="link3"/>
-        <successor link="link2"/>
-        <predecessor_origin xyz="0.3 0.0 0.0"/>
-        <successor_origin xyz="0.2 0.0 0.0"/>
+        <predecessor link="link3">
+            <origin xyz="0.3 0.0 0.0"/>
+        </predecessor>
+        <successor link="link2">
+            <origin xyz="0.2 0.0 0.0"/>
+        </successor>
     </constraint>
 
 </robot>

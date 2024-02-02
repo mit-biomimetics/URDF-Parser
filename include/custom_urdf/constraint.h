@@ -19,49 +19,40 @@ namespace urdf
             ROLLING
         } type;
 
-        /// \brief     type_       meaning of <link>_to_constraint_origin_transform
-        /// ------------------------------------------------------
-        ///           UNKNOWN     unknown type
-        ///           POSITION    Transform from <link> frame to constraint frame. The origins of 
-        ///                       the constraint frames as computed via the paths from the nearest 
-        ///                       common ancestor through the predecessor and successor must be 
-        ///                       coincident.
-        ///           ROLLING     Transform from <link> frame to a frame on the rolling contact 
-        ///                       surface of <link>. The magnitude of the translation is equal to 
-        ///                       the radius of the rolling contact and is therefore used to 
-        ///                       determine the reduction ratio of the transmission. 
-
-        /// predecessor Link element
-        ///   origin specifies the transform from predecessor Link to Joint Frame
         std::string predecessor_link_name;
-        Pose predecessor_to_constraint_origin_transform;
-
-        /// successor Link element
-        ///   origin specifies the transform from the succesor link to the constraint frame
         std::string successor_link_name;
-        Pose successor_to_constraint_origin_transform;
 
         /// subtrees rooted at the nearest common ancestor
-        ///   the subtrees begin at (but do not include) the nearest common ancestor and end at 
+        ///   the subtrees begin at (but do not include) the nearest common ancestor and end at
         ///   (and do include) the predecessor/successor links
         std::vector<std::shared_ptr<Link>> nca_to_predecessor_subtree, nca_to_successor_subtree;
 
-        std::vector<std::shared_ptr<Link>> allLinks() const
-        {
-            std::vector<std::shared_ptr<Link>> links;
-            links.insert(links.end(), nca_to_predecessor_subtree.begin(),
-                         nca_to_predecessor_subtree.end());
-            links.insert(links.end(), nca_to_successor_subtree.begin(),
-                         nca_to_successor_subtree.end());
-            return links;
-        }
+        /// The following members are constraint specific. They are nullptrs by default, and are 
+        ///     only set if the constraint is of the corresponding type.
+        
+        // Position constraint specific members
+        //  The transform from the predecessor link frame to the constraint frame
+        std::shared_ptr<Pose> predecessor_to_constraint_origin_transform;
+        //  The transform from the successor link frame to the constraint frame
+        std::shared_ptr<Pose> successor_to_constraint_origin_transform;
+
+        // Rolling constraint specific members
+        //  The ratio of the radius of the rolling constraint of the predecessor link to the radius 
+        //  of the rolling constraint of the successor link
+        std::shared_ptr<double> ratio;
+
+        // TODO(@MatthewChignoli): add stuff for the differential constraint
 
         void clear()
         {
+            this->name.clear();
             this->successor_link_name.clear();
-            this->successor_to_constraint_origin_transform.clear();
             this->predecessor_link_name.clear();
-            this->predecessor_to_constraint_origin_transform.clear();
+            this->nca_to_predecessor_subtree.clear();
+            this->nca_to_successor_subtree.clear();
+            this->predecessor_to_constraint_origin_transform.reset();
+            this->successor_to_constraint_origin_transform.reset();
+            this->ratio.reset();
             this->type = UNKNOWN;
         };
     };

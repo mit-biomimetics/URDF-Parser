@@ -41,8 +41,7 @@
   <constraint name="FR_abad_tranmission" type="rolling">
     <predecessor link="FR_abad_link"/>
     <successor link="FR_abad_rotor"/>
-    <predecessor_origin xyz="0.0 6.0 0.0"/>
-    <successor_origin xyz="0.0 1.0 0.0"/>
+    <ratio value="6.0"/>
   </constraint>
   <joint name="FR_abad_to_hip_j" type="continuous">
     <axis xyz="0 1 0"/>
@@ -74,8 +73,7 @@
   <constraint name="FR_hip_tranmission" type="rolling">
     <predecessor link="FR_hip_link"/>
     <successor link="FR_hip_rotor"/>
-    <predecessor_origin xyz="6.0 0.0 0.0"/>
-    <successor_origin xyz="1.0 0.0 0.0"/>
+    <ratio value="6.0"/>
   </constraint>
   <joint name="FR_hip_to_knee_j" type="continuous">
     <axis xyz="0 1 0"/>
@@ -106,8 +104,7 @@
   <constraint name="FR_knee_tranmission" type="rolling">
     <predecessor link="FR_knee_link"/>
     <successor link="FR_knee_rotor"/>
-    <predecessor_origin xyz="9.33 0.0 0.0"/>
-    <successor_origin xyz="1.0 0.0 0.0"/>
+    <ratio value="9.33"/>
   </constraint>
   <joint name="torso_to_FL_abad_j" type="continuous">
     <axis xyz="1 0 0"/>
@@ -139,8 +136,7 @@
   <constraint name="FL_abad_tranmission" type="rolling">
     <predecessor link="FL_abad_link"/>
     <successor link="FL_abad_rotor"/>
-    <predecessor_origin xyz="0.0 6.0 0.0"/>
-    <successor_origin xyz="0.0 1.0 0.0"/>
+    <ratio value="6.0"/>
   </constraint>
   <joint name="FL_abad_to_hip_j" type="continuous">
     <axis xyz="0 1 0"/>
@@ -172,8 +168,7 @@
   <constraint name="FL_hip_tranmission" type="rolling">
     <predecessor link="FL_hip_link"/>
     <successor link="FL_hip_rotor"/>
-    <predecessor_origin xyz="6.0 0.0 0.0"/>
-    <successor_origin xyz="1.0 0.0 0.0"/>
+    <ratio value="6.0"/>
   </constraint>
   <joint name="FL_hip_to_knee_j" type="continuous">
     <axis xyz="0 1 0"/>
@@ -204,8 +199,7 @@
   <constraint name="FL_knee_tranmission" type="rolling">
     <predecessor link="FL_knee_link"/>
     <successor link="FL_knee_rotor"/>
-    <predecessor_origin xyz="9.33 0.0 0.0"/>
-    <successor_origin xyz="1.0 0.0 0.0"/>
+    <ratio value="9.33"/>
   </constraint>
   <joint name="torso_to_HR_abad_j" type="continuous">
     <axis xyz="1 0 0"/>
@@ -237,8 +231,7 @@
   <constraint name="HR_abad_tranmission" type="rolling">
     <predecessor link="HR_abad_link"/>
     <successor link="HR_abad_rotor"/>
-    <predecessor_origin xyz="0.0 6.0 0.0"/>
-    <successor_origin xyz="0.0 1.0 0.0"/>
+    <ratio value="6.0"/>
   </constraint>
   <joint name="HR_abad_to_hip_j" type="continuous">
     <axis xyz="0 1 0"/>
@@ -270,8 +263,7 @@
   <constraint name="HR_hip_tranmission" type="rolling">
     <predecessor link="HR_hip_link"/>
     <successor link="HR_hip_rotor"/>
-    <predecessor_origin xyz="6.0 0.0 0.0"/>
-    <successor_origin xyz="1.0 0.0 0.0"/>
+    <ratio value="6.0"/>
   </constraint>
   <joint name="HR_hip_to_knee_j" type="continuous">
     <axis xyz="0 1 0"/>
@@ -302,8 +294,7 @@
   <constraint name="HR_knee_tranmission" type="rolling">
     <predecessor link="HR_knee_link"/>
     <successor link="HR_knee_rotor"/>
-    <predecessor_origin xyz="9.33 0.0 0.0"/>
-    <successor_origin xyz="1.0 0.0 0.0"/>
+    <ratio value="9.33"/>
   </constraint>
   <joint name="torso_to_HL_abad_j" type="continuous">
     <axis xyz="1 0 0"/>
@@ -335,8 +326,7 @@
   <constraint name="HL_abad_tranmission" type="rolling">
     <predecessor link="HL_abad_link"/>
     <successor link="HL_abad_rotor"/>
-    <predecessor_origin xyz="0.0 6.0 0.0"/>
-    <successor_origin xyz="0.0 1.0 0.0"/>
+    <ratio value="6.0"/>
   </constraint>
   <joint name="HL_abad_to_hip_j" type="continuous">
     <axis xyz="0 1 0"/>
@@ -368,8 +358,7 @@
   <constraint name="HL_hip_tranmission" type="rolling">
     <predecessor link="HL_hip_link"/>
     <successor link="HL_hip_rotor"/>
-    <predecessor_origin xyz="6.0 0.0 0.0"/>
-    <successor_origin xyz="1.0 0.0 0.0"/>
+    <ratio value="6.0"/>
   </constraint>
   <joint name="HL_hip_to_knee_j" type="continuous">
     <axis xyz="0 1 0"/>
@@ -400,8 +389,7 @@
   <constraint name="HL_knee_tranmission" type="rolling">
     <predecessor link="HL_knee_link"/>
     <successor link="HL_knee_rotor"/>
-    <predecessor_origin xyz="9.33 0.0 0.0"/>
-    <successor_origin xyz="1.0 0.0 0.0"/>
+    <ratio value="9.33"/>
   </constraint>
 </robot>
 
