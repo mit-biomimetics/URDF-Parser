@@ -215,6 +215,7 @@ namespace urdf
       PRISMATIC,
       FLOATING,
       PLANAR,
+      UNIVERSAL,
       FIXED
     } type;
 
@@ -225,8 +226,11 @@ namespace urdf
     ///            PRISMATIC   translation axis
     ///            FLOATING    N/A
     ///            PLANAR      plane normal axis
+    ///            UNIVERSAL   rotation axes
     ///            FIXED       N/A
     Vector3 axis;
+
+    // TODO(@MatthewChignoli): I am not sure if we can represent the universal joint with a single axis
 
     bool independent;
 
