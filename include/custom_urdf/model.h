@@ -420,7 +420,7 @@ namespace urdf
     {
       visited[link_name] = true;
       scc.push_back(this->links_.at(link_name));
-      for (const std::shared_ptr<Link> neighbor : reverse_graph.at(link_name))
+      for (const std::shared_ptr<Link>& neighbor : reverse_graph.at(link_name))
       {
         const std::string &neighbor_name = neighbor->name;
         if (!visited[neighbor_name])

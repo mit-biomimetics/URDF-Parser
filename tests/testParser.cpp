@@ -6,6 +6,9 @@ using namespace urdf;
 
 // TODO(@MatthewChignoli): Can add more robots later
 
+// const std::string urdf_directory = "/home/matt/repos/URDF-Parser/";
+const std::string urdf_directory = "/Users/matthewchignoli/repos/URDF-Parser/";
+
 std::vector<std::string> GetTestUrdfFiles()
 {
     std::vector<std::string> test_urdf_files;
@@ -23,12 +26,11 @@ class ParserTest : public ::testing::TestWithParam<std::string>
 {
 };
 
-INSTANTIATE_TEST_CASE_P(ParserTest, ParserTest, ::testing::ValuesIn(GetTestUrdfFiles()));
+INSTANTIATE_TEST_SUITE_P(ParserTest, ParserTest, ::testing::ValuesIn(GetTestUrdfFiles()));
 
 TEST_P(ParserTest, createModelFromUrdfFile)
 {
-    std::shared_ptr<ModelInterface> model = parseURDFFile("/home/matt/repos/URDF-Parser/" +
-                                                          GetParam() + ".urdf");
+    std::shared_ptr<ModelInterface> model = parseURDFFile(urdf_directory + GetParam() + ".urdf");
     ASSERT_TRUE(model != nullptr);
 }
 
@@ -84,13 +86,12 @@ class LinkOrderTest : public ::testing::TestWithParam<LinkOrderTestdata>
 protected:
     LinkOrderTest()
     {
-        model_ = urdf::parseURDFFile("/home/matt/repos/URDF-Parser/" +
-                                     GetParam().urdf_file + ".urdf");
+        model_ = urdf::parseURDFFile(urdf_directory + GetParam().urdf_file + ".urdf");
     }
     std::shared_ptr<urdf::ModelInterface> model_;
 };
 
-INSTANTIATE_TEST_CASE_P(LinkOrderTest, LinkOrderTest, ::testing::ValuesIn(GetLinkOrders()));
+INSTANTIATE_TEST_SUITE_P(LinkOrderTest, LinkOrderTest, ::testing::ValuesIn(GetLinkOrders()));
 
 TEST_P(LinkOrderTest, link_order)
 {
@@ -135,13 +136,12 @@ class ParentLinkTest : public ::testing::TestWithParam<ParentLinkTestData>
 protected:
     ParentLinkTest()
     {
-        model_ = urdf::parseURDFFile("/home/matt/repos/URDF-Parser/" +
-                                     GetParam().urdf_file + ".urdf");
+        model_ = urdf::parseURDFFile(urdf_directory + GetParam().urdf_file + ".urdf");
     }
     std::shared_ptr<urdf::ModelInterface> model_;
 };
 
-INSTANTIATE_TEST_CASE_P(ParentLinkTest, ParentLinkTest, ::testing::ValuesIn(GetLinksAndParents()));
+INSTANTIATE_TEST_SUITE_P(ParentLinkTest, ParentLinkTest, ::testing::ValuesIn(GetLinksAndParents()));
 
 TEST_P(ParentLinkTest, parent)
 {
@@ -190,13 +190,12 @@ class ChildrenLinksTest : public ::testing::TestWithParam<ChildrenLinksTestData>
 protected:
     ChildrenLinksTest()
     {
-        model_ = urdf::parseURDFFile("/home/matt/repos/URDF-Parser/" +
-                                     GetParam().urdf_file + ".urdf");
+        model_ = urdf::parseURDFFile(urdf_directory + GetParam().urdf_file + ".urdf");
     }
     std::shared_ptr<urdf::ModelInterface> model_;
 };
 
-INSTANTIATE_TEST_CASE_P(ChildrenLinksTest, ChildrenLinksTest,
+INSTANTIATE_TEST_SUITE_P(ChildrenLinksTest, ChildrenLinksTest,
                         ::testing::ValuesIn(GetLinksAndChildren()));
 
 TEST_P(ChildrenLinksTest, children)
@@ -260,13 +259,12 @@ class SupportingChainsTest : public ::testing::TestWithParam<SupportingChainsTes
 protected:
     SupportingChainsTest()
     {
-        model_ = urdf::parseURDFFile("/home/matt/repos/URDF-Parser/" +
-                                     GetParam().urdf_file + ".urdf");
+        model_ = urdf::parseURDFFile(urdf_directory + GetParam().urdf_file + ".urdf");
     }
     std::shared_ptr<urdf::ModelInterface> model_;
 };
 
-INSTANTIATE_TEST_CASE_P(SupportingChainsTest, SupportingChainsTest,
+INSTANTIATE_TEST_SUITE_P(SupportingChainsTest, SupportingChainsTest,
                         ::testing::ValuesIn(GetLinksAndSupportingChains()));
 
 TEST_P(SupportingChainsTest, supporting_chains)
@@ -341,13 +339,12 @@ class NearestCommonAncestorTest : public ::testing::TestWithParam<NearestCommonA
 protected:
     NearestCommonAncestorTest()
     {
-        model_ = urdf::parseURDFFile("/home/matt/repos/URDF-Parser/" +
-                                     GetParam().urdf_file + ".urdf");
+        model_ = urdf::parseURDFFile(urdf_directory + GetParam().urdf_file + ".urdf");
     }
     std::shared_ptr<urdf::ModelInterface> model_;
 };
 
-INSTANTIATE_TEST_CASE_P(NearestCommonAncestorTest, NearestCommonAncestorTest,
+INSTANTIATE_TEST_SUITE_P(NearestCommonAncestorTest, NearestCommonAncestorTest,
                         ::testing::ValuesIn(GetLinkPairsAndNearestCommonAncestors()));
 
 TEST_P(NearestCommonAncestorTest, nearest_common_ancestor)
@@ -406,13 +403,12 @@ class SubtreeBetweenLinksTest : public ::testing::TestWithParam<SubtreeBetweenLi
 protected:
     SubtreeBetweenLinksTest()
     {
-        model_ = urdf::parseURDFFile("/home/matt/repos/URDF-Parser/" +
-                                     GetParam().urdf_file + ".urdf");
+        model_ = urdf::parseURDFFile(urdf_directory + GetParam().urdf_file + ".urdf");
     }
     std::shared_ptr<urdf::ModelInterface> model_;
 };
 
-INSTANTIATE_TEST_CASE_P(SubtreeBetweenLinksTest, SubtreeBetweenLinksTest,
+INSTANTIATE_TEST_SUITE_P(SubtreeBetweenLinksTest, SubtreeBetweenLinksTest,
                         ::testing::ValuesIn(GetLinkPairsAndSubtrees()));
 
 TEST_P(SubtreeBetweenLinksTest, subtree_between_links)
@@ -470,13 +466,12 @@ class NeighborsTest : public ::testing::TestWithParam<NeighborsTestData>
 protected:
     NeighborsTest()
     {
-        model_ = urdf::parseURDFFile("/home/matt/repos/URDF-Parser/" +
-                                     GetParam().urdf_file + ".urdf");
+        model_ = urdf::parseURDFFile(urdf_directory + GetParam().urdf_file + ".urdf");
     }
     std::shared_ptr<urdf::ModelInterface> model_;
 };
 
-INSTANTIATE_TEST_CASE_P(NeighborsTest, NeighborsTest,
+INSTANTIATE_TEST_SUITE_P(NeighborsTest, NeighborsTest,
                         ::testing::ValuesIn(GetLinksAndNeighbors()));
 
 TEST_P(NeighborsTest, neighbors)
@@ -503,13 +498,12 @@ class ClustersTest : public ::testing::TestWithParam<std::string>
 protected:
     ClustersTest()
     {
-        model_ = urdf::parseURDFFile("/home/matt/repos/URDF-Parser/" +
-                                     GetParam() + ".urdf");
+        model_ = urdf::parseURDFFile(urdf_directory + GetParam() + ".urdf");
     }
     std::shared_ptr<urdf::ModelInterface> model_;
 };
 
-INSTANTIATE_TEST_CASE_P(ClustersTest, ClustersTest, ::testing::ValuesIn(GetTestUrdfFiles()));
+INSTANTIATE_TEST_SUITE_P(ClustersTest, ClustersTest, ::testing::ValuesIn(GetTestUrdfFiles()));
 
 TEST_P(ClustersTest, parents)
 {
