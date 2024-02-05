@@ -14,9 +14,9 @@
         <link name="${prefix}hip_rz_link">
             <inertial>
                 <mass value="0.84563"/>
-                <origin xyz="-0.064842 ${y_sign * -0.000036} -0.063090"/>
-                <inertia ixx="0.0015373" ixy="${y_sign * 0.0000011}" ixz="0.0005578"
-                         iyy="0.0014252" iyz="${y_sign * 0.0000024}" izz="0.0012028"/>
+                <origin xyz="-0.064842 ${y_sign * 0.000036} -0.063090"/>
+                <inertia ixx="0.0015373" ixy="${y_sign * -0.0000011}" ixz="0.0005578"
+                         iyy="0.0014252" iyz="${y_sign * -0.0000024}" izz="0.0012028"/>
             </inertial>
         </link>
 
@@ -54,9 +54,9 @@
         <link name="${prefix}hip_rx_link">
             <inertial>
                 <mass value="1.208683"/>
-                <origin xyz="0.067232 ${y_sign * -0.013018} 0.0001831"/>
-                <inertia ixx="0.0017535" ixy="${y_sign * -0.0000063}" ixz="-0.000080"
-                         iyy="0.003338" iyz="${y_sign * -0.000013}" izz="0.0019927"/>
+                <origin xyz="0.067232 ${y_sign * 0.013018} 0.0001831"/>
+                <inertia ixx="0.0017535" ixy="${y_sign * 0.0000063}" ixz="-0.000080"
+                         iyy="0.003338" iyz="${y_sign * 0.000013}" izz="0.0019927"/>
             </inertial>
         </link>
 
@@ -93,9 +93,9 @@
         <link name="${prefix}hip_ry_link">
             <inertial>
                 <mass value="2.64093"/>
-                <origin xyz="0.0132054 ${y_sign * 0.0269864} -0.096021"/>
-                <inertia ixx="0.0243761" ixy="${y_sign * 0.0000996}" ixz="0.0006548"
-                    iyy="0.0259015" iyz="${y_sign * 0.0026713}" izz="0.0038929"/>
+                <origin xyz="0.0132054 ${y_sign * -0.0269864} -0.096021"/>
+                <inertia ixx="0.0243761" ixy="${y_sign * -0.0000996}" ixz="0.0006548"
+                    iyy="0.0259015" iyz="${y_sign * -0.0026713}" izz="0.0038929"/>
             </inertial>
         </link>
 
@@ -132,9 +132,9 @@
         <link name="${prefix}knee_link">
             <inertial>
                 <mass value="0.3543355"/>
-                <origin xyz="0.00528 ${y_sign * 0.0014762} -0.13201"/>
+                <origin xyz="0.00528 ${y_sign * -0.0014762} -0.13201"/>
                 <inertia ixx="0.003051" ixy="0.0" ixz="0.0000873"
-                         iyy="0.003033" iyz="${y_sign * 0.0000393}" izz="0.0002529"/>
+                         iyy="0.003033" iyz="${y_sign * -0.0000393}" izz="0.0002529"/>
             </inertial>
         </link>
 
@@ -210,9 +210,9 @@
         <link name="${prefix}shoulder_ry_link">
             <inertial>
                 <mass value="0.788506"/>
-                <origin xyz="0.009265 ${y_sign * 0.052623} -0.0001249"/>
-                <inertia ixx="0.0013678" ixy="${y_sign * 0.0000266}" ixz="0.0000021"
-                         iyy="0.0007392" iyz="${y_sign * -0.0000012}" izz="0.000884"/>
+                <origin xyz="0.009265 ${y_sign * -0.052623} -0.0001249"/>
+                <inertia ixx="0.0013678" ixy="${y_sign * -0.0000266}" ixz="0.0000021"
+                         iyy="0.0007392" iyz="${y_sign * 0.0000012}" izz="0.000884"/>
             </inertial>
         </link>
 
@@ -249,9 +249,9 @@
         <link name="${prefix}shoulder_rx_link">
             <inertial>
                 <mass value="0.80125"/>
-                <origin xyz="0.0006041 ${y_sign * 0.0001221} -0.082361"/>
-                <inertia ixx="0.0011524" ixy="${y_sign * 0.0000007}" ixz="0.0000396"
-                         iyy="0.0011921" iyz="${y_sign * 0.0000014}" izz="0.0012386"/>
+                <origin xyz="0.0006041 ${y_sign * -0.0001221} -0.082361"/>
+                <inertia ixx="0.0011524" ixy="${y_sign * -0.0000007}" ixz="0.0000396"
+                         iyy="0.0011921" iyz="${y_sign * -0.0000014}" izz="0.0012386"/>
             </inertial>
         </link>
 
@@ -288,9 +288,9 @@
         <link name="${prefix}shoulder_rz_link">
             <inertial>
                 <mass value="0.905588"/>
-                <origin xyz="0.0001703 ${y_sign * -0.016797} -0.060"/>
-                <inertia ixx="0.0012713" ixy="${y_sign * 0.000001}" ixz="-0.000008"
-                         iyy="0.0017477" iyz="${y_sign * -0.0000225}" izz="0.0008191"/>
+                <origin xyz="0.0001703 ${y_sign * 0.016797} -0.060"/>
+                <inertia ixx="0.0012713" ixy="${y_sign * -0.000001}" ixz="-0.000008"
+                         iyy="0.0017477" iyz="${y_sign * 0.0000225}" izz="0.0008191"/>
             </inertial>
         </link>
 
@@ -327,9 +327,9 @@
         <link name="${prefix}elbow_link">
             <inertial>
                 <mass value="0.34839"/>
-                <origin xyz="-0.0059578 ${y_sign * 0.000111} -0.0426735"/>
-                <inertia ixx="0.001570" ixy="${y_sign * 0.0000002}" ixz="0.0000335"
-                         iyy="0.0016167" iyz="${y_sign * 0.000003}" izz="0.0000619"/>
+                <origin xyz="-0.0059578 ${y_sign * -0.000111} -0.0426735"/>
+                <inertia ixx="0.001570" ixy="${y_sign * -0.0000002}" ixz="0.0000335"
+                         iyy="0.0016167" iyz="${y_sign * -0.000003}" izz="0.0000619"/>
             </inertial>
         </link>
 
