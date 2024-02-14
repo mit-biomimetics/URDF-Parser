@@ -285,38 +285,38 @@ namespace urdf
     return model;
   }
 
-  // bool exportMaterial(Material &material, TiXmlElement *config);
-  // bool exportLink(Link &link, TiXmlElement *config);
-  // bool exportJoint(Joint &joint, TiXmlElement *config);
-  // TiXmlDocument *exportURDF(const ModelInterface &model)
-  // {
-  //   TiXmlDocument *doc = new TiXmlDocument();
+  bool exportMaterial(Material &material, TiXmlElement *config);
+  bool exportLink(Link &link, TiXmlElement *config);
+  bool exportJoint(Joint &joint, TiXmlElement *config);
+  TiXmlDocument *exportURDF(const ModelInterface &model)
+  {
+    TiXmlDocument *doc = new TiXmlDocument();
 
-  //   TiXmlElement *robot = new TiXmlElement("robot");
-  //   robot->SetAttribute("name", model.name_);
-  //   doc->LinkEndChild(robot);
+    TiXmlElement *robot = new TiXmlElement("robot");
+    robot->SetAttribute("name", model.name_);
+    doc->LinkEndChild(robot);
 
-  //   for (std::map<std::string, std::shared_ptr<Material>>::const_iterator m = model.materials_.begin(); m != model.materials_.end(); m++)
-  //   {
-  //     exportMaterial(*(m->second), robot);
-  //   }
+    for (std::map<std::string, std::shared_ptr<Material>>::const_iterator m = model.materials_.begin(); m != model.materials_.end(); m++)
+    {
+      exportMaterial(*(m->second), robot);
+    }
 
-  //   for (std::vector<std::shared_ptr<Link>>::const_iterator l = model.links_.begin(); l != model.links_.end(); l++)
-  //   {
-  //     exportLink(*(l), robot);
-  //   }
+    for (LifoMap<std::string, std::shared_ptr<Link>>::const_iterator l = model.links_.begin(); l != model.links_.end(); l++)
+    {
+      exportLink(*(*(l)), robot);
+    }
 
-  //   for (std::map<std::string, std::shared_ptr<Joint>>::const_iterator j = model.joints_.begin(); j != model.joints_.end(); j++)
-  //   {
-  //     exportJoint(*(j->second), robot);
-  //   }
+    for (std::map<std::string, std::shared_ptr<Joint>>::const_iterator j = model.joints_.begin(); j != model.joints_.end(); j++)
+    {
+      exportJoint(*(j->second), robot);
+    }
 
-  //   return doc;
-  // }
+    return doc;
+  }
 
-  // TiXmlDocument *exportURDF(std::shared_ptr<ModelInterface> &model)
-  // {
-  //   return exportURDF(*model);
-  // }
+  TiXmlDocument *exportURDF(std::shared_ptr<ModelInterface> &model)
+  {
+    return exportURDF(*model);
+  }
 
 }

@@ -6,8 +6,8 @@ using namespace urdf;
 
 // TODO(@MatthewChignoli): Can add more robots later
 
-// const std::string urdf_directory = "/home/matt/repos/URDF-Parser/";
-const std::string urdf_directory = "/Users/matthewchignoli/repos/URDF-Parser/";
+const std::string urdf_directory = "/home/matt/repos/URDF-Parser/";
+// const std::string urdf_directory = "/Users/matthewchignoli/repos/URDF-Parser/";
 
 std::vector<std::string> GetTestUrdfFiles()
 {
