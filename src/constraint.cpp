@@ -191,6 +191,9 @@ namespace urdf
         {
             return false;
         }
+
+        xml->LinkEndChild(constraint_xml);
+        return true;
     }
 
 }

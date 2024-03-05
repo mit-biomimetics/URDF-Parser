@@ -754,6 +754,7 @@ namespace urdf
   {
     TiXmlElement *joint_xml = new TiXmlElement("joint");
     joint_xml->SetAttribute("name", joint.name);
+    joint_xml->SetAttribute("independent", joint.independent ? "true" : "false");
     if (joint.type == urdf::Joint::PLANAR)
       joint_xml->SetAttribute("type", "planar");
     else if (joint.type == urdf::Joint::FLOATING)
@@ -767,9 +768,10 @@ namespace urdf
     else if (joint.type == urdf::Joint::FIXED)
       joint_xml->SetAttribute("type", "fixed");
     else
+      throw ParseError("Joint has no type");
 
-      // origin
-      exportPose(joint.parent_to_joint_origin_transform, joint_xml);
+    // origin
+    exportPose(joint.parent_to_joint_origin_transform, joint_xml);
 
     // axis
     TiXmlElement *axis_xml = new TiXmlElement("axis");
