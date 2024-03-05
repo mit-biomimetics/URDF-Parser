@@ -288,6 +288,7 @@ namespace urdf
   bool exportMaterial(Material &material, TiXmlElement *config);
   bool exportLink(Link &link, TiXmlElement *config);
   bool exportJoint(Joint &joint, TiXmlElement *config);
+  bool exportConstraint(Constraint &constraint, TiXmlElement *config);
   TiXmlDocument *exportURDF(const ModelInterface &model)
   {
     TiXmlDocument *doc = new TiXmlDocument();
@@ -309,6 +310,11 @@ namespace urdf
     for (std::map<std::string, std::shared_ptr<Joint>>::const_iterator j = model.joints_.begin(); j != model.joints_.end(); j++)
     {
       exportJoint(*(j->second), robot);
+    }
+
+    for (std::map<std::string, std::shared_ptr<Constraint>>::const_iterator c = model.constraints_.begin(); c != model.constraints_.end(); c++)
+    {
+      exportConstraint(*(c->second), robot);
     }
 
     return doc;

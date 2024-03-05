@@ -143,4 +143,54 @@ namespace urdf
         return true;
     }
 
+    bool exportPose(Pose &pose, TiXmlElement *xml);
+
+    bool exportConstraint(Constraint &constraint, TiXmlElement *xml)
+    {
+        TiXmlElement *constraint_xml = new TiXmlElement("constraint");
+        constraint_xml->SetAttribute("name", constraint.name);
+
+        TiXmlElement *predecessor_xml = new TiXmlElement("predecessor");
+        predecessor_xml->SetAttribute("link", constraint.predecessor_link_name);
+        constraint_xml->LinkEndChild(predecessor_xml);
+
+        TiXmlElement *successor_xml = new TiXmlElement("successor");
+        successor_xml->SetAttribute("link", constraint.successor_link_name);
+        constraint_xml->LinkEndChild(successor_xml);
+
+        if (constraint.type == Constraint::POSITION)
+        {
+            constraint_xml->SetAttribute("type", "position");
+
+            if (constraint.predecessor_to_constraint_origin_transform)
+            {
+                TiXmlElement *predecessor_origin_xml = new TiXmlElement("origin");
+                exportPose(*constraint.predecessor_to_constraint_origin_transform, predecessor_origin_xml);
+                predecessor_xml->LinkEndChild(predecessor_origin_xml);
+            }
+
+            if (constraint.successor_to_constraint_origin_transform)
+            {
+                TiXmlElement *successor_origin_xml = new TiXmlElement("origin");
+                exportPose(*constraint.successor_to_constraint_origin_transform, successor_origin_xml);
+                successor_xml->LinkEndChild(successor_origin_xml);
+            }
+        }
+        else if (constraint.type == Constraint::ROLLING)
+        {
+            constraint_xml->SetAttribute("type", "rolling");
+
+            if (constraint.ratio)
+            {
+                TiXmlElement *ratio_xml = new TiXmlElement("ratio");
+                ratio_xml->SetAttribute("value", *constraint.ratio);
+                constraint_xml->LinkEndChild(ratio_xml);
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+
 }
