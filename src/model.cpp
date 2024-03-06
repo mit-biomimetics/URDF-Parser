@@ -36,12 +36,10 @@
 
 #include <vector>
 #include "custom_urdf/urdf_parser.h"
-// #include <console_bridge/console.h>
 #include <fstream>
 namespace urdf
 {
 
-  bool parseMaterial(Material &material, TiXmlElement *config, bool only_name_is_ok);
   bool parseLink(Link &link, TiXmlElement *config);
   bool parseJoint(Joint &joint, TiXmlElement *config);
   bool parseConstraint(Constraint &constraint, TiXmlElement *config);
@@ -96,35 +94,6 @@ namespace urdf
     if (verbose)
       printf("name: %s\n", model->name_.c_str());
 
-    // Get all Material elements
-    for (TiXmlElement *material_xml = robot_xml->FirstChildElement("material"); material_xml; material_xml = material_xml->NextSiblingElement("material"))
-    {
-      std::shared_ptr<Material> material;
-      material.reset(new Material);
-
-      try
-      {
-        parseMaterial(*material, material_xml, false); // material needs to be fully defined here
-        if (model->getMaterial(material->name))
-        {
-          printf("material '%s' is not unique.\n", material->name.c_str());
-          material.reset();
-          model.reset();
-          return model;
-        }
-        else
-        {
-          model->materials_.insert(make_pair(material->name, material));
-        }
-      }
-      catch (ParseError & /*e*/)
-      {
-        printf("[URDF] material parsing error\n");
-        material.reset();
-        model.reset();
-        return model;
-      }
-    }
     int count(0);
     // Get all Link elements
     for (TiXmlElement *link_xml = robot_xml->FirstChildElement("link"); link_xml;
@@ -144,31 +113,7 @@ namespace urdf
         }
         else
         {
-          // set link visual material
-          if (link->visual)
-          {
-            if (!link->visual->material_name.empty())
-            {
-              if (model->getMaterial(link->visual->material_name))
-              {
-                link->visual->material = model->getMaterial(link->visual->material_name.c_str());
-              }
-              else
-              {
-                if (link->visual->material)
-                {
-                  model->materials_.insert(make_pair(link->visual->material->name, link->visual->material));
-                }
-                else
-                {
-                  model.reset();
-                  return model;
-                }
-              }
-            }
-          }
           model->links_.insert({link->name, link});
-
           ++count;
           if (verbose)
             printf("%d th link: %s\n", count, link->name.c_str());
@@ -210,8 +155,6 @@ namespace urdf
           if (verbose)
           {
             printf("%d th joint: %s\n", count, joint->name.c_str());
-            if (joint->actuator)
-              joint->actuator->print();
           }
         }
       }
@@ -285,7 +228,6 @@ namespace urdf
     return model;
   }
 
-  bool exportMaterial(Material &material, TiXmlElement *config);
   bool exportLink(Link &link, TiXmlElement *config);
   bool exportJoint(Joint &joint, TiXmlElement *config);
   bool exportConstraint(Constraint &constraint, TiXmlElement *config);
@@ -296,11 +238,6 @@ namespace urdf
     TiXmlElement *robot = new TiXmlElement("robot");
     robot->SetAttribute("name", model.name_);
     doc->LinkEndChild(robot);
-
-    for (std::map<std::string, std::shared_ptr<Material>>::const_iterator m = model.materials_.begin(); m != model.materials_.end(); m++)
-    {
-      exportMaterial(*(m->second), robot);
-    }
 
     for (LifoMap<std::string, std::shared_ptr<Link>>::const_iterator l = model.links_.begin(); l != model.links_.end(); l++)
     {

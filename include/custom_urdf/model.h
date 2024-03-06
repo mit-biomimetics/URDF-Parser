@@ -167,7 +167,6 @@ namespace urdf
       name_.clear();
       this->links_.clear();
       this->joints_.clear();
-      this->materials_.clear();
       this->root_link_.reset();
     };
 
@@ -191,17 +190,6 @@ namespace urdf
       else
         ptr = this->constraints_.find(name)->second;
       constraint = ptr;
-    };
-
-    /// non-const getMaterial()
-    std::shared_ptr<Material> getMaterial(const std::string &name) const
-    {
-      std::shared_ptr<Material> ptr;
-      if (this->materials_.find(name) == this->materials_.end())
-        ptr.reset();
-      else
-        ptr = this->materials_.find(name)->second;
-      return ptr;
     };
 
     void initTree(std::map<std::string, std::string> &parent_link_tree)
@@ -519,8 +507,6 @@ namespace urdf
     std::map<std::string, std::shared_ptr<Constraint>> constraints_;
     /// \brief complete list of Clusters
     std::map<std::vector<int>, std::shared_ptr<Cluster>> clusters_;
-    /// \brief complete list of Materials
-    std::map<std::string, std::shared_ptr<Material>> materials_;
 
     /// \brief The name of the robot model
     std::string name_;

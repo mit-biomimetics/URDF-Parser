@@ -2,7 +2,6 @@
 #include <sstream>
 #include "custom_urdf/constraint.h"
 #include <algorithm>
-// #include <console_bridge/console.h>
 #include "custom_urdf/tinyxml.h"
 #include "custom_urdf/urdf_parser.h"
 namespace urdf
