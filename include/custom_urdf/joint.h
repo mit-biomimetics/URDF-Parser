@@ -47,160 +47,6 @@ namespace urdf
 {
 
   class Link;
-
-  class JointActuator
-  {
-  public:
-    JointActuator() { this->clear(); };
-    double motor_Kt;
-    double motor_R;
-    double motor_TauMax;
-    double gear_ratio;
-    double voltage;
-
-    double joint_dry_friction;
-    double joint_damping;
-
-    double rotor_ixx, rotor_iyy, rotor_izz, rotor_ixy, rotor_ixz, rotor_iyz;
-
-    std::string actuator_parent_link_name;
-
-    void clear()
-    {
-      joint_damping = 0;
-      joint_dry_friction = 0;
-      gear_ratio = 1;
-
-      motor_Kt = 0;
-      motor_R = 0;
-      motor_TauMax = 0;
-    };
-    void print()
-    {
-      printf("gear_ratio, voltage: %f, %f\n", gear_ratio, voltage);
-      printf("motor (Kt, R, tauMax): %f, %f, %f\n", motor_Kt, motor_R, motor_TauMax);
-      printf("friction (damping, dry): %f, %f\n", joint_damping, joint_dry_friction);
-      printf("rotor inertia (ixx, iyy, izz, ixy, ixz, iyz): %f, %f, %f, %f, %f, %f\n",
-             rotor_ixx, rotor_iyy, rotor_izz, rotor_ixy, rotor_ixz, rotor_iyz);
-      printf("actuator parent link name: %s\n", actuator_parent_link_name.c_str());
-    }
-  };
-
-  class JointDynamics
-  {
-  public:
-    JointDynamics() { this->clear(); };
-    double damping;
-    double friction;
-    double gear_ratio;
-
-    void clear()
-    {
-      damping = 0;
-      friction = 0;
-      gear_ratio = 1;
-    };
-  };
-
-  class JointLimits
-  {
-  public:
-    JointLimits() { this->clear(); };
-    double lower;
-    double upper;
-    double effort;
-    double velocity;
-
-    void clear()
-    {
-      lower = 0;
-      upper = 0;
-      effort = 0;
-      velocity = 0;
-    };
-  };
-
-  /// \brief Parameters for Joint Safety Controllers
-  class JointSafety
-  {
-  public:
-    /// clear variables on construction
-    JointSafety() { this->clear(); };
-
-    ///
-    /// IMPORTANT:  The safety controller support is very much PR2 specific, not intended for generic usage.
-    ///
-    /// Basic safety controller operation is as follows
-    ///
-    /// current safety controllers will take effect on joints outside the position range below:
-    ///
-    /// position range: [JointSafety::soft_lower_limit  + JointLimits::velocity / JointSafety::k_position,
-    ///                  JointSafety::soft_uppper_limit - JointLimits::velocity / JointSafety::k_position]
-    ///
-    /// if (joint_position is outside of the position range above)
-    ///     velocity_limit_min = -JointLimits::velocity + JointSafety::k_position * (joint_position - JointSafety::soft_lower_limit)
-    ///     velocity_limit_max =  JointLimits::velocity + JointSafety::k_position * (joint_position - JointSafety::soft_upper_limit)
-    /// else
-    ///     velocity_limit_min = -JointLimits::velocity
-    ///     velocity_limit_max =  JointLimits::velocity
-    ///
-    /// velocity range: [velocity_limit_min + JointLimits::effort / JointSafety::k_velocity,
-    ///                  velocity_limit_max - JointLimits::effort / JointSafety::k_velocity]
-    ///
-    /// if (joint_velocity is outside of the velocity range above)
-    ///     effort_limit_min = -JointLimits::effort + JointSafety::k_velocity * (joint_velocity - velocity_limit_min)
-    ///     effort_limit_max =  JointLimits::effort + JointSafety::k_velocity * (joint_velocity - velocity_limit_max)
-    /// else
-    ///     effort_limit_min = -JointLimits::effort
-    ///     effort_limit_max =  JointLimits::effort
-    ///
-    /// Final effort command sent to the joint is saturated by [effort_limit_min,effort_limit_max]
-    ///
-    /// Please see wiki for more details: http://www.ros.org/wiki/pr2_controller_manager/safety_limits
-    ///
-    double soft_upper_limit;
-    double soft_lower_limit;
-    double k_position;
-    double k_velocity;
-
-    void clear()
-    {
-      soft_upper_limit = 0;
-      soft_lower_limit = 0;
-      k_position = 0;
-      k_velocity = 0;
-    };
-  };
-
-  class JointCalibration
-  {
-  public:
-    JointCalibration() { this->clear(); };
-    double reference_position;
-    std::shared_ptr<double> rising, falling;
-
-    void clear()
-    {
-      reference_position = 0;
-    };
-  };
-
-  class JointMimic
-  {
-  public:
-    JointMimic() { this->clear(); };
-    double offset;
-    double multiplier;
-    std::string joint_name;
-
-    void clear()
-    {
-      offset = 0.0;
-      multiplier = 0.0;
-      joint_name.clear();
-    };
-  };
-
   class Joint
   {
   public:
@@ -244,34 +90,12 @@ namespace urdf
     /// transform from Parent Link frame to Joint frame
     Pose parent_to_joint_origin_transform;
 
-    /// Joint Dynamics
-    std::shared_ptr<JointDynamics> dynamics;
-
-    /// Joint Actuator
-    std::shared_ptr<JointActuator> actuator;
-
-    /// Joint Limits
-    std::shared_ptr<JointLimits> limits;
-
-    /// Unsupported Hidden Feature
-    std::shared_ptr<JointSafety> safety;
-
-    /// Unsupported Hidden Feature
-    std::shared_ptr<JointCalibration> calibration;
-
-    /// Option to Mimic another Joint
-    std::shared_ptr<JointMimic> mimic;
-
     void clear()
     {
       this->axis.clear();
       this->child_link_name.clear();
       this->parent_link_name.clear();
       this->parent_to_joint_origin_transform.clear();
-      this->dynamics.reset();
-      this->limits.reset();
-      this->safety.reset();
-      this->calibration.reset();
       this->type = UNKNOWN;
     };
   };

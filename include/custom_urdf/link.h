@@ -43,110 +43,9 @@
 #include <memory>
 #include "lifo_map.h"
 #include "joint.h"
-#include "color.h"
 
 namespace urdf
 {
-
-  class Geometry
-  {
-  public:
-    enum
-    {
-      SPHERE,
-      BOX,
-      CYLINDER,
-      MESH,
-      CAPSULE
-    } type;
-
-    virtual ~Geometry(void)
-    {
-    }
-  };
-  class Capsule : public Geometry
-  {
-  public:
-    Capsule() { this->clear(); }
-    double radius;
-    double length;
-
-    void clear()
-    {
-      radius = 0;
-      length = 0;
-    };
-  };
-  class Sphere : public Geometry
-  {
-  public:
-    Sphere() { this->clear(); };
-    double radius;
-
-    void clear()
-    {
-      radius = 0;
-    };
-  };
-
-  class Box : public Geometry
-  {
-  public:
-    Box() { this->clear(); };
-    Vector3 dim;
-
-    void clear()
-    {
-      this->dim.clear();
-    };
-  };
-
-  class Cylinder : public Geometry
-  {
-  public:
-    Cylinder() { this->clear(); };
-    double length;
-    double radius;
-
-    void clear()
-    {
-      length = 0;
-      radius = 0;
-    };
-  };
-
-  class Mesh : public Geometry
-  {
-  public:
-    Mesh() { this->clear(); };
-    std::string filename;
-    Vector3 scale;
-
-    void clear()
-    {
-      filename.clear();
-      // default scale
-      scale.x = 1;
-      scale.y = 1;
-      scale.z = 1;
-    };
-  };
-
-  class Material
-  {
-  public:
-    Material() { this->clear(); };
-    std::string name;
-    std::string texture_filename;
-    Color color;
-
-    void clear()
-    {
-      color.clear();
-      texture_filename.clear();
-      name.clear();
-    };
-  };
 
   class Inertial
   {
@@ -164,49 +63,6 @@ namespace urdf
     };
   };
 
-  class Visual
-  {
-  public:
-    Visual() { this->clear(); };
-    Pose origin;
-    std::shared_ptr<Geometry> geometry;
-
-    std::string material_name;
-    std::shared_ptr<Material> material;
-
-    void clear()
-    {
-      origin.clear();
-      material_name.clear();
-      material.reset();
-      geometry.reset();
-      group_name.clear();
-    };
-
-    // this is actually deprecated, but too many warnings are generated
-    //  __attribute__((deprecated))
-    std::string group_name;
-  };
-
-  class Collision
-  {
-  public:
-    Collision() { this->clear(); };
-    Pose origin;
-    std::shared_ptr<Geometry> geometry;
-
-    void clear()
-    {
-      origin.clear();
-      geometry.reset();
-      group_name.clear();
-    };
-
-    // this is actually deprecated, but too many warnings are generated
-    //  __attribute__((deprecated))
-    std::string group_name;
-  };
-
   class Link
   {
   public:
@@ -216,28 +72,6 @@ namespace urdf
 
     /// inertial element
     std::shared_ptr<Inertial> inertial;
-
-    /// visual element
-    std::shared_ptr<Visual> visual;
-
-    /// collision element
-    std::shared_ptr<Collision> collision;
-
-    /// if more than one collision element is specified, all collision elements are placed in this array (the collision member will be NULL)
-    std::vector<std::shared_ptr<Collision>> collision_array;
-
-    /// if more than one visual element is specified, all visual elements are placed in this array (the visual member will be NULL)
-    std::vector<std::shared_ptr<Visual>> visual_array;
-
-    /// deprecated; please use visual_array instead
-    // this is actually deprecated, but too many warnings are generated
-    // __attribute__((deprecated))
-    std::map<std::string, std::shared_ptr<std::vector<std::shared_ptr<Visual>>>> visual_groups;
-
-    /// deprecated; please use collision_array instead
-    // this is actually deprecated, but too many warnings are generated
-    // __attribute__((deprecated))
-    std::map<std::string, std::shared_ptr<std::vector<std::shared_ptr<Collision>>>> collision_groups;
 
     /// Parent Joint element
     ///   explicitly stating "parent" because we want directional-ness for tree structure
@@ -258,38 +92,12 @@ namespace urdf
     {
       this->name.clear();
       this->inertial.reset();
-      this->visual.reset();
-      this->collision.reset();
       this->parent_joint.reset();
       this->child_joints.clear();
       this->child_links.clear();
       this->neighbors.clear();
       this->constraint_names.clear();
-      this->collision_array.clear();
-      this->visual_array.clear();
-      this->collision_groups.clear();
-      this->visual_groups.clear();
     };
-
-    // please use visual_array member instead
-    __attribute__((deprecated))
-    std::shared_ptr<std::vector<std::shared_ptr<Visual>>>
-    getVisuals(const std::string &group_name) const
-    {
-      if (this->visual_groups.find(group_name) != this->visual_groups.end())
-        return this->visual_groups.at(group_name);
-      return std::shared_ptr<std::vector<std::shared_ptr<Visual>>>();
-    }
-
-    // please use collision_array member instead
-    __attribute__((deprecated))
-    std::shared_ptr<std::vector<std::shared_ptr<Collision>>>
-    getCollisions(const std::string &group_name) const
-    {
-      if (this->collision_groups.find(group_name) != this->collision_groups.end())
-        return this->collision_groups.at(group_name);
-      return std::shared_ptr<std::vector<std::shared_ptr<Collision>>>();
-    }
 
   private:
     std::weak_ptr<Link> parent_link_;

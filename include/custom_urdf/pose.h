@@ -65,18 +65,6 @@ namespace urdf
     {
       this->clear();
       std::vector<double> xyz;
-      // std::vector<std::string> pieces;
-      // std::split( pieces, vector_str, std::is_any_of(" "));
-      // for (unsigned int i = 0; i < pieces.size(); ++i){
-      // if (pieces[i] != ""){
-      // try {
-      // xyz.push_back(std::stod(pieces[i].c_str()));
-      //}
-      // catch (int e) {
-      // throw ParseError("Unable to parse component [" + pieces[i] + "] to a double (while parsing a vector value)");
-      //}
-      //}
-      //}
 
       std::istringstream ss(vector_str);
       std::string s;

@@ -50,7 +50,6 @@
 #include <map>
 #include "tinyxml.h"
 #include "model.h"
-#include "color.h"
 
 #include "exportdecl.h"
 namespace urdf_export_helpers
@@ -59,7 +58,6 @@ namespace urdf_export_helpers
   URDFDOM_DLLAPI std::string values2str(unsigned int count, const double *values, double (*conv)(double) = NULL);
   URDFDOM_DLLAPI std::string values2str(urdf::Vector3 vec);
   URDFDOM_DLLAPI std::string values2str(urdf::Rotation rot);
-  URDFDOM_DLLAPI std::string values2str(urdf::Color c);
   URDFDOM_DLLAPI std::string values2str(double d);
 
 }

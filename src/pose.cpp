@@ -69,15 +69,6 @@ std::string values2str(urdf::Rotation rot)
     rot.getRPY(rpy[0], rpy[1], rpy[2]);
     return values2str(3, rpy);
 }
-std::string values2str(urdf::Color c)
-{
-    double rgba[4];
-    rgba[0] = c.r;
-    rgba[1] = c.g;
-    rgba[2] = c.b;
-    rgba[3] = c.a;
-    return values2str(4, rgba);
-}
 std::string values2str(double d)
 {
     return values2str(1, &d);
