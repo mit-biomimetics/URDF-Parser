@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 
 #include "config.h"
-#include "custom_urdf/urdf_parser.h"
+#include "brl_urdf/urdf_parser.h"
 
 using namespace urdf;
 

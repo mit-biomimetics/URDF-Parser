@@ -34,12 +34,12 @@
 
 /* Author: Wim Meeussen */
 
-#include "custom_urdf/urdf_parser.h"
-#include "custom_urdf/link.h"
+#include "brl_urdf/urdf_parser.h"
+#include "brl_urdf/link.h"
 #include <fstream>
 #include <sstream>
 #include <algorithm>
-#include "custom_urdf/tinyxml.h"
+#include "brl_urdf/tinyxml.h"
 namespace urdf
 {
 

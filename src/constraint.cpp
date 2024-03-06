@@ -1,9 +1,9 @@
 
 #include <sstream>
-#include "custom_urdf/constraint.h"
+#include "brl_urdf/constraint.h"
 #include <algorithm>
-#include "custom_urdf/tinyxml.h"
-#include "custom_urdf/urdf_parser.h"
+#include "brl_urdf/tinyxml.h"
+#include "brl_urdf/urdf_parser.h"
 namespace urdf
 {
 
