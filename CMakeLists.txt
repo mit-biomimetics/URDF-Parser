@@ -45,12 +45,15 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -ggdb -Wall \
   -Wno-unused-parameter -Wno-unused-variable -Wno-uninitialized")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3  -ggdb -std=gnu99 -I.")
 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+
 ################################################################################
 # Specify Build Resources
 ################################################################################
 message(STATUS "======>  Setup Build  ")
 
 include_directories(include)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 file(GLOB_RECURSE SRCS "src/*.cpp")
 
 ################################################################################
