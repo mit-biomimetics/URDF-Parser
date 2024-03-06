@@ -34,7 +34,6 @@
 
 /* Author: Wim Meeussen, John Hsu */
 
-
 #include "custom_urdf/pose.h"
 #include <fstream>
 #include <sstream>

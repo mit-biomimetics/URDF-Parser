@@ -145,11 +145,6 @@ namespace urdf
 
   bool exportInertial(Inertial &i, TiXmlElement *xml)
   {
-    // adds <inertial>
-    //        <mass value="1"/>
-    //        <pose xyz="0 0 0" rpy="0 0 0"/>
-    //        <inertia ixx="1" ixy="0" />
-    //      </inertial>
     TiXmlElement *inertial_xml = new TiXmlElement("inertial");
 
     TiXmlElement *mass_xml = new TiXmlElement("mass");
