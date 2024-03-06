@@ -35,10 +35,10 @@
 /* Author: John Hsu */
 
 #include <sstream>
-#include "custom_urdf/joint.h"
+#include "brl_urdf/joint.h"
 #include <algorithm>
-#include "custom_urdf/tinyxml.h"
-#include "custom_urdf/urdf_parser.h"
+#include "brl_urdf/tinyxml.h"
+#include "brl_urdf/urdf_parser.h"
 namespace urdf
 {
 

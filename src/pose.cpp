@@ -34,12 +34,12 @@
 
 /* Author: Wim Meeussen, John Hsu */
 
-#include "custom_urdf/pose.h"
+#include "brl_urdf/pose.h"
 #include <fstream>
 #include <sstream>
 #include <algorithm>
-#include "custom_urdf/tinyxml.h"
-#include "custom_urdf/urdf_parser.h"
+#include "brl_urdf/tinyxml.h"
+#include "brl_urdf/urdf_parser.h"
 
 namespace urdf_export_helpers {
 

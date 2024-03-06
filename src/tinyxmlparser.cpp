@@ -25,7 +25,7 @@ distribution.
 #include <ctype.h>
 #include <stddef.h>
 
-#include "custom_urdf/tinyxml.h"
+#include "brl_urdf/tinyxml.h"
 
 //#define DEBUG_PARSER
 #if defined( DEBUG_PARSER )

@@ -35,7 +35,7 @@
 /* Author: Wim Meeussen */
 
 #include <vector>
-#include "custom_urdf/urdf_parser.h"
+#include "brl_urdf/urdf_parser.h"
 #include <fstream>
 namespace urdf
 {
