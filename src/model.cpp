@@ -44,7 +44,6 @@ namespace urdf
   bool parseJoint(Joint &joint, TiXmlElement *config);
   bool parseConstraint(Constraint &constraint, TiXmlElement *config);
 
-  // TODO(@MatthewChignoli): How to handle error messages
   std::shared_ptr<ModelInterface> parseURDFFiles(const std::vector<std::string> &paths,
                                                  bool verbose)
   {
@@ -92,8 +91,6 @@ namespace urdf
         model->constraints_.insert({c->first, c->second});
       }
     }
-
-    // TODO(@MatthewChignoli): A lot of duplicate code here, we should refactor this
 
     // every link has children links and joints, but no parents, so we create a
     // local convenience data structure for keeping child->parent relations
