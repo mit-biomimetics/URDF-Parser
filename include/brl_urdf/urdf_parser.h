@@ -67,6 +67,7 @@ namespace urdf
 
   URDFDOM_DLLAPI std::shared_ptr<ModelInterface> parseURDF(const std::string &xml_string, bool verbose = false);
   URDFDOM_DLLAPI std::shared_ptr<ModelInterface> parseURDFFile(const std::string &path, bool verbose = false);
+  URDFDOM_DLLAPI std::shared_ptr<ModelInterface> parseURDFFiles(const std::vector<std::string> &path, bool verbose = false);
   URDFDOM_DLLAPI TiXmlDocument *exportURDF(std::shared_ptr<ModelInterface> &model);
   URDFDOM_DLLAPI TiXmlDocument *exportURDF(const ModelInterface &model);
   URDFDOM_DLLAPI bool parsePose(Pose &, TiXmlElement *);

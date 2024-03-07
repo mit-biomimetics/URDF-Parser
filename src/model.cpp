@@ -44,6 +44,89 @@ namespace urdf
   bool parseJoint(Joint &joint, TiXmlElement *config);
   bool parseConstraint(Constraint &constraint, TiXmlElement *config);
 
+  // TODO(@MatthewChignoli): How to handle error messages
+  std::shared_ptr<ModelInterface> parseURDFFiles(const std::vector<std::string> &paths,
+                                                 bool verbose)
+  {
+    std::shared_ptr<ModelInterface> model(new ModelInterface);
+    model->clear();
+
+    for (std::vector<std::string>::const_iterator path = paths.begin(); path != paths.end(); path++)
+    {
+      std::shared_ptr<ModelInterface> m = parseURDFFile(*path, verbose);
+      if (!m)
+      {
+        ParseError e("Failed to parse URDF file");
+        throw e;
+      }
+
+      // Add links from m to model
+      for (LifoMap<std::string, std::shared_ptr<Link>>::const_iterator l = m->links_.begin(); l != m->links_.end(); l++)
+      {
+        if (model->getLink((*l)->name))
+        {
+          continue;
+        }
+        model->links_.insert({(*l)->name, *l});
+      }
+
+      // Add joints from m to model
+      for (std::map<std::string, std::shared_ptr<Joint>>::const_iterator j = m->joints_.begin(); j != m->joints_.end(); j++)
+      {
+        if (model->getJoint(j->first))
+        {
+          ParseError e("Joint name is not unique");
+          throw e;
+        }
+        model->joints_.insert({j->first, j->second});
+      }
+
+      // Add constraints from m to model
+      for (std::map<std::string, std::shared_ptr<Constraint>>::const_iterator c = m->constraints_.begin(); c != m->constraints_.end(); c++)
+      {
+        if (model->getConstraint(c->first))
+        {
+          ParseError e("Constraint name is not unique");
+          throw e;
+        }
+        model->constraints_.insert({c->first, c->second});
+      }
+    }
+
+    // TODO(@MatthewChignoli): A lot of duplicate code here, we should refactor this
+
+    // every link has children links and joints, but no parents, so we create a
+    // local convenience data structure for keeping child->parent relations
+    std::map<std::string, std::string> parent_link_tree;
+    parent_link_tree.clear();
+
+    // building tree: name mapping
+    try
+    {
+      model->initTree(parent_link_tree);
+    }
+    catch (ParseError &e)
+    {
+      printf("[URDF Parser] Failed to build tree structure\n");
+      model.reset();
+      return model;
+    }
+
+    // find the root link
+    try
+    {
+      model->initRoot(parent_link_tree);
+    }
+    catch (ParseError &e)
+    {
+      printf("[URDF Parser] Cannot Find the Root Link\n");
+      model.reset();
+      return model;
+    }
+
+    return model;
+  }
+
   std::shared_ptr<ModelInterface> parseURDFFile(const std::string &path, bool verbose)
   {
     std::ifstream stream(path.c_str());
