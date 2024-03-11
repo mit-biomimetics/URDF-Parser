@@ -66,6 +66,8 @@ namespace urdf
         {
           continue;
         }
+        (*l)->neighbors.clear();
+        (*l)->constraint_names.clear();
         model->links_.insert({(*l)->name, *l});
       }
 
