@@ -550,3 +550,52 @@ TEST_P(ClustersTest, children)
         }
     }
 }
+
+TEST(parser, combined_parse)
+{
+    std::vector<std::string> files;
+    files.push_back(urdf_directory + "mini_cheetah_base.urdf");
+    files.push_back(urdf_directory + "mini_cheetah_fr_leg.urdf");
+    files.push_back(urdf_directory + "mini_cheetah_fl_leg.urdf");
+    files.push_back(urdf_directory + "mini_cheetah_hr_leg.urdf");
+    files.push_back(urdf_directory + "mini_cheetah_hl_leg.urdf");
+    std::shared_ptr<ModelInterface> combined_model = parseURDFFiles(files, false);
+
+    std::shared_ptr<ModelInterface> model = parseURDFFile(urdf_directory + "mini_cheetah.urdf");
+
+    // Verify the models have the same size and root
+    ASSERT_EQ(combined_model->links_.size(), model->links_.size());
+    ASSERT_EQ(combined_model->joints_.size(), model->joints_.size());
+    ASSERT_EQ(combined_model->constraints_.size(), model->constraints_.size());
+    ASSERT_EQ(combined_model->getRoot()->name, model->getRoot()->name);
+
+    // Verify that the links are the same
+    for (const auto &link : combined_model->links_)
+    {
+        ASSERT_TRUE(model->getLink(link->name) != nullptr);
+    }
+    for (const auto &link : model->links_)
+    {
+        ASSERT_TRUE(combined_model->getLink(link->name) != nullptr);
+    }
+
+    // Verify that the joints are the same
+    for (const auto &joint : combined_model->joints_)
+    {
+        ASSERT_TRUE(model->getJoint(joint.second->name) != nullptr);
+    }
+    for (const auto &joint : model->joints_)
+    {
+        ASSERT_TRUE(combined_model->getJoint(joint.second->name) != nullptr);
+    }
+
+    // Verify that the constraints are the same
+    for (const auto &constraint : combined_model->constraints_)
+    {
+        ASSERT_TRUE(model->getConstraint(constraint.second->name) != nullptr);
+    }
+    for (const auto &constraint : model->constraints_)
+    {
+        ASSERT_TRUE(combined_model->getConstraint(constraint.second->name) != nullptr);
+    }
+}
