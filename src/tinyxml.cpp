@@ -29,7 +29,7 @@
 #include <iostream>
 #endif
 
-#include "tinyxml.h"
+#include "brl_urdf/tinyxml.h"
 
 FILE* TiXmlFOpen( const char* filename, const char* mode );
 

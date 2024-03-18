@@ -1,16 +1,8 @@
 <?xml version="1.0" ?>
 
-<!-- TODO(@MatthewChignoli): Use xacro to clean up the code -->
+<robot name="six_bar" xmlns:xacro="http://ros.org/wiki/xacro">
 
-<robot name="four_bar" xmlns:xacro="http://ros.org/wiki/xacro">
-
-    <link name="base_link">
-        <inertial>
-            <mass value="3.3"/>
-            <origin xyz="0.0 0.0 0.0"/>
-            <inertia ixx="0.011253" ixy="0" ixz="0" iyy="0.036203" iyz="0" izz="0.042673"/>
-        </inertial>
-    </link>
+    <link name="base_link"/>
 
     <link name="link1">
         <inertial>
@@ -36,6 +28,22 @@
         </inertial>
     </link>
 
+    <link name="link4">
+        <inertial>
+            <mass value="3.3"/>
+            <origin xyz="0.0 0.0 0.0"/>
+            <inertia ixx="0.011253" ixy="0" ixz="0" iyy="0.036203" iyz="0" izz="0.042673"/>
+        </inertial>
+    </link>
+
+    <link name="link5">
+        <inertial>
+            <mass value="3.3"/>
+            <origin xyz="0.0 0.0 0.0"/>
+            <inertia ixx="0.011253" ixy="0" ixz="0" iyy="0.036203" iyz="0" izz="0.042673"/>
+        </inertial>
+    </link>
+
     <joint name="joint1" type="continuous">
         <parent link="base_link"/>
         <child link="link1"/>
@@ -51,18 +59,33 @@
     </joint>
 
     <joint name="joint3" type="continuous">
-        <parent link="base_link"/>
+        <parent link="link2"/>
         <child link="link3"/>
+        <origin xyz="0.2 0.0 0.0"/>
+        <axis xyz="0 0 1"/>
+    </joint>
+
+    <joint name="joint4" type="continuous" independent="false">
+        <parent link="base_link"/>
+        <child link="link4"/>
         <origin xyz="0.0 0.0 0.0"/>
         <axis xyz="0 0 1"/>
     </joint>
 
-    <constraint_joint name="constraint1" type="continuous">
-        <parent link="link3"/>
-        <child link="link2"/>
-        <parent_origin xyz="0.3 0.0 0.0"/>
-        <child_origin xyz="0.2 0.0 0.0"/>
+    <joint name="joint5" type="continuous" independent="false">
+        <parent link="link4"/>
+        <child link="link5"/>
+        <origin xyz="0.4 0.0 0.0"/>
         <axis xyz="0 0 1"/>
-    </constraint_joint>
+    </joint>
+
+    <constraint name="constraint1" type="position">
+        <predecessor link="link3">
+            <origin xyz="0.3 0.0 0.0"/>
+        </predecessor>
+        <successor link="link5">
+            <origin xyz="0.5 0.0 0.0"/>
+        </successor>
+    </constraint>
 
 </robot>

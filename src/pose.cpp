@@ -34,15 +34,13 @@
 
 /* Author: Wim Meeussen, John Hsu */
 
-
-#include "custom_urdf/pose.h"
+#include "brl_urdf/pose.h"
 #include <fstream>
 #include <sstream>
 #include <algorithm>
-#include "custom_urdf/tinyxml.h"
-#include "custom_urdf/urdf_parser.h"
+#include "brl_urdf/tinyxml.h"
+#include "brl_urdf/urdf_parser.h"
 
-namespace dynacore{
 namespace urdf_export_helpers {
 
 std::string values2str(unsigned int count, const double *values, double (*conv)(double))
@@ -69,15 +67,6 @@ std::string values2str(urdf::Rotation rot)
     double rpy[3];
     rot.getRPY(rpy[0], rpy[1], rpy[2]);
     return values2str(3, rpy);
-}
-std::string values2str(urdf::Color c)
-{
-    double rgba[4];
-    rgba[0] = c.r;
-    rgba[1] = c.g;
-    rgba[2] = c.b;
-    rgba[3] = c.a;
-    return values2str(4, rgba);
 }
 std::string values2str(double d)
 {
@@ -128,6 +117,5 @@ bool exportPose(Pose &pose, TiXmlElement* xml)
   return true;
 }
 
-}
 }
 

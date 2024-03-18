@@ -24,7 +24,7 @@ distribution.
 
 #ifndef TIXML_USE_STL
 
-#include "custom_urdf/tinystr.h"
+#include "brl_urdf/tinystr.h"
 
 // Error value for find primitive
 const TiXmlString::size_type TiXmlString::npos = static_cast< TiXmlString::size_type >(-1);
